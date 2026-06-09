@@ -191,6 +191,14 @@
                     return;
                 }
 
+                // Verify that the logged in user is actually a Warden!
+                if (data.role !== "WARDEN") {
+                    showAlert("Access Denied: Administrators must sign in via the secure console.");
+                    btn.disabled = false;
+                    btn.innerHTML = `Verify Password <i class="fa-solid fa-arrow-right ms-2"></i>`;
+                    return;
+                }
+
                 tempToken = data.tempToken;
 
                 if (data.mfaSetupRequired) {

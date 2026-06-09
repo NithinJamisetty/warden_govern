@@ -35,6 +35,7 @@ public class AuthController {
 
         Map<String, Object> body = new HashMap<>();
         body.put("message", res.message);
+        body.put("role", res.role);
         body.put("tempToken", res.tempToken);
         body.put("mfaRequired", res.mfaRequired);
         body.put("mfaSetupRequired", res.mfaSetupRequired);

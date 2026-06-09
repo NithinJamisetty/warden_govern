@@ -43,6 +43,7 @@ public class AuthService {
         public String qrCodeUrl;
         public String tempToken; // Token indicating successful password check
         public String token;     // Final JWT token (if MFA is bypassed/not enabled yet - though MFA is required in SWMS)
+        public String role;      // Real user role (e.g. SUPER_ADMIN, WARDEN)
     }
 
     public LoginResult loginStep1(String username, String password, String ipAddress) {
@@ -88,6 +89,7 @@ public class AuthService {
         auditLogService.log(username, "LOGIN_STEP1_SUCCESS", ipAddress);
 
         result.success = true;
+        result.role = user.getRole();
         result.tempToken = jwtUtils.generateToken(username, "PRE_MFA", user.getHostelName());
 
         if (!user.isMfaEnabled()) {

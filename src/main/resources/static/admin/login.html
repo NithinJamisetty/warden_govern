@@ -229,8 +229,7 @@
                 }
 
                 // Verify that the logged in user is actually an admin!
-                const parsedUser = parseJwt(data.tempToken);
-                if (parsedUser && parsedUser.role !== "SUPER_ADMIN" && parsedUser.role !== "DISTRICT_ADMIN") {
+                if (data.role !== "SUPER_ADMIN" && data.role !== "DISTRICT_ADMIN") {
                     showAlert("Access Denied: Wardens must sign in via the public login portal.");
                     btn.disabled = false;
                     btn.innerHTML = `Verify Admin Password <i class="fa-solid fa-arrow-right ms-2"></i>`;
