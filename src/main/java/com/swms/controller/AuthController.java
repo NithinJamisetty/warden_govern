@@ -1,6 +1,7 @@
 package com.swms.controller;
 
 import com.swms.config.JwtUtils;
+import com.swms.config.MfaUtils;
 import com.swms.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class AuthController {
 
     @Autowired
     private JwtUtils jwtUtils;
+
+    @Autowired
+    private MfaUtils mfaUtils;
 
     @PostMapping("/login")
     public ResponseEntity<?> loginStep1(@RequestBody Map<String, String> request, HttpServletRequest servletRequest) {
@@ -63,6 +67,51 @@ public class AuthController {
         body.put("message", res.message);
         body.put("token", res.token);
         return ResponseEntity.ok(body);
+    }
+
+    @PostMapping("/register-warden")
+    public ResponseEntity<?> registerWardenSelf(@RequestBody Map<String, String> request, HttpServletRequest servletRequest) {
+        try {
+            String username = request.get("username");
+            String mobileNumber = request.get("mobileNumber");
+            String password = request.get("password");
+            String ipAddress = getClientIp(servletRequest);
+
+            AuthService.LoginResult res = authService.completeWardenRegistration(
+                    username,
+                    mobileNumber,
+                    password,
+                    ipAddress
+            );
+
+            Map<String, Object> body = new HashMap<>();
+            body.put("message", res.message);
+            body.put("role", res.role);
+            body.put("tempToken", res.tempToken);
+            body.put("mfaRequired", res.mfaRequired);
+            body.put("mfaSetupRequired", res.mfaSetupRequired);
+            body.put("mfaSecret", res.mfaSecret);
+            body.put("qrCodeUrl", res.qrCodeUrl);
+            return ResponseEntity.ok(body);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> err = new HashMap<>();
+            err.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(err);
+        }
+    }
+
+    @GetMapping("/mfa/test-code")
+    public ResponseEntity<?> getMfaTestCode(@RequestParam("secret") String secret) {
+        try {
+            String code = mfaUtils.generateCode(secret);
+            Map<String, String> body = new HashMap<>();
+            body.put("code", code);
+            return ResponseEntity.ok(body);
+        } catch (Exception e) {
+            Map<String, String> err = new HashMap<>();
+            err.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(err);
+        }
     }
 
     @GetMapping("/me")

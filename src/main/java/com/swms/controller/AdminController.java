@@ -38,14 +38,12 @@ public class AdminController {
         try {
             UserPrincipal principal = getPrincipal();
             String username = request.get("username");
-            String password = request.get("password");
             String mobileNumber = request.get("mobileNumber");
             String hostelName = request.get("hostelName");
             String ipAddress = getClientIp(servletRequest);
 
-            User warden = authService.registerWarden(
+            User warden = authService.preAuthorizeWarden(
                     username,
-                    password,
                     mobileNumber,
                     hostelName,
                     principal.getName(),
@@ -77,6 +75,38 @@ public class AdminController {
         Map<String, String> msg = new HashMap<>();
         msg.put("message", "Warden active state toggled successfully.");
         return ResponseEntity.ok(msg);
+    }
+
+    @DeleteMapping("/wardens/{id}")
+    public ResponseEntity<?> deleteWarden(@PathVariable("id") Long id, HttpServletRequest servletRequest) {
+        try {
+            UserPrincipal principal = getPrincipal();
+            String ipAddress = getClientIp(servletRequest);
+            authService.deleteWarden(id, principal.getName(), ipAddress);
+            Map<String, String> msg = new HashMap<>();
+            msg.put("message", "Warden account deleted successfully.");
+            return ResponseEntity.ok(msg);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> err = new HashMap<>();
+            err.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(err);
+        }
+    }
+
+    @GetMapping("/wardens/{id}/decrypt-mfa")
+    public ResponseEntity<?> decryptWardenMfa(@PathVariable("id") Long id, HttpServletRequest servletRequest) {
+        try {
+            UserPrincipal principal = getPrincipal();
+            String ipAddress = getClientIp(servletRequest);
+            String plainSecret = authService.getDecryptedMfaSecret(id, principal.getName(), ipAddress);
+            Map<String, String> body = new HashMap<>();
+            body.put("mfaSecret", plainSecret);
+            return ResponseEntity.ok(body);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> err = new HashMap<>();
+            err.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(err);
+        }
     }
 
     @GetMapping("/logs")

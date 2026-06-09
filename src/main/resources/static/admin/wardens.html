@@ -38,14 +38,14 @@
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <div class="col-md-3 col-lg-2 px-0">
-                <div class="sidebar-admin">
-                    <span class="sidebar-heading">Admin Core</span>
+            <div class="col-md-3 col-lg-2 sidebar py-3">
+                <div class="sidebar-sticky">
+                    <span class="sidebar-heading">Management Console</span>
                     <a href="/admin/dashboard.html" class="sidebar-link">
-                        <i class="fa-solid fa-gauge-high"></i> Dashboard
+                        <i class="fa-solid fa-chart-line"></i> Dashboard Overview
                     </a>
                     <a href="/admin/wardens.html" class="sidebar-link active">
-                        <i class="fa-solid fa-id-card-clip"></i> Wardens Settings
+                        <i class="fa-solid fa-user-gear"></i> Warden Management
                     </a>
                     <a href="/admin/logs.html" class="sidebar-link">
                         <i class="fa-solid fa-clock-rotate-left"></i> System Audit Logs
@@ -73,7 +73,7 @@
                 <!-- Alert Message -->
                 <div id="status-alert" class="alert alert-success d-none alert-dismissible fade show" role="alert">
                     <span id="status-msg">Success</span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close" onclick="document.getElementById('status-alert').classList.add('d-none')"></button>
                 </div>
 
                 <!-- Table container -->
@@ -85,13 +85,14 @@
                                 <th>Mobile Number</th>
                                 <th>Assigned Hostel</th>
                                 <th>MFA Active</th>
+                                <th>MFA Secret Key</th>
                                 <th>Status</th>
                                 <th class="text-center">Account Operations</th>
                             </tr>
                         </thead>
                         <tbody id="wardens-table-body">
                             <tr>
-                                <td colspan="6" class="text-center py-4 text-muted">
+                                <td colspan="7" class="text-center py-4 text-muted">
                                     <span class="spinner-border spinner-border-sm me-2"></span>Loading wardens roster...
                                 </td>
                             </tr>
@@ -116,10 +117,7 @@
                             <label for="warden-username" class="form-label fw-semibold text-muted">Warden Username</label>
                             <input type="text" class="form-control form-control-custom" id="warden-username" required placeholder="e.g. warden_central">
                         </div>
-                        <div class="mb-3">
-                            <label for="warden-password" class="form-label fw-semibold text-muted">Initial Password</label>
-                            <input type="password" class="form-control form-control-custom" id="warden-password" required placeholder="e.g. TempWardenPass123">
-                        </div>
+
                         <div class="mb-3">
                             <label for="warden-mobile" class="form-label fw-semibold text-muted">Mobile Number</label>
                             <input type="tel" class="form-control form-control-custom" id="warden-mobile" required placeholder="Enter 10-digit number" pattern="\d{10}">
@@ -143,6 +141,8 @@
     <script>
         document.addEventListener("DOMContentLoaded", loadWardens);
 
+        const decryptedSecrets = {};
+
         async function loadWardens() {
             try {
                 const response = await fetchApi("/api/admin/wardens");
@@ -151,7 +151,7 @@
             } catch (err) {
                 document.getElementById("wardens-table-body").innerHTML = `
                     <tr>
-                        <td colspan="6" class="text-center py-4 text-danger fw-semibold">
+                        <td colspan="7" class="text-center py-4 text-danger fw-semibold">
                             <i class="fa-solid fa-circle-exclamation me-2"></i>Failed to fetch warden profiles.
                         </td>
                     </tr>`;
@@ -161,7 +161,7 @@
         function renderTable(list) {
             const tbody = document.getElementById("wardens-table-body");
             if (list.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">No wardens registered yet.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted">No wardens registered yet.</td></tr>`;
                 return;
             }
 
@@ -177,6 +177,20 @@
                         }
                     </td>
                     <td>
+                        ${warden.mfaSecret 
+                            ? `
+                            <div class="d-flex align-items-center gap-2">
+                                <span id="mfa-sec-${warden.id}" class="text-muted font-monospace small text-truncate d-inline-block" style="max-width: 120px;" title="${warden.mfaSecret}">${warden.mfaSecret}</span>
+                                <button id="btn-decrypt-${warden.id}" onclick="toggleMfaSecret(${warden.id}, '${warden.mfaSecret}', '${warden.mobileNumber}', '${warden.username}')" class="btn btn-sm btn-outline-secondary py-0 px-2 fw-semibold" style="font-size: 0.7rem;" title="Decrypt Secret">
+                                    <i class="fa-solid fa-eye"></i> Decrypt
+                                </button>
+                                <span id="wa-container-${warden.id}"></span>
+                            </div>
+                            `
+                            : `<span class="text-muted small">Pending Setup</span>`
+                        }
+                    </td>
+                    <td>
                         ${warden.active 
                             ? `<span class="badge badge-custom-active">Active</span>`
                             : `<span class="badge badge-custom-inactive">Deactivated</span>`
@@ -188,7 +202,10 @@
                                 <i class="fa-solid fa-${warden.active ? 'user-slash' : 'user-check'}"></i> ${warden.active ? 'Deactivate' : 'Activate'}
                             </button>
                             <button onclick="resetWarden(${warden.id})" class="btn btn-sm btn-outline-warning" title="Reset MFA and unlock account">
-                                <i class="fa-solid fa-rotate-right"></i> Reset & Unlock
+                                <i class="fa-solid fa-rotate-right"></i> Reset
+                            </button>
+                            <button onclick="deleteWarden(${warden.id})" class="btn btn-sm btn-outline-danger" title="Delete account permanently">
+                                <i class="fa-solid fa-trash"></i> Delete
                             </button>
                         </div>
                     </td>
@@ -196,12 +213,57 @@
             `).join('');
         }
 
+        async function toggleMfaSecret(id, encryptedSecret, mobileNumber, username) {
+            const span = document.getElementById(`mfa-sec-${id}`);
+            const btn = document.getElementById(`btn-decrypt-${id}`);
+            const waContainer = document.getElementById(`wa-container-${id}`);
+
+            if (decryptedSecrets[id]) {
+                // Re-encrypt (hide)
+                span.textContent = encryptedSecret;
+                span.classList.add("text-muted");
+                span.classList.remove("text-success", "fw-bold");
+                btn.innerHTML = `<i class="fa-solid fa-eye"></i> Decrypt`;
+                btn.title = "Decrypt Secret";
+                waContainer.innerHTML = "";
+                delete decryptedSecrets[id];
+            } else {
+                // Decrypt
+                try {
+                    const response = await fetchApi(`/api/admin/wardens/${id}/decrypt-mfa`);
+                    const data = await response.json();
+                    if (!response.ok) {
+                        showStatusAlert(data.message || "Failed to decrypt secret.", "danger");
+                        return;
+                    }
+
+                    const plainSecret = data.mfaSecret;
+                    decryptedSecrets[id] = plainSecret;
+
+                    span.textContent = plainSecret;
+                    span.classList.remove("text-muted");
+                    span.classList.add("text-success", "fw-bold");
+                    btn.innerHTML = `<i class="fa-solid fa-eye-slash"></i> Encrypt`;
+                    btn.title = "Encrypt Secret";
+
+                    // Create WhatsApp send link
+                    const waText = `Hello ${username}, your SWMS Portal MFA secret key is: ${plainSecret}. Use this inside your Google Authenticator app to recover access.`;
+                    const waUrl = `https://wa.me/91${mobileNumber.replace(/\D/g, '')}?text=${encodeURIComponent(waText)}`;
+                    waContainer.innerHTML = `
+                        <a href="${waUrl}" target="_blank" class="btn btn-sm btn-success py-0 px-2 fw-semibold align-middle text-white text-decoration-none" style="font-size: 0.72rem;">
+                            <i class="fa-brands fa-whatsapp"></i> Send
+                        </a>`;
+                } catch (err) {
+                    showStatusAlert("Error decrypting secret.", "danger");
+                }
+            }
+        }
+
         // Register Warden form submission
         document.getElementById("register-warden-form").addEventListener("submit", async (e) => {
             e.preventDefault();
             const payload = {
                 username: document.getElementById("warden-username").value,
-                password: document.getElementById("warden-password").value,
                 mobileNumber: document.getElementById("warden-mobile").value,
                 hostelName: document.getElementById("warden-hostel").value
             };
@@ -215,16 +277,16 @@
                 const data = await response.json();
 
                 if (!response.ok) {
-                    alert(data.message || "Registration failed.");
+                    showStatusAlert(data.message || "Registration failed.", "danger");
                     return;
                 }
 
                 bootstrap.Modal.getInstance(document.getElementById('registerWardenModal')).hide();
                 document.getElementById("register-warden-form").reset();
-                showStatusAlert("Warden registered successfully!");
+                showStatusAlert("Warden registered successfully!", "success");
                 loadWardens();
             } catch (err) {
-                alert("Failed to submit warden enrollment.");
+                showStatusAlert("Failed to submit warden enrollment.", "danger");
             }
         });
 
@@ -235,16 +297,20 @@
                     method: "POST"
                 });
                 const data = await response.json();
-                showStatusAlert(data.message);
+                if (!response.ok) {
+                    showStatusAlert(data.message || "Toggle state failed.", "danger");
+                    return;
+                }
+                showStatusAlert(data.message, "success");
                 loadWardens();
             } catch (err) {
-                alert("Toggle state failed.");
+                showStatusAlert("Toggle state failed.", "danger");
             }
         }
 
         // Reset Warden Account
         async function resetWarden(id) {
-            if (!confirm("Are you sure you want to reset this Warden's account settings? This will clear their Google Authenticator registration key and unlock any active lockout conditions.")) {
+            if (!confirm("Are you sure you want to reset this Warden's account settings? This will clear their Google Authenticator registration key.")) {
                 return;
             }
 
@@ -253,16 +319,43 @@
                     method: "POST"
                 });
                 const data = await response.json();
-                showStatusAlert(data.message);
+                if (!response.ok) {
+                    showStatusAlert(data.message || "Account reset failed.", "danger");
+                    return;
+                }
+                showStatusAlert(data.message, "success");
                 loadWardens();
             } catch (err) {
-                alert("Account reset failed.");
+                showStatusAlert("Account reset failed.", "danger");
             }
         }
 
-        function showStatusAlert(msg) {
-            document.getElementById("status-msg").textContent = msg;
+        // Delete Warden Account
+        async function deleteWarden(id) {
+            if (!confirm("Are you sure you want to permanently delete this warden account? This action cannot be undone and will delete all their audit history.")) {
+                return;
+            }
+
+            try {
+                const response = await fetchApi(`/api/admin/wardens/${id}`, {
+                    method: "DELETE"
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    showStatusAlert(data.message || "Account deletion failed.", "danger");
+                    return;
+                }
+                showStatusAlert(data.message || "Warden account deleted successfully.", "success");
+                loadWardens();
+            } catch (err) {
+                showStatusAlert("Account deletion failed.", "danger");
+            }
+        }
+
+        function showStatusAlert(msg, type = "success") {
             const alertBox = document.getElementById("status-alert");
+            alertBox.className = `alert alert-${type} alert-dismissible fade show`;
+            document.getElementById("status-msg").textContent = msg;
             alertBox.classList.remove("d-none");
             setTimeout(() => {
                 alertBox.classList.add("d-none");

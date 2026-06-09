@@ -36,4 +36,13 @@ public class MfaUtils {
         verifier.setAllowedTimePeriodDiscrepancy(1);
         return verifier.isValidCode(secret, code);
     }
+
+    public String generateCode(String secret) {
+        try {
+            long timeIndex = Math.floorDiv(timeProvider.getTime(), 30L);
+            return codeGenerator.generate(secret, timeIndex);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to generate TOTP code", e);
+        }
+    }
 }

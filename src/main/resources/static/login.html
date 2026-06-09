@@ -75,6 +75,52 @@
                                                 Verify Password <i class="fa-solid fa-arrow-right ms-2"></i>
                                             </button>
                                         </div>
+                                        <div class="text-center mt-3">
+                                            <span class="text-muted small">New Warden? </span>
+                                            <a href="#" onclick="showRegisterPanel()" class="small fw-semibold text-primary text-decoration-none">Create Account</a>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <!-- STEP 1.5: Register/Create Account -->
+                                <div id="login-register" class="d-none">
+                                    <h4 class="fw-bold mb-3 display-font text-dark"><i class="fa-solid fa-user-plus text-primary me-2"></i>Create Account</h4>
+                                    <p class="text-muted mb-4 small">If the Administrator has pre-authorized your name and number, enter them here to set up your password and register your security keys.</p>
+                                    <form id="form-register">
+                                        <div class="mb-3">
+                                            <label for="register-username" class="form-label fw-semibold text-muted">Warden Username / Name</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-white border-end-0 text-muted"><i class="fa-solid fa-user"></i></span>
+                                                <input type="text" class="form-control form-control-custom border-start-0 ps-0" id="register-username" required placeholder="Enter pre-authorized name">
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="register-mobile" class="form-label fw-semibold text-muted">Mobile Number</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-white border-end-0 text-muted"><i class="fa-solid fa-phone"></i></span>
+                                                <input type="tel" class="form-control form-control-custom border-start-0 ps-0" id="register-mobile" required placeholder="Enter 10-digit number" pattern="\d{10}">
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="register-password" class="form-label fw-semibold text-muted">Create Password</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-white border-end-0 text-muted"><i class="fa-solid fa-lock"></i></span>
+                                                <input type="password" class="form-control form-control-custom border-start-0 ps-0" id="register-password" required placeholder="Choose a password">
+                                            </div>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="register-confirm-password" class="form-label fw-semibold text-muted">Confirm Password</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-white border-end-0 text-muted"><i class="fa-solid fa-lock"></i></span>
+                                                <input type="password" class="form-control form-control-custom border-start-0 ps-0" id="register-confirm-password" required placeholder="Confirm chosen password">
+                                            </div>
+                                        </div>
+                                        <div class="d-grid gap-2">
+                                            <button type="submit" id="btn-register-submit" class="btn btn-primary-custom py-2.5">
+                                                Register & Setup MFA <i class="fa-solid fa-arrow-right ms-2"></i>
+                                            </button>
+                                            <button type="button" onclick="resetLoginState()" class="btn btn-link btn-sm text-muted">Back to Login</button>
+                                        </div>
                                     </form>
                                 </div>
 
@@ -259,6 +305,62 @@
             }
         }
 
+        function showRegisterPanel() {
+            hideAlert();
+            document.getElementById("login-step1").classList.add("d-none");
+            document.getElementById("login-register").classList.remove("d-none");
+            document.getElementById("login-step2-setup").classList.add("d-none");
+            document.getElementById("login-step2-verify").classList.add("d-none");
+        }
+
+        document.getElementById("form-register").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            hideAlert();
+
+            const username = document.getElementById("register-username").value;
+            const mobileNumber = document.getElementById("register-mobile").value;
+            const password = document.getElementById("register-password").value;
+            const confirmPassword = document.getElementById("register-confirm-password").value;
+            const btn = document.getElementById("btn-register-submit");
+
+            if (password !== confirmPassword) {
+                showAlert("Passwords do not match.");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Registering...`;
+
+            try {
+                const response = await fetch("/api/auth/register-warden", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, mobileNumber, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showAlert(data.message || "Registration failed. Verify your name and mobile number match the pre-authorized profile.");
+                    btn.disabled = false;
+                    btn.innerHTML = `Register & Setup MFA <i class="fa-solid fa-arrow-right ms-2"></i>`;
+                    return;
+                }
+
+                tempToken = data.tempToken;
+
+                // Go directly to MFA setup!
+                document.getElementById("login-register").classList.add("d-none");
+                document.getElementById("login-step2-setup").classList.remove("d-none");
+                document.getElementById("qr-code-img").src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(data.qrCodeUrl)}`;
+                document.getElementById("mfa-secret-text").textContent = data.mfaSecret;
+            } catch (err) {
+                showAlert("Registration failed due to a network connection issue.");
+                btn.disabled = false;
+                btn.innerHTML = `Register & Setup MFA <i class="fa-solid fa-arrow-right ms-2"></i>`;
+            }
+        });
+
         function resetLoginState() {
             tempToken = "";
             document.getElementById("username").value = "";
@@ -266,7 +368,13 @@
             document.getElementById("setup-code").value = "";
             document.getElementById("verify-code").value = "";
             
+            document.getElementById("register-username").value = "";
+            document.getElementById("register-mobile").value = "";
+            document.getElementById("register-password").value = "";
+            document.getElementById("register-confirm-password").value = "";
+
             document.getElementById("login-step1").classList.remove("d-none");
+            document.getElementById("login-register").classList.add("d-none");
             document.getElementById("login-step2-setup").classList.add("d-none");
             document.getElementById("login-step2-verify").classList.add("d-none");
             

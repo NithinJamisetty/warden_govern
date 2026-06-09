@@ -26,7 +26,7 @@ public class User {
     @Column(nullable = false, length = 20)
     private String role; // SUPER_ADMIN, DISTRICT_ADMIN, WARDEN
 
-    @Column(name = "mfa_secret", length = 32)
+    @Column(name = "mfa_secret", length = 255)
     private String mfaSecret;
 
     @Column(name = "mfa_enabled")
