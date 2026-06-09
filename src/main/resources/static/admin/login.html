@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrator Console Sign In</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+            background: radial-gradient(circle at top right, #1e293b, #0f172a);
+            color: #f8fafc;
+        }
+        .login-card-admin {
+            background-color: #1e293b;
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            border: 1px solid #334155;
+        }
+        .login-banner-admin {
+            background: linear-gradient(135deg, #0284c7, #0d9488);
+            color: var(--white);
+            padding: 3rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .form-control-admin {
+            background-color: #0f172a;
+            border: 1.5px solid #334155;
+            color: #f8fafc;
+            border-radius: var(--border-radius-sm);
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        .form-control-admin:focus {
+            background-color: #0f172a;
+            border-color: #38bdf8;
+            color: #f8fafc;
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.15);
+        }
+        .input-group-text-admin {
+            background-color: #1e293b;
+            border: 1.5px solid #334155;
+            border-right: none;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <div class="gov-top-bar"></div>
+
+    <header class="py-3 border-bottom border-secondary border-opacity-10 mb-5">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+                <i class="fa-solid fa-user-shield text-info fs-3"></i>
+                <span class="fw-bold text-white fs-5 display-font">SWMS Admin Console</span>
+            </div>
+            <a href="/index.html" class="btn btn-outline-light btn-sm"><i class="fa-solid fa-arrow-left me-1"></i>Portal Home</a>
+        </div>
+    </header>
+
+    <main class="flex-grow-1 d-flex align-items-center">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="login-card-admin">
+                        <div class="row g-0">
+                            <!-- Left Banner -->
+                            <div class="col-md-5 login-banner-admin">
+                                <div class="mb-4">
+                                    <span class="badge bg-white text-info fw-bold text-uppercase px-3 py-2 rounded-pill mb-3">Admin Restricted</span>
+                                    <h2 class="fw-bold text-white mb-3">System Control Dashboard</h2>
+                                    <p class="text-white-50">This console is strictly for District and Super Administrators. System-wide configuration, warden enrollment, and audit logs are managed here.</p>
+                                </div>
+                                <div class="mt-auto">
+                                    <div class="d-flex align-items-center gap-3 p-3 bg-white bg-opacity-10 rounded-3 border border-white border-opacity-10">
+                                        <i class="fa-solid fa-shield-halved text-warning fs-3"></i>
+                                        <small class="text-white-50">All logins and operational modifications are captured in immutable audit tables.</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Right Form -->
+                            <div class="col-md-7 p-5">
+                                <div id="login-alert" class="alert alert-danger d-none" role="alert">
+                                    Incorrect password or unauthorized console access.
+                                </div>
+
+                                <!-- STEP 1: Admin Credentials -->
+                                <div id="login-step1">
+                                    <h4 class="fw-bold mb-4 display-font text-white"><i class="fa-solid fa-lock text-info me-2"></i>Admin Sign In</h4>
+                                    <form id="form-step1">
+                                        <div class="mb-3">
+                                            <label for="username" class="form-label fw-semibold text-secondary">Admin Username</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text input-group-text-admin"><i class="fa-solid fa-user-shield"></i></span>
+                                                <input type="text" class="form-control form-control-admin" id="username" required placeholder="Enter admin username">
+                                            </div>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="password" class="form-label fw-semibold text-secondary">Password</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text input-group-text-admin"><i class="fa-solid fa-key"></i></span>
+                                                <input type="password" class="form-control form-control-admin" id="password" required placeholder="Enter admin password">
+                                            </div>
+                                        </div>
+                                        <div class="d-grid">
+                                            <button type="submit" id="btn-login-step1" class="btn btn-info text-white py-2.5 fw-bold">
+                                                Verify Admin Password <i class="fa-solid fa-arrow-right ms-2"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <!-- STEP 2A: MFA Setup -->
+                                <div id="login-step2-setup" class="d-none">
+                                    <h4 class="fw-bold mb-3 display-font text-white"><i class="fa-solid fa-qrcode text-info me-2"></i>MFA Activation</h4>
+                                    <p class="text-secondary mb-4 small">An administrator MFA is required. Scan the QR code, save the secret, and enter the validation code below.</p>
+                                    
+                                    <div class="qr-container bg-dark border-secondary p-3 mb-4 rounded text-center">
+                                        <img id="qr-code-img" src="" alt="MFA QR Code" class="qr-code-img mb-3">
+                                        <div>
+                                            <span class="text-secondary d-block small mb-1">Secret Key:</span>
+                                            <code id="mfa-secret-text" class="bg-black border border-secondary px-3 py-1 rounded fw-bold text-info"></code>
+                                        </div>
+                                    </div>
+
+                                    <form id="form-step2-setup">
+                                        <div class="mb-4">
+                                            <label for="setup-code" class="form-label fw-semibold text-secondary">6-Digit Authenticator Code</label>
+                                            <input type="text" class="form-control form-control-admin text-center fs-4 fw-bold" id="setup-code" required placeholder="000000" maxlength="6" pattern="\d{6}">
+                                        </div>
+                                        <div class="d-grid gap-2">
+                                            <button type="submit" class="btn btn-info text-white py-2.5 fw-bold">
+                                                Activate & Sign In <i class="fa-solid fa-check ms-2"></i>
+                                            </button>
+                                            <button type="button" onclick="resetLoginState()" class="btn btn-link btn-sm text-secondary">Cancel</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <!-- STEP 2B: MFA Verification -->
+                                <div id="login-step2-verify" class="d-none">
+                                    <h4 class="fw-bold mb-3 display-font text-white"><i class="fa-solid fa-shield-halved text-info me-2"></i>Admin Verification</h4>
+                                    <p class="text-secondary mb-4 small">Input the current 6-digit verification code from your Google Authenticator app.</p>
+
+                                    <form id="form-step2-verify">
+                                        <div class="mb-4">
+                                            <label for="verify-code" class="form-label fw-semibold text-secondary">Authenticator Code</label>
+                                            <input type="text" class="form-control form-control-admin text-center fs-3 fw-bold" id="verify-code" required placeholder="000000" maxlength="6" pattern="\d{6}">
+                                        </div>
+                                        <div class="d-grid gap-2">
+                                            <button type="submit" class="btn btn-info text-white py-2.5 fw-bold">
+                                                Verify & Access Console <i class="fa-solid fa-right-to-bracket ms-2"></i>
+                                            </button>
+                                            <button type="button" onclick="resetLoginState()" class="btn btn-link btn-sm text-secondary">Cancel</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="py-4 border-top border-secondary border-opacity-10 mt-auto text-center text-secondary">
+        <small>© 2026 SWMS Admin System Console. All Operations Tracked.</small>
+    </footer>
+
+    <!-- JS files -->
+    <script src="/js/auth.js"></script>
+    <script>
+        let tempToken = "";
+
+        // Redirect if already logged in as Admin
+        if (getToken()) {
+            const user = getUser();
+            if (user && (user.role === "SUPER_ADMIN" || user.role === "DISTRICT_ADMIN")) {
+                window.location.href = "/admin/dashboard.html";
+            }
+        }
+
+        const alertEl = document.getElementById("login-alert");
+
+        function showAlert(msg) {
+            alertEl.textContent = msg;
+            alertEl.classList.remove("d-none");
+        }
+
+        function hideAlert() {
+            alertEl.classList.add("d-none");
+        }
+
+        // STEP 1 submission
+        document.getElementById("form-step1").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            hideAlert();
+
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const btn = document.getElementById("btn-login-step1");
+
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Validating...`;
+
+            try {
+                const response = await fetch("/api/auth/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showAlert(data.message || "Invalid credentials.");
+                    btn.disabled = false;
+                    btn.innerHTML = `Verify Admin Password <i class="fa-solid fa-arrow-right ms-2"></i>`;
+                    return;
+                }
+
+                // Verify that the logged in user is actually an admin!
+                const parsedUser = parseJwt(data.tempToken);
+                if (parsedUser && parsedUser.role !== "SUPER_ADMIN" && parsedUser.role !== "DISTRICT_ADMIN") {
+                    showAlert("Access Denied: Wardens must sign in via the public login portal.");
+                    btn.disabled = false;
+                    btn.innerHTML = `Verify Admin Password <i class="fa-solid fa-arrow-right ms-2"></i>`;
+                    return;
+                }
+
+                tempToken = data.tempToken;
+
+                if (data.mfaSetupRequired) {
+                    document.getElementById("login-step1").classList.add("d-none");
+                    document.getElementById("login-step2-setup").classList.remove("d-none");
+                    document.getElementById("qr-code-img").src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(data.qrCodeUrl)}`;
+                    document.getElementById("mfa-secret-text").textContent = data.mfaSecret;
+                } else if (data.mfaRequired) {
+                    document.getElementById("login-step1").classList.add("d-none");
+                    document.getElementById("login-step2-verify").classList.remove("d-none");
+                }
+            } catch (err) {
+                showAlert("Network connection error.");
+                btn.disabled = false;
+                btn.innerHTML = `Verify Admin Password <i class="fa-solid fa-arrow-right ms-2"></i>`;
+            }
+        });
+
+        // STEP 2A Submission (MFA Setup)
+        document.getElementById("form-step2-setup").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            hideAlert();
+            const code = document.getElementById("setup-code").value;
+            await verifyMfaCode(code);
+        });
+
+        // STEP 2B Submission (MFA Verify)
+        document.getElementById("form-step2-verify").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            hideAlert();
+            const code = document.getElementById("verify-code").value;
+            await verifyMfaCode(code);
+        });
+
+        async function verifyMfaCode(code) {
+            try {
+                const response = await fetch("/api/auth/mfa/verify", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ tempToken, code })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showAlert(data.message || "Invalid authenticator code.");
+                    return;
+                }
+
+                setToken(data.token);
+                window.location.href = "/admin/dashboard.html";
+            } catch (err) {
+                showAlert("Verification failed.");
+            }
+        }
+
+        function resetLoginState() {
+            tempToken = "";
+            document.getElementById("username").value = "";
+            document.getElementById("password").value = "";
+            document.getElementById("setup-code").value = "";
+            document.getElementById("verify-code").value = "";
+            
+            document.getElementById("login-step1").classList.remove("d-none");
+            document.getElementById("login-step2-setup").classList.add("d-none");
+            document.getElementById("login-step2-verify").classList.add("d-none");
+            
+            const btn = document.getElementById("btn-login-step1");
+            btn.disabled = false;
+            btn.innerHTML = `Verify Admin Password <i class="fa-solid fa-arrow-right ms-2"></i>`;
+            
+            hideAlert();
+        }
+    </script>
+</body>
+</html>

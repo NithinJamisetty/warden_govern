@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Welfare Management System (SWMS)</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="gov-top-bar"></div>
+
+    <!-- Government Portal Header -->
+    <header class="py-2 bg-white border-bottom shadow-sm">
+        <div class="container d-flex justify-content-between align-items-center flex-wrap">
+            <div class="d-flex align-items-center gap-3">
+                <i class="fa-solid fa-building-columns text-primary fs-2"></i>
+                <div>
+                    <span class="text-uppercase text-muted fw-bold d-block" style="font-size: 0.75rem; letter-spacing: 1px;">Government Welfare Department</span>
+                    <span class="h5 mb-0 fw-bold text-dark display-font">Hostel Portal (SWMS)</span>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-success text-white px-3 py-2 rounded-pill"><i class="fa-solid fa-shield-halved me-2"></i>Secured Government Link</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-7 text-center text-lg-start mb-5 mb-lg-0">
+                    <h1 class="hero-title">
+                        Empowering Hostels.<br>
+                        Supporting Students.<br>
+                        <span>Building a Better Future.</span>
+                    </h1>
+                    <p class="hero-lead">
+                        Welcome to the Student Welfare Management System. A secure government application designed to streamline student registration, monitor amenities, and maintain high transparency across welfare hostels.
+                    </p>
+                    <div class="d-flex gap-3 justify-content-center justify-content-lg-start">
+                        <a href="/login.html" class="btn btn-primary-custom px-4 py-3"><i class="fa-solid fa-right-to-bracket me-2"></i>Warden Login Portal</a>
+                        <a href="#about" class="btn btn-outline-secondary px-4 py-3 border-2"><i class="fa-solid fa-circle-info me-2"></i>Learn More</a>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="p-4 bg-white rounded-4 shadow-lg border border-light">
+                        <div class="text-center mb-4">
+                            <i class="fa-solid fa-user-shield text-primary fs-1 mb-3"></i>
+                            <h3 class="fw-bold">Warden Access Control</h3>
+                            <p class="text-muted">Authorized wardens must complete password and two-factor authentication (MFA) to access dashboards.</p>
+                        </div>
+                        <div class="d-grid gap-3">
+                            <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-3">
+                                <i class="fa-solid fa-key text-success fs-4"></i>
+                                <div>
+                                    <h6 class="mb-0 fw-bold">Encrypted Credentials</h6>
+                                    <small class="text-muted">Passwords are hashed using industry standard BCrypt algorithms.</small>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-3">
+                                <i class="fa-solid fa-mobile-screen-button text-warning fs-4"></i>
+                                <div>
+                                    <h6 class="mb-0 fw-bold">Multi-Factor Authentication</h6>
+                                    <small class="text-muted">Secured via Google Authenticator TOTP verification.</small>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-3">
+                                <i class="fa-solid fa-clipboard-list text-info fs-4"></i>
+                                <div>
+                                    <h6 class="mb-0 fw-bold">Immutable Audit Logs</h6>
+                                    <small class="text-muted">Every admin and warden action is tracked for accountability.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Statistics -->
+    <section class="py-5 bg-white border-bottom">
+        <div class="container">
+            <div class="row text-center g-4">
+                <div class="col-md-4">
+                    <div class="p-3">
+                        <div class="stat-counter" id="hostel-counter">50+</div>
+                        <div class="stat-label">Active Hostels</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3">
+                        <div class="stat-counter" id="student-counter">12,000+</div>
+                        <div class="stat-label">Students Benefitting</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3">
+                        <div class="stat-counter" id="district-counter">15+</div>
+                        <div class="stat-label">Districts Tracked</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-5">
+        <div class="container">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6">
+                    <img src="https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&q=80&w=800" alt="Students in Classroom" class="img-fluid rounded-4 shadow-md">
+                </div>
+                <div class="col-lg-6">
+                    <span class="text-uppercase text-primary fw-bold" style="font-size: 0.8rem; letter-spacing: 1px;">Our Vision</span>
+                    <h2 class="fw-bold mb-4 mt-2 display-font">Supporting Education, Ensuring Welfare</h2>
+                    <p class="text-muted">
+                        This system serves as a central registry to collect student data from authorized hostel wardens. The primary goal is to ensure that welfare programs, food provisions, and accommodations are distributed accurately to students without any administrative overhead.
+                    </p>
+                    <p class="text-muted">
+                        Administrators at the District and State level utilize the system to view reports, audit system actions, reset accounts, and monitor hostels dynamically.
+                    </p>
+                    <ul class="list-unstyled d-flex flex-column gap-2 mt-4 text-dark fw-medium">
+                        <li><i class="fa-solid fa-circle-check text-success me-2"></i> Clean Child-Friendly Interface Theme</li>
+                        <li><i class="fa-solid fa-circle-check text-success me-2"></i> Role-Based Dashboards and Permissions</li>
+                        <li><i class="fa-solid fa-circle-check text-success me-2"></i> Interactive Reports and PDF/Excel Exports</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="gov-footer">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-5">
+                    <h5 class="fw-bold mb-3"><i class="fa-solid fa-building-columns me-2"></i>SWMS</h5>
+                    <p class="text-muted">The Student Welfare Management System is a proprietary portal of the Welfare and Education Department. Access is restricted to authorized administrative personnel and wardens only.</p>
+                </div>
+                <div class="col-lg-3 offset-lg-1">
+                    <h6 class="fw-bold mb-3 text-white">System Information</h6>
+                    <ul class="list-unstyled d-flex flex-column gap-2">
+                        <li><a href="/login.html">Warden Login</a></li>
+                        <li><a href="/admin/login.html">Admin Console Login</a></li>
+                        <li><a href="#about">About Project</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h6 class="fw-bold mb-3 text-white">Security & Support</h6>
+                    <p class="text-muted mb-0">For issues relating to MFA setup, locked accounts, or warden registrations, please contact your District Admin.</p>
+                </div>
+            </div>
+            <div class="gov-footer-bottom text-center">
+                <p class="mb-0">© 2026 Student Welfare Management System (SWMS) v1.0. All Rights Reserved. Built with Spring Security and Supabase.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

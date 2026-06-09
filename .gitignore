@@ -1,0 +1,31 @@
+# Java & Maven Build
+target/
+*.class
+
+# Log files
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Portable tools
+.tools/
+
+# IDE configurations
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+.vscode/
+
+# Environment configurations
+.env
+*.env
+application-local.properties

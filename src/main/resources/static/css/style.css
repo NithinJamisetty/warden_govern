@@ -1,0 +1,422 @@
+/* ==========================================================================
+   SWMS "Bright Future" Design System (Custom Government Theme)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --primary: #0077b6;         /* Clear Sky Blue */
+    --primary-light: #caf0f8;   /* Soft Ice Blue */
+    --secondary: #2a9d8f;       /* Warm Green */
+    --secondary-light: #e8f5e9; /* Soft Mint Green */
+    --accent: #f4a261;          /* Bright Orange */
+    --accent-light: #fff3e0;    /* Soft Pastel Orange */
+    --dark: #2b2d42;            /* Deep Blue-Gray */
+    --light: #f8f9fa;           /* Off-White */
+    --white: #ffffff;
+    --gray: #6c757d;
+    --gray-light: #e9ecef;
+    --border-radius-sm: 8px;
+    --border-radius-md: 16px;
+    --border-radius-lg: 24px;
+    --box-shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --box-shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+    --box-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f6f9fc;
+    color: var(--dark);
+    font-size: 0.95rem;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6, .display-font {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+}
+
+/* Tri-Color Government Banner Header */
+.gov-top-bar {
+    height: 6px;
+    background: linear-gradient(90deg, #FF9933 33%, #FFFFFF 33%, #FFFFFF 66%, #138808 66%);
+    width: 100%;
+}
+
+/* Navbar Custom Styling */
+.navbar-custom {
+    background-color: var(--white);
+    border-bottom: 2px solid var(--primary-light);
+    box-shadow: var(--box-shadow-sm);
+    padding: 0.8rem 1.5rem;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.3rem;
+}
+
+.navbar-brand img {
+    height: 40px;
+}
+
+.nav-link-custom {
+    font-weight: 500;
+    color: var(--dark) !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: var(--border-radius-sm);
+    transition: all 0.3s ease;
+}
+
+.nav-link-custom:hover, .nav-link-custom.active {
+    color: var(--primary) !important;
+    background-color: var(--primary-light);
+}
+
+/* Button Premium Styles */
+.btn-primary-custom {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: var(--white);
+    border-radius: var(--border-radius-sm);
+    font-weight: 600;
+    padding: 0.6rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-primary-custom:hover {
+    background-color: #005f96;
+    border-color: #005f96;
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 119, 182, 0.3);
+}
+
+.btn-secondary-custom {
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+    color: var(--white);
+    border-radius: var(--border-radius-sm);
+    font-weight: 600;
+    padding: 0.6rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary-custom:hover {
+    background-color: #1f7a6f;
+    border-color: #1f7a6f;
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(42, 157, 143, 0.3);
+}
+
+/* Hero Section */
+.hero-section {
+    background: radial-gradient(circle at top right, #e0f2fe, #f6f9fc);
+    padding: 6rem 0;
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    color: var(--dark);
+}
+
+.hero-title span {
+    color: var(--primary);
+    background: linear-gradient(120deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-lead {
+    font-size: 1.15rem;
+    color: var(--gray);
+    margin-bottom: 2rem;
+}
+
+/* Dashboard Cards with Glassmorphism */
+.dashboard-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: var(--border-radius-md);
+    padding: 1.8rem;
+    box-shadow: var(--box-shadow-md);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow-lg);
+}
+
+.dashboard-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 100%;
+}
+
+.card-blue::before { background-color: var(--primary); }
+.card-green::before { background-color: var(--secondary); }
+.card-orange::before { background-color: var(--accent); }
+
+.card-icon-container {
+    height: 55px;
+    width: 55px;
+    border-radius: var(--border-radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    margin-bottom: 1.2rem;
+}
+
+.card-blue .card-icon-container { background-color: var(--primary-light); color: var(--primary); }
+.card-green .card-icon-container { background-color: var(--secondary-light); color: var(--secondary); }
+.card-orange .card-icon-container { background-color: var(--accent-light); color: var(--accent); }
+
+/* Premium Grid Tables */
+.table-container {
+    background-color: var(--white);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--box-shadow-md);
+    overflow: hidden;
+    border: 1px solid var(--gray-light);
+}
+
+.table-custom {
+    margin-bottom: 0;
+}
+
+.table-custom th {
+    background-color: var(--primary-light);
+    color: var(--primary);
+    font-weight: 600;
+    padding: 1rem 1.2rem;
+    border-bottom: 2px solid rgba(0, 119, 182, 0.1);
+    font-family: 'Outfit', sans-serif;
+}
+
+.table-custom td {
+    padding: 1rem 1.2rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--gray-light);
+    color: var(--dark);
+}
+
+.table-custom tr:last-child td {
+    border-bottom: none;
+}
+
+.table-custom tbody tr:hover {
+    background-color: rgba(202, 240, 248, 0.2);
+}
+
+/* Beautiful Modals */
+.modal-content-custom {
+    border-radius: var(--border-radius-md);
+    border: none;
+    box-shadow: var(--box-shadow-lg);
+}
+
+.modal-header-custom {
+    background-color: var(--primary-light);
+    color: var(--primary);
+    border-bottom: 1px solid rgba(0, 119, 182, 0.1);
+    padding: 1.5rem;
+    border-top-left-radius: var(--border-radius-md);
+    border-top-right-radius: var(--border-radius-md);
+}
+
+.modal-body-custom {
+    padding: 2rem;
+}
+
+/* Form Styles */
+.form-control-custom {
+    border-radius: var(--border-radius-sm);
+    border: 1.5px solid var(--gray-light);
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.form-control-custom:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(0, 119, 182, 0.15);
+}
+
+/* Side navigation panel for Admin */
+.sidebar-admin {
+    background-color: var(--white);
+    border-right: 2px solid var(--primary-light);
+    min-height: calc(100vh - 70px);
+    padding: 2rem 1rem;
+}
+
+.sidebar-heading {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--gray);
+    margin-bottom: 1rem;
+    padding-left: 0.8rem;
+    font-weight: 700;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.8rem 1rem;
+    border-radius: var(--border-radius-sm);
+    color: var(--dark);
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-bottom: 0.5rem;
+}
+
+.sidebar-link:hover, .sidebar-link.active {
+    background-color: var(--primary-light);
+    color: var(--primary);
+}
+
+/* QR Code Display Container */
+.qr-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--light);
+    padding: 1.5rem;
+    border-radius: var(--border-radius-md);
+    border: 1px dashed var(--primary);
+    margin-bottom: 1.5rem;
+}
+
+.qr-code-img {
+    background-color: var(--white);
+    padding: 10px;
+    border-radius: var(--border-radius-sm);
+    box-shadow: var(--box-shadow-sm);
+    margin-bottom: 1rem;
+    width: 180px;
+    height: 180px;
+}
+
+/* Login Card Container */
+.login-card {
+    background-color: var(--white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--box-shadow-lg);
+    overflow: hidden;
+    border: 1px solid var(--gray-light);
+}
+
+.login-banner {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: var(--white);
+    padding: 3rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.login-form-container {
+    padding: 3rem 2.5rem;
+}
+
+/* Badges styling */
+.badge-custom-admin {
+    background-color: #ffe0b2;
+    color: #e65100;
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+}
+
+.badge-custom-warden {
+    background-color: #e1f5fe;
+    color: #0288d1;
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+}
+
+.badge-custom-active {
+    background-color: var(--secondary-light);
+    color: var(--secondary);
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+}
+
+.badge-custom-inactive {
+    background-color: #ffebee;
+    color: #c62828;
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+}
+
+/* Footer styling */
+.gov-footer {
+    background-color: var(--dark);
+    color: var(--white);
+    padding: 3rem 0;
+    margin-top: 4rem;
+    border-top: 5px solid var(--primary);
+    font-size: 0.9rem;
+}
+
+.gov-footer a {
+    color: #a0aec0;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.gov-footer a:hover {
+    color: var(--accent);
+}
+
+.gov-footer-bottom {
+    border-top: 1px solid #4a5568;
+    padding-top: 1.5rem;
+    margin-top: 2rem;
+    color: #a0aec0;
+    font-size: 0.8rem;
+}
+
+/* Stats Counter on Landing Page */
+.stat-counter {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    font-family: 'Outfit', sans-serif;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 0.95rem;
+    color: var(--gray);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}

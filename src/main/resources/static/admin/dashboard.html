@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - SWMS</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Security check -->
+    <script src="/js/auth.js"></script>
+    <script>
+        // Check if Admin is authenticated
+        const currentUser = checkAuth(["SUPER_ADMIN", "DISTRICT_ADMIN"]);
+    </script>
+
+    <div class="gov-top-bar"></div>
+
+    <!-- Header Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <span class="navbar-brand">
+                <i class="fa-solid fa-user-shield text-primary"></i>
+                <span class="display-font">SWMS Admin Console</span>
+            </span>
+            <div class="d-flex align-items-center gap-3">
+                <span class="badge bg-danger text-white px-3 py-2" id="nav-user-role">Super Admin</span>
+                <button onclick="logout()" class="btn btn-outline-danger btn-sm"><i class="fa-solid fa-right-from-bracket me-1"></i>Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidenav & Content Layout -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar Navigation -->
+            <div class="col-md-3 col-lg-2 px-0">
+                <div class="sidebar-admin">
+                    <span class="sidebar-heading">Admin Core</span>
+                    <a href="/admin/dashboard.html" class="sidebar-link active">
+                        <i class="fa-solid fa-gauge-high"></i> Dashboard
+                    </a>
+                    <a href="/admin/wardens.html" class="sidebar-link">
+                        <i class="fa-solid fa-id-card-clip"></i> Wardens Settings
+                    </a>
+                    <a href="/admin/logs.html" class="sidebar-link">
+                        <i class="fa-solid fa-clock-rotate-left"></i> System Audit Logs
+                    </a>
+                    
+                    <span class="sidebar-heading mt-4">Welfare Public Portal</span>
+                    <a href="/index.html" class="sidebar-link">
+                        <i class="fa-solid fa-house"></i> Public Home Page
+                    </a>
+                </div>
+            </div>
+
+            <!-- Dashboard Main Content -->
+            <div class="col-md-9 col-lg-10 py-4 px-md-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h3 class="fw-bold display-font text-dark mb-1">Control Center</h3>
+                        <p class="text-muted mb-0">System-wide monitoring dashboard for all hostels and student enrollment.</p>
+                    </div>
+                </div>
+
+                <!-- Stats Cards Row -->
+                <div class="row g-3 mb-5">
+                    <div class="col-md-4">
+                        <div class="dashboard-card card-blue">
+                            <div class="card-icon-container">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <h6 class="text-muted fw-semibold uppercase mb-1">Total Enrolled Students</h6>
+                            <h3 class="fw-bold display-font text-dark mb-0" id="admin-total-students">0</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="dashboard-card card-green">
+                            <div class="card-icon-container">
+                                <i class="fa-solid fa-hotel"></i>
+                            </div>
+                            <h6 class="text-muted fw-semibold uppercase mb-1">Monitored Hostels</h6>
+                            <h3 class="fw-bold display-font text-dark mb-0" id="admin-total-hostels">0</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="dashboard-card card-orange">
+                            <div class="card-icon-container">
+                                <i class="fa-solid fa-user-check"></i>
+                            </div>
+                            <h6 class="text-muted fw-semibold uppercase mb-1">Active Wardens</h6>
+                            <h3 class="fw-bold display-font text-dark mb-0" id="admin-active-wardens">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Graphical Aggregations -->
+                <div class="row g-4">
+                    <!-- Left: Hostel comparison chart -->
+                    <div class="col-lg-7">
+                        <div class="p-4 bg-white rounded-4 shadow-sm border border-light h-100">
+                            <h5 class="fw-bold mb-4 display-font text-dark"><i class="fa-solid fa-chart-column text-primary me-2"></i>Students per Hostel</h5>
+                            <div style="position: relative; height:320px; width:100%">
+                                <canvas id="hostelChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Class breakdown chart -->
+                    <div class="col-lg-5">
+                        <div class="p-4 bg-white rounded-4 shadow-sm border border-light h-100">
+                            <h5 class="fw-bold mb-4 display-font text-dark"><i class="fa-solid fa-chart-pie text-primary me-2"></i>Class Distribution</h5>
+                            <div style="position: relative; height:320px; width:100%">
+                                <canvas id="classChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart JS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                // Fetch stats counts
+                const statsRes = await fetchApi("/api/admin/stats");
+                const stats = await statsRes.json();
+                
+                document.getElementById("admin-total-students").textContent = stats.totalStudents;
+                document.getElementById("admin-total-hostels").textContent = stats.totalHostels;
+                document.getElementById("admin-active-wardens").textContent = stats.activeWardens;
+
+                // Load Hostel Stats Chart
+                const hostelRes = await fetchApi("/api/reports/hostels");
+                const hostelData = await hostelRes.json();
+                
+                const hostelLabels = hostelData.map(h => h.hostelName);
+                const hostelCounts = hostelData.map(h => h.studentCount);
+
+                const ctx1 = document.getElementById('hostelChart').getContext('2d');
+                new Chart(ctx1, {
+                    type: 'bar',
+                    data: {
+                        labels: hostelLabels.length > 0 ? hostelLabels : ['No Data'],
+                        datasets: [{
+                            label: 'Number of Students',
+                            data: hostelCounts.length > 0 ? hostelCounts : [0],
+                            backgroundColor: '#0077b6',
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { stepSize: 1 }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+
+                // Load Class Stats Chart
+                const classRes = await fetchApi("/api/reports/classes");
+                const classData = await classRes.json();
+
+                const classLabels = classData.map(c => c.className);
+                const classCounts = classData.map(c => c.studentCount);
+
+                const ctx2 = document.getElementById('classChart').getContext('2d');
+                new Chart(ctx2, {
+                    type: 'doughnut',
+                    data: {
+                        labels: classLabels.length > 0 ? classLabels : ['No Data'],
+                        datasets: [{
+                            data: classCounts.length > 0 ? classCounts : [0],
+                            backgroundColor: ['#0077b6', '#2a9d8f', '#f4a261', '#e76f51', '#e9c46a']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+
+            } catch (err) {
+                console.error("Failed to load admin dashboard stats.", err);
+            }
+        });
+    </script>
+</body>
+</html>

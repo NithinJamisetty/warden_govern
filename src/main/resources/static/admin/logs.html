@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Audit Logs - SWMS Admin</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Security check -->
+    <script src="/js/auth.js"></script>
+    <script>
+        const currentUser = checkAuth(["SUPER_ADMIN", "DISTRICT_ADMIN"]);
+    </script>
+
+    <div class="gov-top-bar"></div>
+
+    <!-- Header Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <span class="navbar-brand">
+                <i class="fa-solid fa-user-shield text-primary"></i>
+                <span class="display-font">SWMS Admin Console</span>
+            </span>
+            <div class="d-flex align-items-center gap-3">
+                <span class="badge bg-danger text-white px-3 py-2" id="nav-user-role">Super Admin</span>
+                <button onclick="logout()" class="btn btn-outline-danger btn-sm"><i class="fa-solid fa-right-from-bracket me-1"></i>Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Layout -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 px-0">
+                <div class="sidebar-admin">
+                    <span class="sidebar-heading">Admin Core</span>
+                    <a href="/admin/dashboard.html" class="sidebar-link">
+                        <i class="fa-solid fa-gauge-high"></i> Dashboard
+                    </a>
+                    <a href="/admin/wardens.html" class="sidebar-link">
+                        <i class="fa-solid fa-id-card-clip"></i> Wardens Settings
+                    </a>
+                    <a href="/admin/logs.html" class="sidebar-link active">
+                        <i class="fa-solid fa-clock-rotate-left"></i> System Audit Logs
+                    </a>
+                    
+                    <span class="sidebar-heading mt-4">Welfare Public Portal</span>
+                    <a href="/index.html" class="sidebar-link">
+                        <i class="fa-solid fa-house"></i> Public Home Page
+                    </a>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="col-md-9 col-lg-10 py-4 px-md-4">
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                    <div>
+                        <h3 class="fw-bold display-font text-dark mb-1"><i class="fa-solid fa-clock-rotate-left text-primary me-2"></i>Security Audit Trail</h3>
+                        <p class="text-muted mb-0">Review real-time system audit logs. All admin authorizations and warden student actions are recorded.</p>
+                    </div>
+                </div>
+
+                <!-- Table Container -->
+                <div class="table-container shadow-sm bg-white rounded-3 mb-4">
+                    <table class="table table-hover table-custom align-middle">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>User Account</th>
+                                <th>Operational Event</th>
+                                <th>Source IP Address</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logs-table-body">
+                            <tr>
+                                <td colspan="4" class="text-center py-4 text-muted">
+                                    <span class="spinner-border spinner-border-sm me-2"></span>Loading audit trails...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination controls -->
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <span class="text-muted small">Showing Page <span id="current-page-num" class="fw-bold text-dark">1</span></span>
+                    <div class="d-flex gap-2">
+                        <button id="prev-page-btn" onclick="goToPrevPage()" class="btn btn-outline-secondary btn-sm px-3" disabled><i class="fa-solid fa-angle-left me-1.5"></i>Previous</button>
+                        <button id="next-page-btn" onclick="goToNextPage()" class="btn btn-outline-secondary btn-sm px-3" disabled>Next<i class="fa-solid fa-angle-right ms-1.5"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentPage = 0;
+        const pageSize = 10;
+        let isLastPage = false;
+
+        document.addEventListener("DOMContentLoaded", loadLogs);
+
+        async function loadLogs() {
+            try {
+                const response = await fetchApi(`/api/admin/logs?page=${currentPage}&size=${pageSize}`);
+                const data = await response.json();
+                
+                renderTable(data.content || []);
+                
+                isLastPage = data.last;
+                
+                // Update pagination controls
+                document.getElementById("current-page-num").textContent = currentPage + 1;
+                document.getElementById("prev-page-btn").disabled = (currentPage === 0);
+                document.getElementById("next-page-btn").disabled = isLastPage;
+            } catch (err) {
+                document.getElementById("logs-table-body").innerHTML = `
+                    <tr>
+                        <td colspan="4" class="text-center py-4 text-danger fw-semibold">
+                            <i class="fa-solid fa-circle-exclamation me-2"></i>Failed to fetch system audit records.
+                        </td>
+                    </tr>`;
+            }
+        }
+
+        function renderTable(list) {
+            const tbody = document.getElementById("logs-table-body");
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-muted">No audit log entries available.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = list.map(log => {
+                const dateStr = log.timestamp ? new Date(log.timestamp).toLocaleString() : 'N/A';
+                let actionBadge = `<span class="badge bg-light text-dark fw-semibold">${log.action}</span>`;
+                
+                if (log.action.startsWith("LOGIN_SUCCESS")) {
+                    actionBadge = `<span class="badge bg-success-light text-success fw-bold"><i class="fa-solid fa-unlock me-1"></i>${log.action}</span>`;
+                } else if (log.action.startsWith("LOGIN_FAILURE")) {
+                    actionBadge = `<span class="badge bg-danger-light text-danger fw-bold"><i class="fa-solid fa-lock me-1"></i>${log.action}</span>`;
+                } else if (log.action.startsWith("ADD_STUDENT")) {
+                    actionBadge = `<span class="badge bg-primary-light text-primary fw-bold"><i class="fa-solid fa-user-plus me-1"></i>${log.action}</span>`;
+                } else if (log.action.startsWith("RESET")) {
+                    actionBadge = `<span class="badge bg-warning-light text-warning fw-bold"><i class="fa-solid fa-rotate me-1"></i>${log.action}</span>`;
+                }
+
+                return `
+                    <tr>
+                        <td class="text-muted small">${dateStr}</td>
+                        <td class="fw-bold text-dark">${log.username}</td>
+                        <td>${actionBadge}</td>
+                        <td><code class="text-muted">${log.ipAddress || '0.0.0.0'}</code></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function goToPrevPage() {
+            if (currentPage > 0) {
+                currentPage--;
+                loadLogs();
+            }
+        }
+
+        function goToNextPage() {
+            if (!isLastPage) {
+                currentPage++;
+                loadLogs();
+            }
+        }
+    </script>
+</body>
+</html>
