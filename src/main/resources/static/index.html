@@ -123,11 +123,8 @@
                 <!-- Video column -->
                 <div class="col-lg-6">
                     <div class="ratio ratio-16x9 shadow-lg rounded-4 overflow-hidden border border-light">
-                        <!-- Premium Walkthrough Video Player using HTML5 video and a beautiful poster -->
-                        <video controls poster="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=800">
-                            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
+                        <!-- Premium Walkthrough Video Player using YouTube embed -->
+                        <iframe class="w-100 h-100 border-0" src="https://www.youtube.com/embed/xqz2gHsnWGA" title="SWMS Walkthrough Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                     </div>
                 </div>
                 <!-- Features details list -->
@@ -374,6 +371,22 @@
             if (chatbotState.step === 'initial') {
                 const lowerVal = val.toLowerCase();
                 
+                // Check for exit/negative responses to end conversation gracefully
+                const exitPhrases = ["no", "nope", "nothing", "none", "no thanks", "no, thanks", "thanks", "thank you", "bye", "goodbye", "exit", "ok", "okay", "fine"];
+                if (exitPhrases.some(phrase => lowerVal === phrase || lowerVal.startsWith(phrase + " ") || lowerVal.endsWith(" " + phrase))) {
+                    document.getElementById("chatbot-initial-options").classList.add("d-none");
+                    setTimeout(() => {
+                        appendBotMessage("Thank you for using the SWMS Support Assistant. Have a pleasant day! Feel free to type anything if you change your mind.");
+                        chatbotState = {
+                            step: 'initial',
+                            name: '',
+                            mobile: '',
+                            message: ''
+                        };
+                    }, 500);
+                    return;
+                }
+
                 // Hide options block temporarily while handling query
                 document.getElementById("chatbot-initial-options").classList.add("d-none");
                 
