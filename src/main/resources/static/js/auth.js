@@ -22,7 +22,11 @@ function parseJwt(token) {
             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
         }).join(''));
 
-        return JSON.parse(jsonPayload);
+        const payload = JSON.parse(jsonPayload);
+        if (payload && payload.hostel && !payload.hostelName) {
+            payload.hostelName = payload.hostel;
+        }
+        return payload;
     } catch (e) {
         return null;
     }

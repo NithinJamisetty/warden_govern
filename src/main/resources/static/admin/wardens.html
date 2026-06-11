@@ -162,8 +162,8 @@
                         <i class="fa-solid fa-user-minus text-danger" style="font-size: 3rem;"></i>
                     </div>
                     <p class="mb-1 text-white fs-6 fw-semibold">Delete Warden Account?</p>
-                    <p class="mb-3 text-muted small">This action is permanent and will delete the warden and all registered student records in their hostel.</p>
-                    <span class="badge bg-danger bg-opacity-20 text-danger px-3 py-2 rounded-pill fs-7 fw-bold" id="delete-warden-name"></span>
+                    <p class="mb-3 small" style="color: #cbd5e1;">This action is permanent and will delete the warden and all registered student records in their hostel.</p>
+                    <span class="badge bg-danger bg-opacity-20 text-danger px-3 py-2 rounded-pill fs-7 fw-bold" id="delete-warden-name" style="display: none;"></span>
                 </div>
                 <div class="modal-footer border-0 p-3 bg-dark bg-opacity-30 d-flex justify-content-stretch gap-2">
                     <button type="button" class="btn btn-sm btn-secondary flex-grow-1" data-bs-dismiss="modal" style="background-color: #334155; border: none;">Cancel</button>
@@ -181,7 +181,9 @@
 
         function confirmDeleteWarden(id, username) {
             wardenIdToDelete = id;
-            document.getElementById("delete-warden-name").textContent = username;
+            const nameBadge = document.getElementById("delete-warden-name");
+            nameBadge.textContent = username;
+            nameBadge.style.display = username ? "inline-block" : "none";
             if (!deleteWardenModalObj) {
                 deleteWardenModalObj = new bootstrap.Modal(document.getElementById("deleteWardenModal"));
             }
