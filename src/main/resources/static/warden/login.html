@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SWMS Portal - Warden Access</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+            background: radial-gradient(circle at top right, #0f172a, #020617);
+            color: #f8fafc;
+        }
+        .login-card-warden {
+            background-color: #1e293b;
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            border: 1px solid #334155;
+        }
+        .login-banner-warden {
+            background: linear-gradient(135deg, #0d9488, #0f766e);
+            color: var(--white);
+            padding: 3rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .form-control-warden {
+            background-color: #0f172a;
+            border: 1.5px solid #334155;
+            color: #f8fafc;
+            border-radius: var(--border-radius-sm);
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        .form-control-warden:focus {
+            background-color: #0f172a;
+            border-color: #0d9488;
+            color: #f8fafc;
+            box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.2);
+        }
+        .input-group-text-warden {
+            background-color: #1e293b;
+            border: 1.5px solid #334155;
+            border-right: none;
+            color: #94a3b8;
+        }
+        .qr-container {
+            background-color: #0f172a;
+            border: 1px dashed #334155;
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .qr-code-img {
+            width: 180px;
+            height: 180px;
+            border: 4px solid #fff;
+            border-radius: 4px;
+        }
+        .letter-spacing-lg {
+            letter-spacing: 0.15em;
+        }
+    </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <div class="gov-top-bar"></div>
+
+    <header class="py-3 border-bottom border-secondary border-opacity-10 mb-4">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+                <i class="fa-solid fa-building-columns text-teal fs-3 text-info"></i>
+                <span class="fw-bold text-white fs-5 display-font">SWMS Portal</span>
+            </div>
+            <a href="/index.html" class="btn btn-outline-light btn-sm"><i class="fa-solid fa-arrow-left me-1"></i>Portal Home</a>
+        </div>
+    </header>
+
+    <main class="flex-grow-1 d-flex align-items-center my-4">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="login-card-warden">
+                        <div class="row g-0">
+                            <!-- Left Banner -->
+                            <div class="col-md-5 login-banner-warden">
+                                <div class="mb-4">
+                                    <span class="badge bg-white text-teal fw-bold text-uppercase px-3 py-2 rounded-pill mb-3 text-dark">Warden Security Access</span>
+                                    <h2 class="fw-bold text-white mb-3">Hostel Management Portal</h2>
+                                    <p class="text-white-50">Authorized wardens can log in to update and manage student registration records, track accommodation details, and audit room history.</p>
+                                </div>
+                                <div class="mt-auto">
+                                    <div class="d-flex align-items-center gap-3 p-3 bg-white bg-opacity-10 rounded-3 border border-white border-opacity-10">
+                                        <i class="fa-solid fa-shield-halved text-warning fs-3"></i>
+                                        <small class="text-white-50">Secure multi-factor authentication (MFA) is mandatory for accessing administrative directories.</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Right Form -->
+                            <div class="col-md-7 p-5">
+                                <div id="login-alert" class="alert alert-danger d-none" role="alert">
+                                    Incorrect credentials or access denied.
+                                </div>
+
+                                <!-- STEP 1: Warden Credentials -->
+                                <div id="login-step1">
+                                    <h4 class="fw-bold mb-4 display-font text-white"><i class="fa-solid fa-lock text-info me-2"></i>Warden Sign In</h4>
+                                    <form id="form-step1">
+                                        <div class="mb-3">
+                                            <label for="username" class="form-label fw-semibold text-muted">Username</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text input-group-text-warden"><i class="fa-solid fa-user"></i></span>
+                                                <input type="text" class="form-control form-control-warden" id="username" required placeholder="Enter username">
+                                            </div>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="password" class="form-label fw-semibold text-muted">Password</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text input-group-text-warden"><i class="fa-solid fa-key"></i></span>
+                                                <input type="password" class="form-control form-control-warden" id="password" required placeholder="Enter password">
+                                            </div>
+                                        </div>
+                                        <div class="d-grid gap-2">
+                                            <button type="submit" id="btn-login-step1" class="btn btn-info py-2.5 text-white fw-bold">
+                                                Verify Password <i class="fa-solid fa-arrow-right ms-2"></i>
+                                            </button>
+                                            <button type="button" onclick="showRegisterPanel()" class="btn btn-link btn-sm text-info mt-2 text-decoration-none">
+                                                <i class="fa-solid fa-user-plus me-1"></i> First Time Logging In? Create Account
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <!-- STEP 1B: Self Registration -->
+                                <div id="login-register" class="d-none">
+                                    <h4 class="fw-bold mb-3 display-font text-white"><i class="fa-solid fa-user-plus text-info me-2"></i>Create Warden Account</h4>
+                                    <p class="text-white-50 mb-4 small">Setup your login password. Your username and mobile number must match the authorized profile pre-enrolled by the Admin.</p>
+                                    
+                                    <form id="form-register">
+                                        <div class="mb-3">
+                                            <label for="register-username" class="form-label fw-semibold text-muted">Username</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text input-group-text-warden"><i class="fa-solid fa-user"></i></span>
+                                                <input type="text" class="form-control form-control-warden" id="register-username" required placeholder="Pre-authorized username">
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="register-mobile" class="form-label fw-semibold text-muted">Mobile Number</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text input-group-text-warden"><i class="fa-solid fa-phone"></i></span>
+                                                <input type="tel" class="form-control form-control-warden" id="register-mobile" required placeholder="Pre-authorized 10-digit number" pattern="\d{10}">
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="register-password" class="form-label fw-semibold text-muted">Choose Password</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text input-group-text-warden"><i class="fa-solid fa-lock"></i></span>
+                                                <input type="password" class="form-control form-control-warden" id="register-password" required placeholder="Choose a secure password">
+                                            </div>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="register-confirm-password" class="form-label fw-semibold text-muted">Confirm Password</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text input-group-text-warden"><i class="fa-solid fa-lock"></i></span>
+                                                <input type="password" class="form-control form-control-warden" id="register-confirm-password" required placeholder="Confirm chosen password">
+                                            </div>
+                                        </div>
+                                        <div class="d-grid gap-2">
+                                            <button type="submit" id="btn-register-submit" class="btn btn-info py-2.5 text-white fw-bold">
+                                                Register & Setup MFA <i class="fa-solid fa-arrow-right ms-2"></i>
+                                            </button>
+                                            <button type="button" onclick="resetLoginState()" class="btn btn-link btn-sm text-muted">Back to Login</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <!-- STEP 2A: MFA Setup (First Time Login) -->
+                                <div id="login-step2-setup" class="d-none">
+                                    <h4 class="fw-bold mb-3 display-font text-white"><i class="fa-solid fa-qrcode text-info me-2"></i>MFA Registration</h4>
+                                    <p class="text-white-50 mb-4 small">MFA is required for your account. Scan this QR Code with your Google Authenticator app, or copy the manual code number, then enter the 6-digit verification code below.</p>
+                                    
+                                    <div class="qr-container">
+                                        <img id="qr-code-img" src="" alt="MFA QR Code" class="qr-code-img">
+                                        <div class="text-center w-100">
+                                            <span class="text-white-50 d-block small mb-1">Secret Key (for manual entry):</span>
+                                            <code id="mfa-secret-text" class="bg-dark border border-secondary px-3 py-1 rounded fw-bold text-info fs-6 font-monospace"></code>
+                                        </div>
+                                    </div>
+
+                                    <form id="form-step2-setup">
+                                        <div class="mb-4">
+                                            <label for="setup-code" class="form-label fw-semibold text-muted">Authenticator Code</label>
+                                            <input type="text" class="form-control form-control-warden text-center fs-4 fw-bold letter-spacing-lg" id="setup-code" required placeholder="000000" maxlength="6" pattern="\d{6}">
+                                        </div>
+                                        <div class="d-grid gap-2">
+                                            <button type="submit" class="btn btn-info py-2.5 text-white fw-bold">
+                                                Activate & Login <i class="fa-solid fa-check ms-2"></i>
+                                            </button>
+                                            <button type="button" onclick="resetLoginState()" class="btn btn-link btn-sm text-muted">Cancel</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <!-- STEP 2B: MFA Verification (Subsequent Logins) -->
+                                <div id="login-step2-verify" class="d-none">
+                                    <h4 class="fw-bold mb-3 display-font text-white"><i class="fa-solid fa-shield-halved text-info me-2"></i>MFA Verification</h4>
+                                    <p class="text-white-50 mb-4 small">Open Google Authenticator on your registered mobile device and input the current 6-digit security code for your account.</p>
+
+                                    <form id="form-step2-verify">
+                                        <div class="mb-4">
+                                            <label for="verify-code" class="form-label fw-semibold text-muted">Security Code</label>
+                                            <input type="text" class="form-control form-control-warden text-center fs-3 fw-bold letter-spacing-lg" id="verify-code" required placeholder="000000" maxlength="6" pattern="\d{6}">
+                                        </div>
+                                        <div class="d-grid gap-2">
+                                            <button type="submit" class="btn btn-info py-2.5 text-white fw-bold">
+                                                Verify & Login <i class="fa-solid fa-right-to-bracket ms-2"></i>
+                                            </button>
+                                            <button type="button" onclick="resetLoginState()" class="btn btn-link btn-sm text-muted">Cancel</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="py-3 bg-dark border-top border-secondary border-opacity-10 mt-auto">
+        <div class="container text-center">
+            <small class="text-muted">© 2026 Student Welfare Management System (SWMS). Highly Secured Link.</small>
+        </div>
+    </footer>
+
+    <!-- JS files -->
+    <script src="/js/auth.js"></script>
+    <script>
+        let tempToken = "";
+
+        // Redirect if already logged in as WARDEN; clear token if another role is active
+        if (getToken()) {
+            const user = getUser();
+            if (user && user.role === "WARDEN") {
+                window.location.href = "/dashboard.html";
+            } else {
+                removeToken();
+            }
+        }
+
+        const alertEl = document.getElementById("login-alert");
+
+        function showAlert(msg) {
+            alertEl.textContent = msg;
+            alertEl.classList.remove("d-none");
+        }
+
+        function hideAlert() {
+            alertEl.classList.add("d-none");
+        }
+
+        // STEP 1 Form Submission
+        document.getElementById("form-step1").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            hideAlert();
+
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const btn = document.getElementById("btn-login-step1");
+
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Verifying...`;
+
+            try {
+                const response = await fetch("/api/auth/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showAlert(data.message || "Invalid username or password.");
+                    btn.disabled = false;
+                    btn.innerHTML = `Verify Password <i class="fa-solid fa-arrow-right ms-2"></i>`;
+                    return;
+                }
+
+                // Verify that the logged in user is actually a Warden!
+                if (data.role !== "WARDEN") {
+                    showAlert("Access Denied: Administrators must sign in via the secure console.");
+                    btn.disabled = false;
+                    btn.innerHTML = `Verify Password <i class="fa-solid fa-arrow-right ms-2"></i>`;
+                    return;
+                }
+
+                tempToken = data.tempToken;
+
+                if (data.mfaSetupRequired) {
+                    // Show MFA Setup Panel
+                    document.getElementById("login-step1").classList.add("d-none");
+                    document.getElementById("login-step2-setup").classList.remove("d-none");
+                    // Set QR image using qrserver API
+                    document.getElementById("qr-code-img").src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(data.qrCodeUrl)}`;
+                    document.getElementById("mfa-secret-text").textContent = data.mfaSecret;
+                } else if (data.mfaRequired) {
+                    // Show MFA Verification Panel
+                    document.getElementById("login-step1").classList.add("d-none");
+                    document.getElementById("login-step2-verify").classList.remove("d-none");
+                }
+            } catch (err) {
+                showAlert("Network connection error. Please try again.");
+                btn.disabled = false;
+                btn.innerHTML = `Verify Password <i class="fa-solid fa-arrow-right ms-2"></i>`;
+            }
+        });
+
+        // STEP 2A Form Submission (MFA Setup)
+        document.getElementById("form-step2-setup").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            hideAlert();
+            const code = document.getElementById("setup-code").value;
+            await verifyMfaCode(code);
+        });
+
+        // STEP 2B Form Submission (MFA Verification)
+        document.getElementById("form-step2-verify").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            hideAlert();
+            const code = document.getElementById("verify-code").value;
+            await verifyMfaCode(code);
+        });
+
+        async function verifyMfaCode(code) {
+            try {
+                const response = await fetch("/api/auth/mfa/verify", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ tempToken, code })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showAlert(data.message || "Invalid authenticator code.");
+                    return;
+                }
+
+                setToken(data.token);
+                // Redirect to Warden Dashboard
+                window.location.href = "/dashboard.html";
+            } catch (err) {
+                showAlert("Verification failed due to connection issue.");
+            }
+        }
+
+        function showRegisterPanel() {
+            hideAlert();
+            document.getElementById("login-step1").classList.add("d-none");
+            document.getElementById("login-register").classList.remove("d-none");
+            document.getElementById("login-step2-setup").classList.add("d-none");
+            document.getElementById("login-step2-verify").classList.add("d-none");
+        }
+
+        document.getElementById("form-register").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            hideAlert();
+
+            const username = document.getElementById("register-username").value;
+            const mobileNumber = document.getElementById("register-mobile").value;
+            const password = document.getElementById("register-password").value;
+            const confirmPassword = document.getElementById("register-confirm-password").value;
+            const btn = document.getElementById("btn-register-submit");
+
+            if (password !== confirmPassword) {
+                showAlert("Passwords do not match.");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Registering...`;
+
+            try {
+                const response = await fetch("/api/auth/register-warden", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, mobileNumber, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showAlert(data.message || "Registration failed. Verify your name and mobile number match the pre-authorized profile.");
+                    btn.disabled = false;
+                    btn.innerHTML = `Register & Setup MFA <i class="fa-solid fa-arrow-right ms-2"></i>`;
+                    return;
+                }
+
+                tempToken = data.tempToken;
+
+                // Go directly to MFA setup!
+                document.getElementById("login-register").classList.add("d-none");
+                document.getElementById("login-step2-setup").classList.remove("d-none");
+                document.getElementById("qr-code-img").src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(data.qrCodeUrl)}`;
+                document.getElementById("mfa-secret-text").textContent = data.mfaSecret;
+            } catch (err) {
+                showAlert("Registration failed due to a network connection issue.");
+                btn.disabled = false;
+                btn.innerHTML = `Register & Setup MFA <i class="fa-solid fa-arrow-right ms-2"></i>`;
+            }
+        });
+
+        function resetLoginState() {
+            tempToken = "";
+            document.getElementById("username").value = "";
+            document.getElementById("password").value = "";
+            document.getElementById("setup-code").value = "";
+            document.getElementById("verify-code").value = "";
+            
+            document.getElementById("register-username").value = "";
+            document.getElementById("register-mobile").value = "";
+            document.getElementById("register-password").value = "";
+            document.getElementById("register-confirm-password").value = "";
+
+            document.getElementById("login-step1").classList.remove("d-none");
+            document.getElementById("login-register").classList.add("d-none");
+            document.getElementById("login-step2-setup").classList.add("d-none");
+            document.getElementById("login-step2-verify").classList.add("d-none");
+            
+            const btn = document.getElementById("btn-login-step1");
+            btn.disabled = false;
+            btn.innerHTML = `Verify Password <i class="fa-solid fa-arrow-right ms-2"></i>`;
+            
+            hideAlert();
+        }
+    </script>
+</body>
+</html>

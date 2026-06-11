@@ -9,7 +9,18 @@
     <!-- FontAwesome 6 Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* Premium Scale-Up Modal Animation */
+        .modal.fade .modal-content {
+            transform: scale(0.95);
+            opacity: 0;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+        }
+        .modal.show .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+    </style>
 </head>
 <body>
     <!-- Security check -->
@@ -136,10 +147,86 @@
         </div>
     </div>
 
+    <!-- Modal: Delete Confirmation -->
+    <div class="modal fade" id="deleteWardenModal" tabindex="-1" aria-labelledby="deleteWardenModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow-lg" style="background-color: #1a1f2c; color: #f8fafc; border-radius: 12px; overflow: hidden;">
+                <div class="modal-header border-0 bg-danger bg-opacity-10 text-danger p-3">
+                    <h6 class="modal-title fw-bold" id="deleteWardenModalLabel">
+                        <i class="fa-solid fa-triangle-exclamation me-2"></i>Confirm Delete
+                    </h6>
+                    <button type="button" class="btn-close btn-close-white small" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1); opacity: 0.8;"></button>
+                </div>
+                <div class="modal-body p-4 text-center">
+                    <div class="mb-3">
+                        <i class="fa-solid fa-user-minus text-danger" style="font-size: 3rem;"></i>
+                    </div>
+                    <p class="mb-1 text-white fs-6 fw-semibold">Delete Warden Account?</p>
+                    <p class="mb-3 text-muted small">This action is permanent and will delete the warden and all registered student records in their hostel.</p>
+                    <span class="badge bg-danger bg-opacity-20 text-danger px-3 py-2 rounded-pill fs-7 fw-bold" id="delete-warden-name"></span>
+                </div>
+                <div class="modal-footer border-0 p-3 bg-dark bg-opacity-30 d-flex justify-content-stretch gap-2">
+                    <button type="button" class="btn btn-sm btn-secondary flex-grow-1" data-bs-dismiss="modal" style="background-color: #334155; border: none;">Cancel</button>
+                    <button type="button" id="confirm-delete-warden-btn" class="btn btn-sm btn-danger flex-grow-1 fw-bold">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", loadWardens);
+        let wardenIdToDelete = null;
+        let deleteWardenModalObj = null;
+
+        function confirmDeleteWarden(id, username) {
+            wardenIdToDelete = id;
+            document.getElementById("delete-warden-name").textContent = username;
+            if (!deleteWardenModalObj) {
+                deleteWardenModalObj = new bootstrap.Modal(document.getElementById("deleteWardenModal"));
+            }
+            deleteWardenModalObj.show();
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadWardens();
+            
+            document.getElementById("confirm-delete-warden-btn").addEventListener("click", async () => {
+                if (!wardenIdToDelete) return;
+                
+                if (deleteWardenModalObj) {
+                    deleteWardenModalObj.hide();
+                }
+
+                try {
+                    const response = await fetchApi(`/api/admin/wardens/${wardenIdToDelete}`, {
+                        method: "DELETE"
+                    });
+                    const data = await response.json();
+                    if (!response.ok) {
+                        showStatusAlert(data.message || "Account deletion failed.", "danger");
+                        return;
+                    }
+                    showStatusAlert(data.message || "Warden account deleted successfully.", "success");
+                    
+                    // Animate row removal
+                    const row = document.getElementById(`warden-row-${wardenIdToDelete}`);
+                    if (row) {
+                        row.style.opacity = '0';
+                        row.style.transform = 'translateX(-30px)';
+                        setTimeout(() => {
+                            loadWardens();
+                        }, 500);
+                    } else {
+                        loadWardens();
+                    }
+                } catch (err) {
+                    showStatusAlert("Account deletion failed.", "danger");
+                } finally {
+                    wardenIdToDelete = null;
+                }
+            });
+        });
 
         const decryptedSecrets = {};
 
@@ -166,7 +253,7 @@
             }
 
             tbody.innerHTML = list.map(warden => `
-                <tr>
+                <tr id="warden-row-${warden.id}" style="transition: all 0.5s ease-in-out;">
                     <td class="fw-bold">${warden.username}</td>
                     <td>${warden.mobileNumber}</td>
                     <td class="fw-semibold text-primary">${warden.hostelName || 'N/A'}</td>
@@ -204,7 +291,7 @@
                             <button onclick="resetWarden(${warden.id})" class="btn btn-sm btn-outline-warning" title="Reset MFA and unlock account">
                                 <i class="fa-solid fa-rotate-right"></i> Reset
                             </button>
-                            <button onclick="deleteWarden(${warden.id})" class="btn btn-sm btn-outline-danger" title="Delete account permanently">
+                            <button onclick="confirmDeleteWarden(${warden.id}, '${warden.username}')" class="btn btn-sm btn-outline-danger" title="Delete account permanently">
                                 <i class="fa-solid fa-trash"></i> Delete
                             </button>
                         </div>
@@ -330,27 +417,6 @@
             }
         }
 
-        // Delete Warden Account
-        async function deleteWarden(id) {
-            if (!confirm("Are you sure you want to permanently delete this warden account? This action cannot be undone and will delete all their audit history.")) {
-                return;
-            }
-
-            try {
-                const response = await fetchApi(`/api/admin/wardens/${id}`, {
-                    method: "DELETE"
-                });
-                const data = await response.json();
-                if (!response.ok) {
-                    showStatusAlert(data.message || "Account deletion failed.", "danger");
-                    return;
-                }
-                showStatusAlert(data.message || "Warden account deleted successfully.", "success");
-                loadWardens();
-            } catch (err) {
-                showStatusAlert("Account deletion failed.", "danger");
-            }
-        }
 
         function showStatusAlert(msg, type = "success") {
             const alertBox = document.getElementById("status-alert");

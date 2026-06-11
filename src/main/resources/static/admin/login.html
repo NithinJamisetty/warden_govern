@@ -181,11 +181,13 @@
     <script>
         let tempToken = "";
 
-        // Redirect if already logged in as Admin
+        // Redirect if already logged in as Admin; clear token if another role is active
         if (getToken()) {
             const user = getUser();
             if (user && (user.role === "SUPER_ADMIN" || user.role === "DISTRICT_ADMIN")) {
                 window.location.href = "/admin/dashboard.html";
+            } else {
+                removeToken();
             }
         }
 

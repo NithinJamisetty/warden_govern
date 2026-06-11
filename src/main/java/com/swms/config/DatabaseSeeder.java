@@ -25,29 +25,32 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Always reset admin account to ensure clean testing state
-        User superAdmin = userRepository.findByUsername("admin").orElse(new User());
-        superAdmin.setUsername("admin");
-        superAdmin.setPasswordHash(passwordEncoder.encode("admin123"));
-        superAdmin.setMobileNumber("9999999999");
-        superAdmin.setRole("SUPER_ADMIN");
-        superAdmin.setActive(true);
-        superAdmin.setMfaEnabled(false);
-        superAdmin.setMfaSecret(null);
-        userRepository.save(superAdmin);
+        // Only seed accounts if they don't already exist to preserve MFA settings across restarts
+        if (userRepository.findByUsername("admin").isEmpty()) {
+            User superAdmin = new User();
+            superAdmin.setUsername("admin");
+            superAdmin.setPasswordHash(passwordEncoder.encode("admin123"));
+            superAdmin.setMobileNumber("9999999999");
+            superAdmin.setRole("SUPER_ADMIN");
+            superAdmin.setActive(true);
+            superAdmin.setMfaEnabled(false);
+            superAdmin.setMfaSecret(null);
+            userRepository.save(superAdmin);
+        }
 
-        User districtAdmin = userRepository.findByUsername("district_admin").orElse(new User());
-        districtAdmin.setUsername("district_admin");
-        districtAdmin.setPasswordHash(passwordEncoder.encode("district123"));
-        districtAdmin.setMobileNumber("8888888888");
-        districtAdmin.setRole("DISTRICT_ADMIN");
-        districtAdmin.setActive(true);
-        districtAdmin.setMfaEnabled(false);
-        districtAdmin.setMfaSecret(null);
-        userRepository.save(districtAdmin);
+        if (userRepository.findByUsername("district_admin").isEmpty()) {
+            User districtAdmin = new User();
+            districtAdmin.setUsername("district_admin");
+            districtAdmin.setPasswordHash(passwordEncoder.encode("district123"));
+            districtAdmin.setMobileNumber("8888888888");
+            districtAdmin.setRole("DISTRICT_ADMIN");
+            districtAdmin.setActive(true);
+            districtAdmin.setMfaEnabled(false);
+            districtAdmin.setMfaSecret(null);
+            userRepository.save(districtAdmin);
+        }
 
-        // Seed other users only if not present
-        if (userRepository.count() <= 2) {
+        if (userRepository.findByUsername("warden_netaji").isEmpty()) {
             User warden1 = new User();
             warden1.setUsername("warden_netaji");
             warden1.setPasswordHash(passwordEncoder.encode("warden123"));
@@ -56,8 +59,11 @@ public class DatabaseSeeder implements CommandLineRunner {
             warden1.setRole("WARDEN");
             warden1.setActive(true);
             warden1.setMfaEnabled(false);
+            warden1.setMfaSecret(null);
             userRepository.save(warden1);
+        }
 
+        if (userRepository.findByUsername("warden_tagore").isEmpty()) {
             User warden2 = new User();
             warden2.setUsername("warden_tagore");
             warden2.setPasswordHash(passwordEncoder.encode("warden123"));
@@ -66,10 +72,11 @@ public class DatabaseSeeder implements CommandLineRunner {
             warden2.setRole("WARDEN");
             warden2.setActive(true);
             warden2.setMfaEnabled(false);
+            warden2.setMfaSecret(null);
             userRepository.save(warden2);
-
-            System.out.println(">>> SWMS Seed Data: Default accounts seeded.");
         }
+
+        System.out.println(">>> SWMS Seed Data: Default accounts seeded.");
 
         // Seed Students
         if (studentRepository.count() == 0) {

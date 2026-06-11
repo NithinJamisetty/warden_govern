@@ -14,6 +14,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Optional<Student> findByRollNumber(String rollNumber);
     List<Student> findByHostelName(String hostelName);
     boolean existsByRollNumber(String rollNumber);
+    void deleteByHostelName(String hostelName);
     
     @Query("SELECT s FROM Student s WHERE " +
            "(:hostelName IS NULL OR s.hostelName = :hostelName) AND " +

@@ -5,9 +5,11 @@ import com.swms.config.MfaUtils;
 import com.swms.config.EncryptionUtils;
 import com.swms.entity.User;
 import com.swms.repository.UserRepository;
+import com.swms.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,9 @@ public class AuthService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private StudentRepository studentRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -182,13 +187,17 @@ public class AuthService {
         return saved;
     }
 
+    @Transactional
     public void deleteWarden(Long id, String creator, String ipAddress) {
         Optional<User> userOpt = userRepository.findById(id);
         if (userOpt.isPresent()) {
             User warden = userOpt.get();
             if ("WARDEN".equals(warden.getRole())) {
+                if (warden.getHostelName() != null) {
+                    studentRepository.deleteByHostelName(warden.getHostelName());
+                }
                 userRepository.delete(warden);
-                auditLogService.log(creator, "DELETE_WARDEN - Permanently deleted warden: " + warden.getUsername(), ipAddress);
+                auditLogService.log(creator, "DELETE_WARDEN - Permanently deleted warden: " + warden.getUsername() + " and all student records in " + warden.getHostelName(), ipAddress);
             } else {
                 throw new IllegalArgumentException("Only warden accounts can be deleted");
             }

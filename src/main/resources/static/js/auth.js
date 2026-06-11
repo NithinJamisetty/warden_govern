@@ -3,15 +3,15 @@
 const TOKEN_KEY = "swms_auth_token";
 
 function getToken() {
-    return localStorage.getItem(TOKEN_KEY);
+    return sessionStorage.getItem(TOKEN_KEY);
 }
 
 function setToken(token) {
-    localStorage.setItem(TOKEN_KEY, token);
+    sessionStorage.setItem(TOKEN_KEY, token);
 }
 
 function removeToken() {
-    localStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(TOKEN_KEY);
 }
 
 function parseJwt(token) {
@@ -40,13 +40,13 @@ function checkAuth(allowedRoles = []) {
 
     if (!user) {
         // Redirect to appropriate login page
-        window.location.href = isAdminPath ? "/admin/login.html" : "/login.html";
+        window.location.href = isAdminPath ? "/admin/login.html" : "/warden/login.html";
         return null;
     }
 
     if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
         alert("Access Denied: You do not have permission to view this page.");
-        window.location.href = isAdminPath ? "/admin/login.html" : "/login.html";
+        window.location.href = isAdminPath ? "/admin/login.html" : "/warden/login.html";
         return null;
     }
 
@@ -96,7 +96,7 @@ async function fetchApi(url, options = {}) {
     if (response.status === 401 || response.status === 403) {
         removeToken();
         const isAdminPath = window.location.pathname.includes('/admin/');
-        window.location.href = isAdminPath ? "/admin/login.html" : "/login.html";
+        window.location.href = isAdminPath ? "/admin/login.html" : "/warden/login.html";
         throw new Error("Session expired or access denied.");
     }
 

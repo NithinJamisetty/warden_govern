@@ -33,7 +33,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/index.html", "/login.html", "/dashboard.html", "/students.html", "/reports.html").permitAll()
+                .requestMatchers("/", "/index.html", "/login.html", "/warden/login.html", "/dashboard.html", "/students.html", "/reports.html", "/dashboard").permitAll()
                 .requestMatchers("/admin/login.html", "/admin/dashboard.html", "/admin/wardens.html", "/admin/logs.html").permitAll()
                 .requestMatchers("/css/**", "/js/**", "/assets/**", "/mfa_code.txt").permitAll()
                 .requestMatchers("/api/auth/login", "/api/auth/mfa/verify", "/api/auth/mfa/setup", "/api/auth/register-warden", "/api/auth/mfa/test-code").permitAll()
