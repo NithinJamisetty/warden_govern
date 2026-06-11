@@ -123,9 +123,9 @@
                 <!-- Video column -->
                 <div class="col-lg-6">
                     <div class="ratio ratio-16x9 shadow-lg rounded-4 overflow-hidden border border-light">
-                        <!-- Premium Mock Video Player using HTML5 video and a beautiful poster -->
+                        <!-- Premium Walkthrough Video Player using HTML5 video and a beautiful poster -->
                         <video controls poster="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=800">
-                            <source src="https://assets.mixkit.co/videos/preview/mixkit-working-at-a-clean-desk-40177-large.mp4" type="video/mp4">
+                            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
                     </div>
@@ -169,24 +169,57 @@
     <!-- About Section -->
     <section id="about" class="py-5">
         <div class="container">
-            <div class="row align-items-center g-5">
+            <div class="text-center mb-5">
+                <span class="badge bg-success-light text-success px-3 py-2 rounded-pill mb-2"><i class="fa-solid fa-circle-nodes me-2"></i>Welfare Infrastructure</span>
+                <h2 class="fw-bold display-font text-dark">Ensuring Administrative Transparency</h2>
+                <p class="text-muted mx-auto" style="max-width: 600px;">SWMS bridges the gap between state education departments, district supervisors, and hostel wardens on the ground.</p>
+            </div>
+            
+            <div class="row align-items-center g-5 mb-5">
                 <div class="col-lg-6">
-                    <img src="https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&q=80&w=800" alt="Students in Classroom" class="img-fluid rounded-4 shadow-md">
+                    <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=800" alt="State Welfare Infrastructure" class="img-fluid rounded-4 shadow-lg border border-light">
                 </div>
                 <div class="col-lg-6">
-                    <span class="text-uppercase text-primary fw-bold" style="font-size: 0.8rem; letter-spacing: 1px;">Our Vision</span>
-                    <h2 class="fw-bold mb-4 mt-2 display-font">Supporting Education, Ensuring Welfare</h2>
+                    <h3 class="fw-bold text-dark display-font mb-4">Supporting Student Education & Welfare</h3>
                     <p class="text-muted">
-                        This system serves as a central registry to collect student data from authorized hostel wardens. The primary goal is to ensure that welfare programs, food provisions, and accommodations are distributed accurately to students without any administrative overhead.
+                        The Student Welfare Management System is designed to record student attendance, manage hostel room inventories, track meal supplies, and record amenities provided by the government.
                     </p>
                     <p class="text-muted">
-                        Administrators at the District and State level utilize the system to view reports, audit system actions, reset accounts, and monitor hostels dynamically.
+                        Our digital system allows district administrators to view real-time enrollment analytics, preventing administrative delays and ensuring that resources are sent directly to the students who need them.
                     </p>
-                    <ul class="list-unstyled d-flex flex-column gap-2 mt-4 text-dark fw-medium">
-                        <li><i class="fa-solid fa-circle-check text-success me-2"></i> Clean Child-Friendly Interface Theme</li>
-                        <li><i class="fa-solid fa-circle-check text-success me-2"></i> Role-Based Dashboards and Permissions</li>
-                        <li><i class="fa-solid fa-circle-check text-success me-2"></i> Interactive Reports and PDF/Excel Exports</li>
-                    </ul>
+                    
+                    <div class="row g-3 mt-2">
+                        <div class="col-sm-6">
+                            <div class="p-3 bg-white rounded-3 border border-light shadow-sm">
+                                <h6 class="fw-bold text-primary mb-1"><i class="fa-solid fa-chart-line me-2"></i>Live Metrics</h6>
+                                <small class="text-muted">Track attendance and meal consumption updates daily.</small>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="p-3 bg-white rounded-3 border border-light shadow-sm">
+                                <h6 class="fw-bold text-success mb-1"><i class="fa-solid fa-file-pdf me-2"></i>Export Reports</h6>
+                                <small class="text-muted">Download complete PDF/Excel summaries in one click.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New detailed department matter block -->
+            <div class="p-4 p-md-5 rounded-4 shadow-sm" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border: 1px solid #cbd5e1;">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-bullseye text-primary me-2"></i>Welfare Mission</h5>
+                        <p class="text-muted small mb-0">Provide clean, secure, and supportive housing environments for underprivileged students to nurture academic excellence and career success.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-lock text-success me-2"></i>Two-Factor Security</h5>
+                        <p class="text-muted small mb-0">Protects students' personal records and government accounts from unauthorized logins using strong TOTP security policies.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-clock-rotate-left text-warning me-2"></i>Transparent Audit Logs</h5>
+                        <p class="text-muted small mb-0">Keeps administrators informed about changes made to student rolls or configurations with fully non-repudiable audit logs.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -252,7 +285,7 @@
         </div>
 
         <!-- Chat Input Form -->
-        <div id="chatbot-form-input" class="chatbot-input-container d-none">
+        <div id="chatbot-form-input" class="chatbot-input-container">
             <div class="input-group">
                 <input type="text" id="chatbot-text-input" class="form-control form-control-sm" placeholder="Type message...">
                 <button onclick="submitChatbotInput()" class="btn btn-primary btn-sm"><i class="fa-solid fa-paper-plane"></i></button>
@@ -312,20 +345,19 @@
                 chatbotState.step = 'concern_name';
                 setTimeout(() => {
                     appendBotMessage("I will register your concern directly for District Administration review. Please enter your name:");
-                    document.getElementById("chatbot-form-input").classList.remove("d-none");
                     document.getElementById("chatbot-text-input").focus();
                 }, 500);
             } else if (option === 'info') {
                 appendUserMessage("Inquire Warden Self-Registration");
                 setTimeout(() => {
                     appendBotMessage("Hostel Wardens must be pre-authorized by their District Admin. Once authorized, click 'Warden Login Portal' to configure your password and scan the MFA QR Code.");
-                    document.getElementById("chatbot-initial-options").classList.remove("d-none");
+                    resetChatbot();
                 }, 500);
             } else if (option === 'general') {
                 appendUserMessage("General Inquiry");
                 setTimeout(() => {
                     appendBotMessage("The SWMS Portal helps track student enrollment and hostel amenities across the state. Contact system support at support@swms.gov.in for specific administrative assistance.");
-                    document.getElementById("chatbot-initial-options").classList.remove("d-none");
+                    resetChatbot();
                 }, 500);
             }
         }
@@ -337,6 +369,33 @@
 
             inputEl.value = "";
             appendUserMessage(val);
+
+            // Handle custom text queries when chatbot is in initial state
+            if (chatbotState.step === 'initial') {
+                const lowerVal = val.toLowerCase();
+                
+                // Hide options block temporarily while handling query
+                document.getElementById("chatbot-initial-options").classList.add("d-none");
+                
+                if (lowerVal.includes("concern") || lowerVal.includes("report") || lowerVal.includes("issue") || lowerVal.includes("complain") || lowerVal.includes("problem") || lowerVal.includes("ticket")) {
+                    chatbotState.step = 'concern_name';
+                    setTimeout(() => {
+                        appendBotMessage("I will register your concern directly for District Administration review. Please enter your name:");
+                        document.getElementById("chatbot-text-input").focus();
+                    }, 500);
+                } else if (lowerVal.includes("warden") || lowerVal.includes("register") || lowerVal.includes("self") || lowerVal.includes("signup") || lowerVal.includes("mfa") || lowerVal.includes("scan")) {
+                    setTimeout(() => {
+                        appendBotMessage("Hostel Wardens must be pre-authorized by their District Admin. Once authorized, click 'Warden Login Portal' to configure your password and scan the MFA QR Code.");
+                        resetChatbot();
+                    }, 500);
+                } else {
+                    setTimeout(() => {
+                        appendBotMessage("I am the SWMS Support Bot. For specific reports, you can start a ticket by typing 'report' or clicking the options below. You can also email support@swms.gov.in.");
+                        resetChatbot();
+                    }, 500);
+                }
+                return;
+            }
 
             if (chatbotState.step === 'concern_name') {
                 chatbotState.name = val;
@@ -352,7 +411,7 @@
                 }, 500);
             } else if (chatbotState.step === 'concern_message') {
                 chatbotState.message = val;
-                document.getElementById("chatbot-form-input").classList.add("d-none");
+                chatbotState.step = 'initial';
                 
                 appendBotMessage("Submitting your concern to the admin dashboard...");
                 
