@@ -63,6 +63,11 @@ function checkAuth(allowedRoles = []) {
         const userRoleEl = document.getElementById("nav-user-role");
         if (userRoleEl) {
             userRoleEl.textContent = formatRole(user.role);
+            if (user.role === "DISTRICT_ADMIN") {
+                userRoleEl.className = "badge bg-info text-white px-3 py-2";
+            } else if (user.role === "SUPER_ADMIN") {
+                userRoleEl.className = "badge bg-danger text-white px-3 py-2";
+            }
         }
         const userHostelEl = document.getElementById("nav-user-hostel");
         if (userHostelEl && user.hostelName) {
@@ -112,4 +117,25 @@ function logout() {
     const isAdmin = user && (user.role === "SUPER_ADMIN" || user.role === "DISTRICT_ADMIN");
     removeToken();
     window.location.href = isAdmin ? "/admin/login.html" : "/index.html";
+}
+
+// Inactivity Auto-Logout (5 Minutes Limit)
+let inactivityTimeout;
+const INACTIVITY_LIMIT = 5 * 60 * 1000; // 5 minutes
+
+function resetInactivityTimer() {
+    clearTimeout(inactivityTimeout);
+    inactivityTimeout = setTimeout(() => {
+        alert("Session expired due to inactivity. Logging out...");
+        logout();
+    }, INACTIVITY_LIMIT);
+}
+
+// Start tracking inactivity on protected pages (where token is present)
+if (getToken()) {
+    resetInactivityTimer();
+    const activityEvents = ['mousemove', 'keypress', 'click', 'scroll', 'touchstart'];
+    activityEvents.forEach(event => {
+        window.addEventListener(event, resetInactivityTimer, { passive: true });
+    });
 }

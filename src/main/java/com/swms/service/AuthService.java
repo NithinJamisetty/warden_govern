@@ -194,19 +194,7 @@ public class AuthService {
             User warden = userOpt.get();
             if ("WARDEN".equals(warden.getRole())) {
                 if (warden.getHostelName() != null) {
-                    studentRepository.deleteByHostelName(warden.getHostelName());
-                    
-                    // Also delete any other students where hostel name matches case/space insensitively
-                    String targetHostelClean = warden.getHostelName().replaceAll("\\s+", "").toLowerCase();
-                    java.util.List<com.swms.entity.Student> studentList = studentRepository.findAll();
-                    for (com.swms.entity.Student s : studentList) {
-                        if (s.getHostelName() != null) {
-                            String sHostelClean = s.getHostelName().replaceAll("\\s+", "").toLowerCase();
-                            if (sHostelClean.equals(targetHostelClean)) {
-                                studentRepository.delete(s);
-                            }
-                        }
-                    }
+                    studentRepository.deleteByHostelNameIgnoreCase(warden.getHostelName());
                 }
                 userRepository.delete(warden);
                 auditLogService.log(creator, "DELETE_WARDEN - Permanently deleted warden: " + warden.getUsername() + " and all associated student records for hostel " + warden.getHostelName(), ipAddress);

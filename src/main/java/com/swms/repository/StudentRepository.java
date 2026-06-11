@@ -14,7 +14,14 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Optional<Student> findByRollNumber(String rollNumber);
     List<Student> findByHostelName(String hostelName);
     boolean existsByRollNumber(String rollNumber);
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.transaction.annotation.Transactional
     void deleteByHostelName(String hostelName);
+
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.transaction.annotation.Transactional
+    @Query("DELETE FROM Student s WHERE LOWER(TRIM(s.hostelName)) = LOWER(TRIM(:hostelName))")
+    void deleteByHostelNameIgnoreCase(@Param("hostelName") String hostelName);
     
     @Query("SELECT s FROM Student s WHERE " +
            "(:hostelName IS NULL OR s.hostelName = :hostelName) AND " +
