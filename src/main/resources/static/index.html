@@ -110,6 +110,62 @@
         </div>
     </section>
 
+    <!-- Video & Features Walkthrough -->
+    <section class="py-5 bg-light border-bottom">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="badge bg-primary-light text-primary px-3 py-2 rounded-pill mb-2"><i class="fa-solid fa-play me-2"></i>Walkthrough Demonstration</span>
+                <h2 class="fw-bold display-font text-dark">How the SWMS Portal Works</h2>
+                <p class="text-muted mx-auto" style="max-width: 600px;">Watch our quick video guide explaining warden enrollment, MFA security registration, and student data audits.</p>
+            </div>
+            
+            <div class="row align-items-center g-5">
+                <!-- Video column -->
+                <div class="col-lg-6">
+                    <div class="ratio ratio-16x9 shadow-lg rounded-4 overflow-hidden border border-light">
+                        <!-- Premium Mock Video Player using HTML5 video and a beautiful poster -->
+                        <video controls poster="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=800">
+                            <source src="https://assets.mixkit.co/videos/preview/mixkit-working-at-a-clean-desk-40177-large.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+                <!-- Features details list -->
+                <div class="col-lg-6">
+                    <div class="d-flex gap-4 mb-4">
+                        <div class="flex-shrink-0 bg-primary text-white rounded-3 p-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; min-width: 60px;">
+                            <i class="fa-solid fa-user-check fs-4"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold text-dark">1. Warden Self-Registration</h5>
+                            <p class="text-muted mb-0">Wardens pre-authorized by District Admins complete registration by scanning their secure two-factor auth QR code and setting their password.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-4 mb-4">
+                        <div class="flex-shrink-0 bg-success text-white rounded-3 p-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; min-width: 60px;">
+                            <i class="fa-solid fa-users-viewfinder fs-4"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold text-dark">2. Dynamic Student Roster</h5>
+                            <p class="text-muted mb-0">Wardens manage hostel student roll numbers, mobile numbers, classes, and track amenities. Updates reflect instantly on District charts.</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-4">
+                        <div class="flex-shrink-0 bg-warning text-white rounded-3 p-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; min-width: 60px;">
+                            <i class="fa-solid fa-shield-halved fs-4"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold text-dark">3. Administrative Oversight</h5>
+                            <p class="text-muted mb-0">Super Admins and District Admins audit logins, monitor active wardens, trace actions via audit logs, and download aggregated reports.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- About Section -->
     <section id="about" class="py-5">
         <div class="container">
@@ -163,7 +219,196 @@
         </div>
     </footer>
 
+    <!-- Chatbot Floating Button -->
+    <div id="swms-chatbot-launcher" onclick="toggleChatbot()">
+        <i class="fa-solid fa-comment-dots fs-3"></i>
+        <span class="launcher-tooltip">Need Help? Chat here</span>
+    </div>
+
+    <!-- Chatbot Container Window -->
+    <div id="swms-chatbot-window" class="shadow-lg border border-light d-none">
+        <!-- Header -->
+        <div class="chatbot-header d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2 text-white">
+                <i class="fa-solid fa-robot fs-4"></i>
+                <div>
+                    <h6 class="fw-bold mb-0" style="font-size: 0.95rem;">SWMS Support Bot</h6>
+                    <span class="badge bg-success-light text-success fw-bold" style="font-size: 0.65rem;"><i class="fa-solid fa-circle me-1 animate-pulse"></i>Online Helpdesk</span>
+                </div>
+            </div>
+            <button onclick="toggleChatbot()" class="btn-close btn-close-white" aria-label="Close" style="filter: invert(1); opacity: 0.8;"></button>
+        </div>
+
+        <!-- Chat Messages Area -->
+        <div id="chatbot-messages" class="chatbot-messages">
+            <div class="message-bubble bot-message">
+                Hello! I am the SWMS Support Assistant. How can I help you today? Please select an option:
+            </div>
+            <div class="chatbot-options" id="chatbot-initial-options">
+                <button onclick="selectBotOption('concern')" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-circle-exclamation me-1.5"></i>Report a Hostel Concern / Issue</button>
+                <button onclick="selectBotOption('info')" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-id-card-clip me-1.5"></i>Inquire Warden Self-Registration</button>
+                <button onclick="selectBotOption('general')" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-question-circle me-1.5"></i>General Inquiry</button>
+            </div>
+        </div>
+
+        <!-- Chat Input Form -->
+        <div id="chatbot-form-input" class="chatbot-input-container d-none">
+            <div class="input-group">
+                <input type="text" id="chatbot-text-input" class="form-control form-control-sm" placeholder="Type message...">
+                <button onclick="submitChatbotInput()" class="btn btn-primary btn-sm"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Chatbot Script Logic -->
+    <script>
+        let chatbotState = {
+            step: 'initial', // 'initial', 'concern_name', 'concern_mobile', 'concern_message'
+            name: '',
+            mobile: '',
+            message: ''
+        };
+
+        function toggleChatbot() {
+            const windowEl = document.getElementById("swms-chatbot-window");
+            windowEl.classList.toggle("d-none");
+            
+            if (!windowEl.classList.contains("d-none")) {
+                windowEl.style.transform = "translateY(20px)";
+                windowEl.style.opacity = "0";
+                setTimeout(() => {
+                    windowEl.style.transform = "translateY(0)";
+                    windowEl.style.opacity = "1";
+                }, 50);
+            }
+        }
+
+        function appendBotMessage(text) {
+            const container = document.getElementById("chatbot-messages");
+            const bubble = document.createElement("div");
+            bubble.className = "message-bubble bot-message animate-fade-in";
+            bubble.textContent = text;
+            container.appendChild(bubble);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function appendUserMessage(text) {
+            const container = document.getElementById("chatbot-messages");
+            const bubble = document.createElement("div");
+            bubble.className = "message-bubble user-message animate-fade-in";
+            bubble.textContent = text;
+            container.appendChild(bubble);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function selectBotOption(option) {
+            document.getElementById("chatbot-initial-options").classList.add("d-none");
+
+            if (option === 'concern') {
+                appendUserMessage("Report a Hostel Concern / Issue");
+                chatbotState.step = 'concern_name';
+                setTimeout(() => {
+                    appendBotMessage("I will register your concern directly for District Administration review. Please enter your name:");
+                    document.getElementById("chatbot-form-input").classList.remove("d-none");
+                    document.getElementById("chatbot-text-input").focus();
+                }, 500);
+            } else if (option === 'info') {
+                appendUserMessage("Inquire Warden Self-Registration");
+                setTimeout(() => {
+                    appendBotMessage("Hostel Wardens must be pre-authorized by their District Admin. Once authorized, click 'Warden Login Portal' to configure your password and scan the MFA QR Code.");
+                    document.getElementById("chatbot-initial-options").classList.remove("d-none");
+                }, 500);
+            } else if (option === 'general') {
+                appendUserMessage("General Inquiry");
+                setTimeout(() => {
+                    appendBotMessage("The SWMS Portal helps track student enrollment and hostel amenities across the state. Contact system support at support@swms.gov.in for specific administrative assistance.");
+                    document.getElementById("chatbot-initial-options").classList.remove("d-none");
+                }, 500);
+            }
+        }
+
+        async function submitChatbotInput() {
+            const inputEl = document.getElementById("chatbot-text-input");
+            const val = inputEl.value.trim();
+            if (!val) return;
+
+            inputEl.value = "";
+            appendUserMessage(val);
+
+            if (chatbotState.step === 'concern_name') {
+                chatbotState.name = val;
+                chatbotState.step = 'concern_mobile';
+                setTimeout(() => {
+                    appendBotMessage("Thank you, " + val + ". Please enter your mobile number:");
+                }, 500);
+            } else if (chatbotState.step === 'concern_mobile') {
+                chatbotState.mobile = val;
+                chatbotState.step = 'concern_message';
+                setTimeout(() => {
+                    appendBotMessage("Finally, please describe your concern/issue in detail:");
+                }, 500);
+            } else if (chatbotState.step === 'concern_message') {
+                chatbotState.message = val;
+                document.getElementById("chatbot-form-input").classList.add("d-none");
+                
+                appendBotMessage("Submitting your concern to the admin dashboard...");
+                
+                try {
+                    const res = await fetch("/api/concerns", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            name: chatbotState.name,
+                            mobileNumber: chatbotState.mobile,
+                            message: chatbotState.message
+                        })
+                    });
+                    
+                    if (res.ok) {
+                        setTimeout(() => {
+                            appendBotMessage("Thank you! Your concern has been submitted successfully to the Admin Console. The administrator will view it shortly.");
+                            resetChatbot();
+                        }, 1000);
+                    } else {
+                        const errData = await res.json();
+                        setTimeout(() => {
+                            appendBotMessage("Error: " + (errData.error || "Failed to submit. Please try again."));
+                            resetChatbot();
+                        }, 1000);
+                    }
+                } catch (e) {
+                    setTimeout(() => {
+                        appendBotMessage("Unable to connect to SWMS Support servers. Please try again later.");
+                        resetChatbot();
+                    }, 1000);
+                }
+            }
+        }
+
+        function resetChatbot() {
+            chatbotState = {
+                step: 'initial',
+                name: '',
+                mobile: '',
+                message: ''
+            };
+            setTimeout(() => {
+                appendBotMessage("Do you have any other concerns or inquiries?");
+                document.getElementById("chatbot-initial-options").classList.remove("d-none");
+            }, 1500);
+        }
+
+        document.getElementById("chatbot-text-input").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                submitChatbotInput();
+            }
+        });
+    </script>
 </body>
 </html>

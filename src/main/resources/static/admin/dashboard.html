@@ -121,6 +121,37 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Support Concerns Table -->
+                <div class="mt-5 p-4 bg-white rounded-4 shadow-sm border border-light">
+                    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                        <div>
+                            <h5 class="fw-bold display-font text-dark mb-1"><i class="fa-solid fa-comments text-primary me-2"></i>Public Support Concerns</h5>
+                            <p class="text-muted small mb-0">Review support tickets and hostel concerns reported by visitors via the chatbot.</p>
+                        </div>
+                        <span class="badge bg-primary px-3 py-2 text-white" id="concern-badge-count">0 Tickets</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover table-custom align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Submitted At</th>
+                                    <th>Name</th>
+                                    <th>Mobile Number</th>
+                                    <th>Concern Description</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="concerns-table-body">
+                                <tr>
+                                    <td colspan="5" class="text-center py-4 text-muted">
+                                        <span class="spinner-border spinner-border-sm me-2"></span>Loading support tickets...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -200,10 +231,77 @@
                     }
                 });
 
+                // Load chatbot support tickets
+                await loadConcerns();
+
             } catch (err) {
                 console.error("Failed to load admin dashboard stats.", err);
             }
         });
+
+        async function loadConcerns() {
+            try {
+                const res = await fetchApi("/api/admin/concerns");
+                const concerns = await res.json();
+                
+                document.getElementById("concern-badge-count").textContent = `${concerns.length} Tickets`;
+                
+                const tbody = document.getElementById("concerns-table-body");
+                if (concerns.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">No support concerns reported.</td></tr>`;
+                    return;
+                }
+                
+                tbody.innerHTML = concerns.map(c => {
+                    const dateStr = c.createdAt ? new Date(c.createdAt).toLocaleString() : 'N/A';
+                    return `
+                        <tr id="concern-row-${c.id}" style="transition: opacity 0.3s ease, transform 0.3s ease;">
+                            <td class="text-muted small">${dateStr}</td>
+                            <td class="fw-bold text-dark">${c.name}</td>
+                            <td><a href="tel:${c.mobileNumber}" class="text-decoration-none fw-medium"><i class="fa-solid fa-phone me-1.5 small"></i>${c.mobileNumber}</a></td>
+                            <td style="max-width: 300px; word-break: break-word;">${c.message}</td>
+                            <td>
+                                <button onclick="dismissConcern(${c.id})" class="btn btn-outline-danger btn-sm px-3"><i class="fa-solid fa-check me-1.5"></i>Dismiss</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                document.getElementById("concerns-table-body").innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-danger fw-semibold">
+                            <i class="fa-solid fa-circle-exclamation me-2"></i>Failed to fetch support tickets.
+                        </td>
+                    </tr>`;
+            }
+        }
+
+        async function dismissConcern(id) {
+            if (!confirm("Are you sure you want to dismiss and close this concern ticket?")) {
+                return;
+            }
+            try {
+                const res = await fetchApi(`/api/admin/concerns/${id}`, {
+                    method: "DELETE"
+                });
+                if (res.ok) {
+                    const row = document.getElementById(`concern-row-${id}`);
+                    if (row) {
+                        row.style.opacity = '0';
+                        row.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            loadConcerns();
+                        }, 300);
+                    } else {
+                        loadConcerns();
+                    }
+                } else {
+                    alert("Failed to dismiss concern ticket.");
+                }
+            } catch (err) {
+                alert("An error occurred while dismissing the concern.");
+            }
+        }
     </script>
 </body>
 </html>
