@@ -115,5 +115,43 @@ public class DatabaseSeeder implements CommandLineRunner {
             studentRepository.saveAll(Arrays.asList(s1, s2, s3, s4));
             System.out.println(">>> SWMS Seed Data: Default students seeded.");
         }
+
+        // Clean up orphan students or mismatching student records from deleted wardens (like vsGrand / vs grand)
+        java.util.List<com.swms.entity.User> activeWardensList = userRepository.findByRole("WARDEN");
+        java.util.List<Student> allStudents = studentRepository.findAll();
+        for (Student student : allStudents) {
+            String studentHostel = student.getHostelName();
+            if (studentHostel != null) {
+                boolean hasWarden = activeWardensList.stream()
+                        .anyMatch(w -> w.getHostelName() != null && 
+                                       w.getHostelName().replaceAll("\\s+", "").equalsIgnoreCase(studentHostel.replaceAll("\\s+", "")));
+                if (!hasWarden) {
+                    studentRepository.delete(student);
+                    System.out.println(">>> SWMS Cleanup: Deleted orphan student " + student.getStudentName() + " from unregistered hostel: " + studentHostel);
+                }
+            }
+        }
+
+        // Reset/delete legacy student records for vs grand/vsGrand to reset the bar chart as requested
+        java.util.List<Student> legacyStudents = studentRepository.findAll().stream()
+                .filter(s -> s.getHostelName() != null && 
+                             (s.getHostelName().replaceAll("\\s+", "").equalsIgnoreCase("vsgrand") ||
+                              s.getHostelName().replaceAll("\\s+", "").equalsIgnoreCase("vsgrandhostel")))
+                .toList();
+        for (Student s : legacyStudents) {
+            studentRepository.delete(s);
+            System.out.println(">>> SWMS Cleanup: Manually deleted legacy student " + s.getStudentName() + " from " + s.getHostelName());
+        }
+
+        // Remove legacy warden with username "nithin" or hostel "vs grand" to keep it fully reset
+        java.util.List<com.swms.entity.User> legacyWardens = userRepository.findAll().stream()
+                .filter(u -> u.getHostelName() != null && 
+                             (u.getHostelName().replaceAll("\\s+", "").equalsIgnoreCase("vsgrand") ||
+                              u.getUsername().equalsIgnoreCase("nithin")))
+                .toList();
+        for (com.swms.entity.User w : legacyWardens) {
+            userRepository.delete(w);
+            System.out.println(">>> SWMS Cleanup: Manually deleted legacy warden " + w.getUsername());
+        }
     }
 }

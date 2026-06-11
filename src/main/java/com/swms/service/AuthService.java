@@ -195,9 +195,21 @@ public class AuthService {
             if ("WARDEN".equals(warden.getRole())) {
                 if (warden.getHostelName() != null) {
                     studentRepository.deleteByHostelName(warden.getHostelName());
+                    
+                    // Also delete any other students where hostel name matches case/space insensitively
+                    String targetHostelClean = warden.getHostelName().replaceAll("\\s+", "").toLowerCase();
+                    java.util.List<com.swms.entity.Student> studentList = studentRepository.findAll();
+                    for (com.swms.entity.Student s : studentList) {
+                        if (s.getHostelName() != null) {
+                            String sHostelClean = s.getHostelName().replaceAll("\\s+", "").toLowerCase();
+                            if (sHostelClean.equals(targetHostelClean)) {
+                                studentRepository.delete(s);
+                            }
+                        }
+                    }
                 }
                 userRepository.delete(warden);
-                auditLogService.log(creator, "DELETE_WARDEN - Permanently deleted warden: " + warden.getUsername() + " and all student records in " + warden.getHostelName(), ipAddress);
+                auditLogService.log(creator, "DELETE_WARDEN - Permanently deleted warden: " + warden.getUsername() + " and all associated student records for hostel " + warden.getHostelName(), ipAddress);
             } else {
                 throw new IllegalArgumentException("Only warden accounts can be deleted");
             }
