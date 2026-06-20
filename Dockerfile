@@ -9,4 +9,4 @@ FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
 COPY --from=build /app/target/swms-1.0.jar swms.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "swms.jar"]
+ENTRYPOINT ["java", "-Djava.net.preferIPv4Stack=true", "-jar", "swms.jar"]
