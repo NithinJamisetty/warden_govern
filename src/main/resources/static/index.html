@@ -3,78 +3,409 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Welfare Management System (SWMS)</title>
-    <!-- Bootstrap 5 CSS -->
+    <title>SWMS.GOV – Student Welfare Management System | Official Government Portal</title>
+    <meta name="description" content="Official government portal for student hostel welfare management. Secure warden portal, student roster, MFA-protected access for State administration.">
+    <meta name="keywords" content="SWMS, student welfare, government portal, hostel management, warden portal, official">
+
+    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome 6 Icons -->
+    <!-- FontAwesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom CSS -->
+    <!-- SWMS Design System -->
     <link rel="stylesheet" href="/css/style.css">
+    <!-- PWA Settings -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0a1628">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('Service Worker registered successfully!', reg))
+                    .catch(err => console.error('Service Worker registration failed:', err));
+            });
+        }
+    </script>
 </head>
 <body>
+
+    <!-- ============================================================
+         ANNOUNCEMENT TICKER
+    ============================================================ -->
+    <div class="announcement-ticker" role="marquee" aria-label="Government announcements">
+        <div class="ticker-label">
+            <i class="fa-solid fa-bullhorn"></i> NOTICES
+        </div>
+        <div class="ticker-track">
+            <div class="ticker-content" id="ticker-content">
+                <span class="ticker-item"><i class="fa-solid fa-circle-info"></i> Scholarship verification portal now open for Class X &amp; XII students — submit documents by July 31, 2026</span>
+                <span class="ticker-item"><i class="fa-solid fa-shield-halved"></i> MFA mandatory for all warden logins effective 1st June 2026 — update Google Authenticator immediately</span>
+                <span class="ticker-item"><i class="fa-solid fa-calendar-check"></i> Annual hostel inspection scheduled for August 2026 — all wardens must submit compliance reports</span>
+                <span class="ticker-item"><i class="fa-solid fa-triangle-exclamation"></i> System maintenance window: Saturdays 2:00 AM – 4:00 AM. Plan operations accordingly</span>
+                <span class="ticker-item"><i class="fa-solid fa-users"></i> New hostel enrollment cycle open — district admins can register new facilities via the admin console</span>
+                <span class="ticker-item"><i class="fa-solid fa-circle-info"></i> Scholarship verification portal now open for Class X &amp; XII students — submit documents by July 31, 2026</span>
+                <span class="ticker-item"><i class="fa-solid fa-shield-halved"></i> MFA mandatory for all warden logins effective 1st June 2026 — update Google Authenticator immediately</span>
+                <span class="ticker-item"><i class="fa-solid fa-calendar-check"></i> Annual hostel inspection scheduled for August 2026 — all wardens must submit compliance reports</span>
+                <span class="ticker-item"><i class="fa-solid fa-triangle-exclamation"></i> System maintenance window: Saturdays 2:00 AM – 4:00 AM. Plan operations accordingly</span>
+                <span class="ticker-item"><i class="fa-solid fa-users"></i> New hostel enrollment cycle open — district admins can register new facilities via the admin console</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         OFFICIAL GOV BANNER
+    ============================================================ -->
+    <div class="official-banner py-2">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div class="text-secondary d-flex align-items-center gap-1" style="font-size:0.78rem;">
+                <svg width="14" height="16" viewBox="0 0 100 110" fill="none">
+                    <path d="M50 4 L90 20 L90 55 C90 77 71 96 50 103 C29 96 10 77 10 55 L10 20 Z" fill="#0a1628" stroke="#c9941a" stroke-width="5"/>
+                    <text x="50" y="67" text-anchor="middle" font-family="Arial" font-weight="900" font-size="48" fill="white">S</text>
+                </svg>
+                An official Government Web Portal. 
+                <a href="#" class="ms-1" onclick="event.preventDefault(); document.getElementById('gov-info-collapse').classList.toggle('d-none');">
+                    How you know <i class="fa-solid fa-chevron-down ms-0.5" style="font-size:0.6rem;"></i>
+                </a>
+            </div>
+            <div class="text-secondary d-none d-md-block" style="font-size:0.78rem;">
+                <i class="fa-solid fa-lock text-success me-1"></i> Secure .GOV Website
+            </div>
+        </div>
+    </div>
+
+    <!-- Expanded Info Banner -->
+    <div id="gov-info-collapse" class="official-banner-expanded py-4 d-none">
+        <div class="container">
+            <div class="row g-3">
+                <div class="col-md-6 d-flex gap-3">
+                    <i class="fa-solid fa-building-columns text-secondary fs-4 mt-1 flex-shrink-0"></i>
+                    <div>
+                        <strong>Official government websites use .gov</strong>
+                        <p class="text-secondary mb-0" style="font-size:0.88rem;">A <strong>.gov</strong> website belongs to an official government organization. Share sensitive information only on official, secure websites.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 d-flex gap-3">
+                    <i class="fa-solid fa-lock text-secondary fs-4 mt-1 flex-shrink-0"></i>
+                    <div>
+                        <strong>Secure .gov websites use HTTPS</strong>
+                        <p class="text-secondary mb-0" style="font-size:0.88rem;">A lock icon (<i class="fa-solid fa-lock text-success" style="font-size:0.75rem;"></i>) or <strong>https://</strong> means you've safely connected to the .gov website.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tri-Color Top Accent -->
     <div class="gov-top-bar"></div>
 
-    <!-- Government Portal Header -->
-    <header class="py-2 bg-white border-bottom shadow-sm">
-        <div class="container d-flex justify-content-between align-items-center flex-wrap">
-            <div class="d-flex align-items-center gap-3">
-                <i class="fa-solid fa-building-columns text-primary fs-2"></i>
-                <div>
-                    <span class="text-uppercase text-muted fw-bold d-block" style="font-size: 0.75rem; letter-spacing: 1px;">Government Welfare Department</span>
-                    <span class="h5 mb-0 fw-bold text-dark display-font">Hostel Portal (SWMS)</span>
-                </div>
-            </div>
-            <div class="d-flex align-items-center gap-2">
-                <span class="badge bg-success text-white px-3 py-2 rounded-pill"><i class="fa-solid fa-shield-halved me-2"></i>Secured Government Link</span>
+    <!-- ============================================================
+         NAVIGATION
+    ============================================================ -->
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top" id="main-navbar">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+                <svg width="40" height="40" viewBox="0 0 100 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M50 5 L92 22 L92 55 C92 78 72 98 50 105 C28 98 8 78 8 55 L8 22 Z" fill="url(#navShieldGrad)" stroke="#c9941a" stroke-width="3"/>
+                    <defs>
+                        <linearGradient id="navShieldGrad" x1="50" y1="5" x2="50" y2="105" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#1e3a5f"/>
+                            <stop offset="100%" stop-color="#0a1628"/>
+                        </linearGradient>
+                    </defs>
+                    <text x="50" y="52" text-anchor="middle" font-family="Arial" font-weight="900" font-size="22" fill="white">SW</text>
+                    <text x="50" y="73" text-anchor="middle" font-family="Arial" font-weight="900" font-size="14" fill="#c9941a" letter-spacing="2">MS</text>
+                    <path d="M28 80 L72 80" stroke="#c9941a" stroke-width="2" opacity="0.6"/>
+                </svg>
+                <span class="fw-bold">SWMS<span>.</span>GOV</span>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center gap-1">
+                    <li class="nav-item"><a class="nav-link nav-link-custom" href="#warden-services">Warden Services</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom" href="#student-services">Student Roster</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom" href="#additional-resources">Resources</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom" href="#faq">FAQ</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom" href="#contact">Contact</a></li>
+                    <li class="nav-item ms-lg-2">
+                        <a href="/warden/login.html" class="btn btn-primary-custom">
+                            <i class="fa-solid fa-lock me-2"></i>Warden Login
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
-    </header>
+    </nav>
 
-    <!-- Hero Section -->
-    <section class="hero-section">
+    <!-- ============================================================
+         VIDEO HERO SECTION
+    ============================================================ -->
+    <section class="hero-section" id="home">
+        <!-- Video Background -->
+        <div class="hero-video-bg" aria-hidden="true">
+            <iframe
+                src="https://www.youtube.com/embed/kRKQlqLI7BI?autoplay=1&mute=1&loop=1&playlist=kRKQlqLI7BI&controls=0&disablekb=1&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3"
+                frameborder="0"
+                allow="autoplay; encrypted-media"
+                allowfullscreen
+                title="Background">
+            </iframe>
+        </div>
+        <div class="hero-video-overlay"></div>
+
+        <!-- Hero Content -->
+        <div class="hero-content">
+            <div class="container">
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-7">
+                        <div class="hero-eyebrow">
+                            <i class="fa-solid fa-building-columns"></i>
+                            Official Government Portal · Ministry of Education
+                        </div>
+                        <h1 class="hero-title">
+                            Student Welfare
+                            <span class="highlight">Management System</span>
+                        </h1>
+                        <p class="hero-lead">
+                            The official digital portal for registered student hostels, secure warden authentication, facility roster management, and compliance reporting across all government districts.
+                        </p>
+                        <div class="hero-cta-group">
+                            <a href="/warden/login.html" class="btn btn-primary-custom btn-lg">
+                                <i class="fa-solid fa-lock me-2"></i>Warden Login
+                            </a>
+                            <a href="#warden-services" class="btn btn-navy-custom btn-lg">
+                                <i class="fa-solid fa-circle-info me-2"></i>Explore Services
+                            </a>
+                        </div>
+                        <!-- Stats Strip -->
+                        <div class="hero-stats-strip">
+                            <div class="hero-stat-item">
+                                <span class="stat-num">120+</span>
+                                <span class="stat-lbl">Active Hostels</span>
+                            </div>
+                            <div class="hero-stat-item">
+                                <span class="stat-num">15K+</span>
+                                <span class="stat-lbl">Students Tracked</span>
+                            </div>
+                            <div class="hero-stat-item">
+                                <span class="stat-num">100%</span>
+                                <span class="stat-lbl">MFA Secured</span>
+                            </div>
+                            <div class="hero-stat-item">
+                                <span class="stat-num">48+</span>
+                                <span class="stat-lbl">Districts Covered</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5 d-none d-lg-flex justify-content-end">
+                        <!-- Glassmorphism Status Panel -->
+                        <div class="hero-official-panel w-100">
+                            <div class="hero-panel-seal">
+                                <div class="seal-ring">
+                                    <div class="seal-text">
+                                        SW<br>MS
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hero-status-list">
+                                <div style="font-size:0.68rem; font-weight:800; text-transform:uppercase; letter-spacing:2px; color:rgba(255,255,255,0.35); margin-bottom:1rem;">Portal Live Status</div>
+                                <div class="status-row">
+                                    <div class="status-dot green"></div>
+                                    <span>Warden Portal — Operational</span>
+                                </div>
+                                <div class="status-row">
+                                    <div class="status-dot green"></div>
+                                    <span>MFA Systems — Online</span>
+                                </div>
+                                <div class="status-row">
+                                    <div class="status-dot green"></div>
+                                    <span>Student Registry — Live</span>
+                                </div>
+                                <div class="status-row">
+                                    <div class="status-dot green"></div>
+                                    <span>Admin Console — Active</span>
+                                </div>
+                                <div class="status-row">
+                                    <div class="status-dot gold"></div>
+                                    <span>Reports — Scheduled Queue</span>
+                                </div>
+                                <div style="margin-top:1.25rem; padding-top:1rem; border-top:1px solid rgba(255,255,255,0.08); font-size:0.73rem; color:rgba(255,255,255,0.35);">
+                                    <i class="fa-solid fa-lock me-1 text-success"></i> 256-bit SSL Encrypted Session
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Access Strip -->
+    <div class="hero-quicklinks">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-7 text-center text-lg-start mb-5 mb-lg-0">
-                    <h1 class="hero-title">
-                        Empowering Hostels.<br>
-                        Supporting Students.<br>
-                        <span>Building a Better Future.</span>
-                    </h1>
-                    <p class="hero-lead">
-                        Welcome to the Student Welfare Management System. A secure government application designed to streamline student registration, monitor amenities, and maintain high transparency across welfare hostels.
-                    </p>
-                    <div class="d-flex gap-3 justify-content-center justify-content-lg-start">
-                        <a href="/login.html" class="btn btn-primary-custom px-4 py-3"><i class="fa-solid fa-right-to-bracket me-2"></i>Warden Login Portal</a>
-                        <a href="#about" class="btn btn-outline-secondary px-4 py-3 border-2"><i class="fa-solid fa-circle-info me-2"></i>Learn More</a>
+            <div class="d-flex overflow-auto">
+                <a href="/warden/login.html" class="hero-quicklink-item"><i class="fa-solid fa-right-to-bracket"></i>Warden Login</a>
+                <a href="#warden-services" class="hero-quicklink-item"><i class="fa-solid fa-shield-halved"></i>Warden Services</a>
+                <a href="#student-services" class="hero-quicklink-item"><i class="fa-solid fa-users"></i>Student Roster</a>
+                <a href="#additional-resources" class="hero-quicklink-item"><i class="fa-solid fa-key"></i>MFA &amp; Security</a>
+                <a href="#faq" class="hero-quicklink-item"><i class="fa-solid fa-circle-question"></i>FAQ</a>
+                <a href="#contact" class="hero-quicklink-item"><i class="fa-solid fa-phone"></i>Contact Us</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         SERVICE FINDER
+    ============================================================ -->
+    <section class="portal-finder" aria-label="Find portal services">
+        <div class="container">
+            <div class="row g-4 align-items-stretch">
+                <div class="col-lg-7">
+                    <div class="service-finder-box">
+                        <div class="section-kicker"><i class="fa-solid fa-magnifying-glass"></i> Find Services</div>
+                        <h2>Search SWMS Portal</h2>
+                        <p>Find warden login, student roster, MFA setup, compliance manuals, and support contacts quickly.</p>
+                        <div class="service-search">
+                            <input type="search" aria-label="Search SWMS services" id="main-search" placeholder="Search by service, form, or topic…" onkeypress="if(event.key==='Enter') handleSearch(this.value)">
+                            <button type="button" onclick="handleSearch(document.getElementById('main-search').value)">
+                                <i class="fa-solid fa-magnifying-glass"></i> Search
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-5">
-                    <div class="p-4 bg-white rounded-4 shadow-lg border border-light">
-                        <div class="text-center mb-4">
-                            <i class="fa-solid fa-user-shield text-primary fs-1 mb-3"></i>
-                            <h3 class="fw-bold">Warden Access Control</h3>
-                            <p class="text-muted">Authorized wardens must complete password and two-factor authentication (MFA) to access dashboards.</p>
+                    <div class="agency-notice">
+                        <div class="notice-label"><i class="fa-solid fa-circle-info"></i> Official Notice</div>
+                        <h3>Authorized Access Only</h3>
+                        <p>SWMS administrative services are restricted to approved district and hostel personnel. Multi-factor authentication (TOTP) is mandatory for all warden dashboard access.</p>
+                        <a href="#faq">Review account requirements →</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Priority Actions Grid -->
+            <div class="priority-actions" aria-label="Priority portal actions">
+                <a href="/warden/login.html">
+                    <span><i class="fa-solid fa-lock"></i></span>
+                    <strong>Sign in as Warden</strong>
+                    <small>Access hostel dashboard</small>
+                </a>
+                <a href="/students.html">
+                    <span><i class="fa-solid fa-users-viewfinder"></i></span>
+                    <strong>Student Roster</strong>
+                    <small>View registered students</small>
+                </a>
+                <a href="#additional-resources">
+                    <span><i class="fa-solid fa-key"></i></span>
+                    <strong>Configure MFA</strong>
+                    <small>Authenticator setup help</small>
+                </a>
+                <a href="#contact">
+                    <span><i class="fa-solid fa-headset"></i></span>
+                    <strong>Contact Support</strong>
+                    <small>State helpdesk details</small>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         ANIMATED STATS COUNTER SECTION
+    ============================================================ -->
+    <section class="stats-section" id="stats">
+        <div class="container">
+            <div class="text-center mb-5 reveal">
+                <div class="section-kicker" style="justify-content:center; color:rgba(201,148,26,0.8);"><i class="fa-solid fa-chart-bar"></i> By the Numbers</div>
+                <h2 style="color:#fff; font-family:'Playfair Display',serif; font-size:2.4rem; margin-bottom:0.5rem;">SWMS At a Glance</h2>
+                <p style="color:rgba(255,255,255,0.4); font-size:0.95rem;">Real-time statistics from the Student Welfare Management System</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-3 col-6">
+                    <div class="stat-counter-card reveal reveal-delay-1">
+                        <div class="counter-icon"><i class="fa-solid fa-building"></i></div>
+                        <span class="counter-number" data-target="120" data-suffix="+">0+</span>
+                        <span class="counter-label">Active Hostels</span>
+                        <div class="counter-desc">Facilities in the SWMS network</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-counter-card reveal reveal-delay-2">
+                        <div class="counter-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                        <span class="counter-number" data-target="15000" data-suffix="+">0+</span>
+                        <span class="counter-label">Students Tracked</span>
+                        <div class="counter-desc">Active welfare beneficiaries</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-counter-card reveal reveal-delay-3">
+                        <div class="counter-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                        <span class="counter-number" data-target="100" data-suffix="%">0%</span>
+                        <span class="counter-label">MFA Enrolled</span>
+                        <div class="counter-desc">All accounts secured with TOTP</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-counter-card reveal reveal-delay-4">
+                        <div class="counter-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+                        <span class="counter-number" data-target="48" data-suffix="+">0+</span>
+                        <span class="counter-label">Districts Covered</span>
+                        <div class="counter-desc">Government jurisdictions active</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         SERVICE SECTIONS
+    ============================================================ -->
+
+    <!-- Track 1: Warden Services -->
+    <section class="track-section" id="warden-services">
+        <div class="container">
+            <div class="row g-0">
+                <div class="col-lg-3 col-md-4 pe-lg-5 mb-4 mb-md-0">
+                    <div class="track-header header-warden reveal">
+                        <div style="font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--gold);margin-bottom:0.5rem;">Category 01</div>
+                        <h2>Warden Services</h2>
+                        <p>Secure credentials, self-enrollment profiles, and administrative manuals for hostel operations.</p>
+                    </div>
+                    <div style="background:var(--gold-soft);border:1px solid rgba(201,148,26,0.2);border-radius:var(--radius-md);padding:1rem 1.25rem;" class="reveal">
+                        <div style="font-size:0.72rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.5rem;"><i class="fa-solid fa-circle-check me-1"></i>Eligibility</div>
+                        <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:0;">Pre-authorized wardens with valid District Admin enrollment.</p>
+                    </div>
+                </div>
+                <div class="col-lg-9 col-md-8">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="gov-service-tile reveal reveal-delay-1">
+                                <div class="gov-tile-icon" style="background:var(--navy-soft);color:var(--navy-light);"><i class="fa-solid fa-door-open"></i></div>
+                                <div class="gov-tile-body">
+                                    <div class="gov-tile-category">Portal Access</div>
+                                    <h3 class="gov-tile-title">Intake Form &amp; Login</h3>
+                                    <p class="gov-tile-desc">Verify pre-authorized login details, confirm registrations, and access the secure warden administration dashboard.</p>
+                                    <ul class="gov-tile-list">
+                                        <li>Pre-authorized credentials</li>
+                                        <li>Secure hostel dashboard</li>
+                                        <li>Real-time check-in log</li>
+                                    </ul>
+                                    <a href="/warden/login.html" class="gov-tile-link">Warden Login <i class="fa-solid fa-arrow-right"></i></a>
+                                </div>
+                            </div>
                         </div>
-                        <div class="d-grid gap-3">
-                            <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-3">
-                                <i class="fa-solid fa-key text-success fs-4"></i>
-                                <div>
-                                    <h6 class="mb-0 fw-bold">Encrypted Credentials</h6>
-                                    <small class="text-muted">Passwords are hashed using industry standard BCrypt algorithms.</small>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-3">
-                                <i class="fa-solid fa-mobile-screen-button text-warning fs-4"></i>
-                                <div>
-                                    <h6 class="mb-0 fw-bold">Multi-Factor Authentication</h6>
-                                    <small class="text-muted">Secured via Google Authenticator TOTP verification.</small>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-3">
-                                <i class="fa-solid fa-clipboard-list text-info fs-4"></i>
-                                <div>
-                                    <h6 class="mb-0 fw-bold">Immutable Audit Logs</h6>
-                                    <small class="text-muted">Every admin and warden action is tracked for accountability.</small>
+                        <div class="col-md-6">
+                            <div class="gov-service-tile reveal reveal-delay-2">
+                                <div class="gov-tile-icon" style="background:var(--navy-soft);color:var(--navy-light);"><i class="fa-solid fa-book-open"></i></div>
+                                <div class="gov-tile-body">
+                                    <div class="gov-tile-category">Operational Guides</div>
+                                    <h3 class="gov-tile-title">Official Guidelines &amp; Manuals</h3>
+                                    <p class="gov-tile-desc">Download compliance checklists, room safety guidelines, checkout templates, and monthly food audit forms.</p>
+                                    <ul class="gov-tile-list">
+                                        <li>Safety compliance</li>
+                                        <li>Checkout templates</li>
+                                        <li>Monthly dining audits</li>
+                                    </ul>
+                                    <a href="#" onclick="event.preventDefault(); showGovAlert('Accessing Directory', 'Opening the official Warden Manuals and Policy Directory in a secure session.', 'fa-folder-open text-primary', '/warden-manual.html');" class="gov-tile-link">View Resources <i class="fa-solid fa-arrow-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -84,78 +415,54 @@
         </div>
     </section>
 
-    <!-- Key Statistics -->
-    <section class="py-5 bg-white border-bottom">
+    <!-- Track 2: Student Services -->
+    <section class="track-section" id="student-services" style="background:var(--white);">
         <div class="container">
-            <div class="row text-center g-4">
-                <div class="col-md-4">
-                    <div class="p-3">
-                        <div class="stat-counter" id="hostel-counter">50+</div>
-                        <div class="stat-label">Active Hostels</div>
+            <div class="row g-0">
+                <div class="col-lg-3 col-md-4 pe-lg-5 mb-4 mb-md-0">
+                    <div class="track-header header-student reveal">
+                        <div style="font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--emerald);margin-bottom:0.5rem;">Category 02</div>
+                        <h2>Student Services</h2>
+                        <p>Roll directories, registration cards, and school welfare guides for hostel students.</p>
+                    </div>
+                    <div style="background:var(--emerald-soft);border:1px solid rgba(26,107,74,0.2);border-radius:var(--radius-md);padding:1rem 1.25rem;" class="reveal">
+                        <div style="font-size:0.72rem;font-weight:700;color:var(--emerald);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.5rem;"><i class="fa-solid fa-circle-check me-1"></i>Eligibility</div>
+                        <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:0;">Registered students enrolled in state-managed hostel facilities.</p>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="p-3">
-                        <div class="stat-counter" id="student-counter">12,000+</div>
-                        <div class="stat-label">Students Benefitting</div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="p-3">
-                        <div class="stat-counter" id="district-counter">15+</div>
-                        <div class="stat-label">Districts Tracked</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Video & Features Walkthrough -->
-    <section class="py-5 bg-light border-bottom">
-        <div class="container">
-            <div class="text-center mb-5">
-                <span class="badge bg-primary-light text-primary px-3 py-2 rounded-pill mb-2"><i class="fa-solid fa-play me-2"></i>Walkthrough Demonstration</span>
-                <h2 class="fw-bold display-font text-dark">How the SWMS Portal Works</h2>
-                <p class="text-muted mx-auto" style="max-width: 600px;">Watch our quick video guide explaining warden enrollment, MFA security registration, and student data audits.</p>
-            </div>
-            
-            <div class="row align-items-center g-5">
-                <!-- Video column -->
-                <div class="col-lg-6">
-                    <div class="ratio ratio-16x9 shadow-lg rounded-4 overflow-hidden border border-light">
-                        <!-- Premium Walkthrough Video Player using YouTube embed -->
-                        <iframe class="w-100 h-100 border-0" src="https://www.youtube.com/embed/xqz2gHsnWGA" title="SWMS Walkthrough Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                    </div>
-                </div>
-                <!-- Features details list -->
-                <div class="col-lg-6">
-                    <div class="d-flex gap-4 mb-4">
-                        <div class="flex-shrink-0 bg-primary text-white rounded-3 p-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; min-width: 60px;">
-                            <i class="fa-solid fa-user-check fs-4"></i>
+                <div class="col-lg-9 col-md-8">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="gov-service-tile reveal reveal-delay-1">
+                                <div class="gov-tile-icon" style="background:var(--emerald-soft);color:var(--emerald);"><i class="fa-solid fa-address-book"></i></div>
+                                <div class="gov-tile-body">
+                                    <div class="gov-tile-category">Student Registry</div>
+                                    <h3 class="gov-tile-title">Intake Form &amp; Directory</h3>
+                                    <p class="gov-tile-desc">Access student profile lookups, check active roll codes, and log check-in details for registered hostel students.</p>
+                                    <ul class="gov-tile-list">
+                                        <li>District roll lookups</li>
+                                        <li>Active status checker</li>
+                                        <li>Room assignments</li>
+                                    </ul>
+                                    <a href="/students.html" class="gov-tile-link" style="color:var(--emerald);">View Roster <i class="fa-solid fa-arrow-right"></i></a>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <h5 class="fw-bold text-dark">1. Warden Self-Registration</h5>
-                            <p class="text-muted mb-0">Wardens pre-authorized by District Admins complete registration by scanning their secure two-factor auth QR code and setting their password.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="d-flex gap-4 mb-4">
-                        <div class="flex-shrink-0 bg-success text-white rounded-3 p-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; min-width: 60px;">
-                            <i class="fa-solid fa-users-viewfinder fs-4"></i>
-                        </div>
-                        <div>
-                            <h5 class="fw-bold text-dark">2. Dynamic Student Roster</h5>
-                            <p class="text-muted mb-0">Wardens manage hostel student roll numbers, mobile numbers, classes, and track amenities. Updates reflect instantly on District charts.</p>
-                        </div>
-                    </div>
-
-                    <div class="d-flex gap-4">
-                        <div class="flex-shrink-0 bg-warning text-white rounded-3 p-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; min-width: 60px;">
-                            <i class="fa-solid fa-shield-halved fs-4"></i>
-                        </div>
-                        <div>
-                            <h5 class="fw-bold text-dark">3. Administrative Oversight</h5>
-                            <p class="text-muted mb-0">Super Admins and District Admins audit logins, monitor active wardens, trace actions via audit logs, and download aggregated reports.</p>
+                        <div class="col-md-6">
+                            <div class="gov-service-tile reveal reveal-delay-2">
+                                <div class="gov-tile-icon" style="background:var(--emerald-soft);color:var(--emerald);"><i class="fa-solid fa-shield-heart"></i></div>
+                                <div class="gov-tile-body">
+                                    <div class="gov-tile-category">Welfare Rules</div>
+                                    <h3 class="gov-tile-title">Welfare &amp; Safety Guidelines</h3>
+                                    <p class="gov-tile-desc">Read safety directives, study hours schedules, mess menu codes, and hostel rules for enrolled students.</p>
+                                    <ul class="gov-tile-list">
+                                        <li>Mandatory study hours</li>
+                                        <li>Approved dining menus</li>
+                                        <li>Emergency contacts</li>
+                                    </ul>
+                                    <a href="#" onclick="event.preventDefault(); showGovAlert('Accessing Guidelines', 'Opening the official Student Welfare Guidelines and Handbooks portal.', 'fa-book-open text-emerald', '/student-guidelines.html');" class="gov-tile-link" style="color:var(--emerald);">View Resources <i class="fa-solid fa-arrow-right"></i></a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -163,324 +470,812 @@
         </div>
     </section>
 
-    <!-- About Section -->
-    <section id="about" class="py-5">
+    <!-- Track 3: Additional Resources -->
+    <section class="track-section" id="additional-resources">
         <div class="container">
-            <div class="text-center mb-5">
-                <span class="badge bg-success-light text-success px-3 py-2 rounded-pill mb-2"><i class="fa-solid fa-circle-nodes me-2"></i>Welfare Infrastructure</span>
-                <h2 class="fw-bold display-font text-dark">Ensuring Administrative Transparency</h2>
-                <p class="text-muted mx-auto" style="max-width: 600px;">SWMS bridges the gap between state education departments, district supervisors, and hostel wardens on the ground.</p>
-            </div>
-            
-            <div class="row align-items-center g-5 mb-5">
-                <div class="col-lg-6">
-                    <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=800" alt="State Welfare Infrastructure" class="img-fluid rounded-4 shadow-lg border border-light">
+            <div class="row g-0">
+                <div class="col-lg-3 col-md-4 pe-lg-5 mb-4 mb-md-0">
+                    <div class="track-header header-additional reveal">
+                        <div style="font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--navy-light);margin-bottom:0.5rem;">Category 03</div>
+                        <h2>Additional Resources</h2>
+                        <p>Security overrides, multi-factor authentication, and platform support directories.</p>
+                    </div>
+                    <div style="background:var(--navy-soft);border:1px solid rgba(30,58,95,0.2);border-radius:var(--radius-md);padding:1rem 1.25rem;" class="reveal">
+                        <div style="font-size:0.72rem;font-weight:700;color:var(--navy-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.5rem;"><i class="fa-solid fa-circle-check me-1"></i>Eligibility</div>
+                        <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:0;">All authorized portal users requiring security setup or technical support.</p>
+                    </div>
                 </div>
-                <div class="col-lg-6">
-                    <h3 class="fw-bold text-dark display-font mb-4">Supporting Student Education & Welfare</h3>
-                    <p class="text-muted">
-                        The Student Welfare Management System is designed to record student attendance, manage hostel room inventories, track meal supplies, and record amenities provided by the government.
+                <div class="col-lg-9 col-md-8">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="gov-service-tile reveal reveal-delay-1">
+                                <div class="gov-tile-icon" style="background:var(--navy-soft);color:var(--navy-light);"><i class="fa-solid fa-key"></i></div>
+                                <div class="gov-tile-body">
+                                    <div class="gov-tile-category">Security Access</div>
+                                    <h3 class="gov-tile-title">Intake Form &amp; MFA</h3>
+                                    <p class="gov-tile-desc">Setup two-factor authenticator profiles, reset login security keys, and request administrative clearance.</p>
+                                    <ul class="gov-tile-list">
+                                        <li>Authenticator key setup</li>
+                                        <li>MFA key resets</li>
+                                        <li>Clearance requests</li>
+                                    </ul>
+                                    <a href="/warden/login.html" class="gov-tile-link" style="color:var(--navy-light);">MFA Setup <i class="fa-solid fa-arrow-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="gov-service-tile reveal reveal-delay-2">
+                                <div class="gov-tile-icon" style="background:var(--navy-soft);color:var(--navy-light);"><i class="fa-solid fa-headset"></i></div>
+                                <div class="gov-tile-body">
+                                    <div class="gov-tile-category">Portal Helpdesk</div>
+                                    <h3 class="gov-tile-title">Support Navigator Desk</h3>
+                                    <p class="gov-tile-desc">Submit support issues to state supervisors, view FAQ directories, or launch the virtual assistant chatbot.</p>
+                                    <ul class="gov-tile-list">
+                                        <li>Supervisor callbacks</li>
+                                        <li>Virtual chatbot assistant</li>
+                                        <li>Ticket request log</li>
+                                    </ul>
+                                    <a href="#" onclick="event.preventDefault(); document.getElementById('swms-chatbot-launcher').click();" class="gov-tile-link" style="color:var(--navy-light);">Get Support <i class="fa-solid fa-arrow-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         IMAGE GALLERY SECTION
+    ============================================================ -->
+    <section class="gallery-section" id="gallery">
+        <div class="container">
+            <div class="text-center mb-5 reveal">
+                <div class="section-kicker" style="justify-content:center;"><i class="fa-solid fa-images"></i> Portal Gallery</div>
+                <h2 style="font-family:'Playfair Display',serif; font-size:2.2rem; margin-bottom:0.5rem;">Our Facilities &amp; People</h2>
+                <p class="text-secondary">Serving thousands of students across government-managed residential facilities.</p>
+            </div>
+            <div class="gallery-grid reveal">
+                <div class="gallery-item">
+                    <img src="/assets/hostel-campus.png" alt="School hostel campus aerial view">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            Government Hostel Campus
+                            <span>State-managed residential facility</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="/assets/gov-building.png" alt="Government building">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            Ministry of Education
+                            <span>Administrative headquarters</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="/assets/students-study.png" alt="Students studying">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            Study Hall — Evening Session
+                            <span>Mandatory study hours enforced</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="/assets/warden-official.png" alt="Hostel warden at work">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            Warden Administration
+                            <span>Day-to-day hostel oversight</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="/assets/sports-field.png" alt="Student sports facility">
+                    <div class="gallery-overlay">
+                        <div class="gallery-caption">
+                            Sports &amp; Recreation
+                            <span>Athletic fields &amp; physical wellness</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         NEWS & UPDATES SECTION
+    ============================================================ -->
+    <section class="news-section" id="news">
+        <div class="container">
+            <div class="row align-items-end mb-5">
+                <div class="col-lg-7 reveal">
+                    <div class="section-kicker"><i class="fa-solid fa-newspaper"></i> Latest Updates</div>
+                    <h2 style="font-family:'Playfair Display',serif; font-size:2.2rem; margin-bottom:0.5rem;">News &amp; Circulars</h2>
+                    <p class="text-secondary">Official circulars, policy updates, and administrative notices from the Ministry of Education.</p>
+                </div>
+                <div class="col-lg-5 text-lg-end reveal">
+                    <a href="#" onclick="event.preventDefault();" class="btn btn-navy-custom">
+                        <i class="fa-solid fa-archive me-2"></i>View All Circulars
+                    </a>
+                </div>
+            </div>
+            <div class="circulars-container-outer reveal">
+                <button type="button" class="scroll-btn scroll-btn-left" onclick="scrollCirculars('left')" aria-label="Scroll left"><i class="fa-solid fa-chevron-left"></i></button>
+                <div class="circulars-scroll-wrapper" id="circulars-scroll-wrapper">
+                    <!-- Cards will be dynamically rendered here by JavaScript -->
+                </div>
+                <button type="button" class="scroll-btn scroll-btn-right" onclick="scrollCirculars('right')" aria-label="Scroll right"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         FAQ SECTION
+    ============================================================ -->
+    <section class="faq-section" id="faq">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mb-5 reveal">
+                    <div class="section-kicker"><i class="fa-solid fa-circle-question"></i> Help Center</div>
+                    <h2 style="font-family:'Playfair Display',serif; font-size:2.2rem; margin-bottom:0.5rem;">Frequently Asked Questions</h2>
+                    <p class="text-secondary">Quick answers to standard procedures, account credentials, and platform security access.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-9">
+                    <div class="faq-item reveal" onclick="toggleFaq(this)">
+                        <div class="faq-question">
+                            <span>How do I register a new warden account?</span>
+                            <i class="fa-solid fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Warden accounts are pre-authorized by the State Welfare Administrator. Go to the Warden Login page, select 'Create Account', and enter your pre-enrolled username and mobile number to complete password configuration and security registration with Google Authenticator.
+                        </div>
+                    </div>
+                    <div class="faq-item reveal reveal-delay-1" onclick="toggleFaq(this)">
+                        <div class="faq-question">
+                            <span>Is Multi-Factor Authentication (MFA) mandatory?</span>
+                            <i class="fa-solid fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Yes. Under state safety compliance rules, all administrative portal logins require a verified 6-digit TOTP token generated via Google Authenticator or registered security devices. This is enforced from June 2026.
+                        </div>
+                    </div>
+                    <div class="faq-item reveal reveal-delay-2" onclick="toggleFaq(this)">
+                        <div class="faq-question">
+                            <span>How do I modify student check-in records?</span>
+                            <i class="fa-solid fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Authenticated wardens can access the Student Management tab, search the student roster, select student records, and update room allocations, contact details, or check-out statuses directly from the dashboard.
+                        </div>
+                    </div>
+                    <div class="faq-item reveal reveal-delay-3" onclick="toggleFaq(this)">
+                        <div class="faq-question">
+                            <span>Who do I contact if I lose my mobile authenticator device?</span>
+                            <i class="fa-solid fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            If you cannot access your MFA token, contact the State Portal Support Navigator desk at (404) 492-7640 or submit a recovery ticket to support@swms.gov. Our team will verify your identity and issue a new MFA configuration key.
+                        </div>
+                    </div>
+                    <div class="faq-item reveal reveal-delay-4" onclick="toggleFaq(this)">
+                        <div class="faq-question">
+                            <span>What data is stored in the SWMS portal?</span>
+                            <i class="fa-solid fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            SWMS securely stores student roll numbers, class details, parent contact information, room assignments, and hostel occupancy records. All data is encrypted at rest and in transit. Warden credentials are hashed using BCrypt and never stored in plain text.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         ABOUT SECTION
+    ============================================================ -->
+    <section class="about-section" id="about">
+        <div class="container">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-5 reveal">
+                    <div class="about-image-wrap">
+                        <img src="/assets/warden-official.png" alt="SWMS Government Official">
+                        <div class="about-image-badge">
+                            <span>2019</span>
+                            Founded by Ministry of Education
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-7 reveal reveal-delay-2">
+                    <div class="section-kicker"><i class="fa-solid fa-building-columns"></i> Agency Information</div>
+                    <h2 style="font-family:'Playfair Display',serif; font-size:2.4rem; margin-bottom:1.5rem;">About the SWMS Portal</h2>
+                    <div class="about-quote">
+                        Providing secure administrative tools for government school hostel operators since 2019.
+                    </div>
+                    <p class="text-secondary mb-4" style="font-size:1rem; line-height:1.75;">
+                        The Student Welfare Management System (SWMS.GOV) is the official digital portal of the Ministry of Education. Our platform provides digital tools, support resources, and security guidelines for district school hostel wardens, administrative coordinators, and state supervisors.
                     </p>
-                    <p class="text-muted">
-                        Our digital system allows district administrators to view real-time enrollment analytics, preventing administrative delays and ensuring that resources are sent directly to the students who need them.
-                    </p>
-                    
-                    <div class="row g-3 mt-2">
-                        <div class="col-sm-6">
-                            <div class="p-3 bg-white rounded-3 border border-light shadow-sm">
-                                <h6 class="fw-bold text-primary mb-1"><i class="fa-solid fa-chart-line me-2"></i>Live Metrics</h6>
-                                <small class="text-muted">Track attendance and meal consumption updates daily.</small>
+                    <div class="agency-facts">
+                        <div class="agency-fact-row">
+                            <span>120+</span>
+                            <div>
+                                <strong>Active Hostels</strong>
+                                <p>Facilities currently represented in SWMS records.</p>
                             </div>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="p-3 bg-white rounded-3 border border-light shadow-sm">
-                                <h6 class="fw-bold text-success mb-1"><i class="fa-solid fa-file-pdf me-2"></i>Export Reports</h6>
-                                <small class="text-muted">Download complete PDF/Excel summaries in one click.</small>
+                        <div class="agency-fact-row">
+                            <span>15K+</span>
+                            <div>
+                                <strong>Students Tracked</strong>
+                                <p>Registered student occupancy and welfare records.</p>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- New detailed department matter block -->
-            <div class="p-4 p-md-5 rounded-4 shadow-sm" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border: 1px solid #cbd5e1;">
-                <div class="row g-4">
-                    <div class="col-md-4">
-                        <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-bullseye text-primary me-2"></i>Welfare Mission</h5>
-                        <p class="text-muted small mb-0">Provide clean, secure, and supportive housing environments for underprivileged students to nurture academic excellence and career success.</p>
-                    </div>
-                    <div class="col-md-4">
-                        <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-lock text-success me-2"></i>Two-Factor Security</h5>
-                        <p class="text-muted small mb-0">Protects students' personal records and government accounts from unauthorized logins using strong TOTP security policies.</p>
-                    </div>
-                    <div class="col-md-4">
-                        <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-clock-rotate-left text-warning me-2"></i>Transparent Audit Logs</h5>
-                        <p class="text-muted small mb-0">Keeps administrators informed about changes made to student rolls or configurations with fully non-repudiable audit logs.</p>
+                        <div class="agency-fact-row">
+                            <span>100%</span>
+                            <div>
+                                <strong>MFA Enrolled Accounts</strong>
+                                <p>All administrative accounts protected with multi-factor authentication.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
+    <!-- ============================================================
+         CONTACT SECTION
+    ============================================================ -->
+    <section class="contact-section" id="contact">
+        <div class="container">
+            <div class="mb-5 reveal">
+                <div class="section-kicker"><i class="fa-solid fa-address-book"></i> Contact Directory</div>
+                <h2 style="font-family:'Playfair Display',serif; font-size:2.2rem; margin-bottom:0.5rem;">Contact Us</h2>
+                <p class="text-secondary">Get in touch with State Welfare Portal coordinators and support navigators.</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="contact-info-box reveal reveal-delay-1">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <h3>Office Location</h3>
+                        <p>255 Capitol Street NE<br>Salem, OR 97310<br><span style="font-size:0.82rem; color:var(--text-muted);">Ministry of Education — Block C</span></p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="contact-info-box reveal reveal-delay-2">
+                        <i class="fa-solid fa-phone"></i>
+                        <h3>Telephone</h3>
+                        <p>(404) 492-7640<br>Monday to Friday, 9 AM – 5 PM<br><span style="font-size:0.82rem; color:var(--text-muted);">Emergency: 1800-XXX-SWMS (toll-free)</span></p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="contact-info-box reveal reveal-delay-3">
+                        <i class="fa-solid fa-envelope"></i>
+                        <h3>Online Support</h3>
+                        <p>support@swms.gov<br>Response within 2 business days<br><span style="font-size:0.82rem; color:var(--text-muted);">Use subject: [PORTAL HELP]</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         FOOTER
+    ============================================================ -->
     <footer class="gov-footer">
         <div class="container">
-            <div class="row g-4">
-                <div class="col-lg-5">
-                    <h5 class="fw-bold mb-3"><i class="fa-solid fa-building-columns me-2"></i>SWMS</h5>
-                    <p class="text-muted">The Student Welfare Management System is a proprietary portal of the Welfare and Education Department. Access is restricted to authorized administrative personnel and wardens only.</p>
+            <div class="row g-5">
+                <!-- Col 1: Branding -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <svg width="44" height="44" viewBox="0 0 100 110" fill="none">
+                            <path d="M50 5 L92 22 L92 55 C92 78 72 98 50 105 C28 98 8 78 8 55 L8 22 Z" fill="url(#footerGrad)" stroke="#c9941a" stroke-width="3"/>
+                            <defs>
+                                <linearGradient id="footerGrad" x1="50" y1="5" x2="50" y2="105" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0%" stop-color="#1e3a5f"/>
+                                    <stop offset="100%" stop-color="#0a1628"/>
+                                </linearGradient>
+                            </defs>
+                            <text x="50" y="52" text-anchor="middle" font-family="Arial" font-weight="900" font-size="22" fill="white">SW</text>
+                            <text x="50" y="73" text-anchor="middle" font-family="Arial" font-weight="900" font-size="14" fill="#c9941a" letter-spacing="2">MS</text>
+                            <path d="M28 80 L72 80" stroke="#c9941a" stroke-width="2" opacity="0.6"/>
+                        </svg>
+                        <h4 class="text-white mb-0" style="font-family:var(--font-heading);font-weight:800;letter-spacing:0.5px;">SWMS.GOV</h4>
+                    </div>
+                    <p style="font-size:0.85rem;line-height:1.65;color:rgba(255,255,255,0.38);margin-bottom:1.5rem;">
+                        Official administrative portal for hostel check-in registries, warden multi-factor profile setups, and safety compliance reports. A service of the Ministry of Education.
+                    </p>
+                    <div style="display:flex;gap:0.75rem;">
+                        <a href="#" onclick="event.preventDefault();" style="width:36px;height:36px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);font-size:0.85rem;text-decoration:none;transition:all 0.2s ease;" onmouseover="this.style.background='rgba(201,148,26,0.15)';this.style.color='#c9941a';" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.color='rgba(255,255,255,0.4)';"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" onclick="event.preventDefault();" style="width:36px;height:36px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);font-size:0.85rem;text-decoration:none;transition:all 0.2s ease;" onmouseover="this.style.background='rgba(201,148,26,0.15)';this.style.color='#c9941a';" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.color='rgba(255,255,255,0.4)';"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="#" onclick="event.preventDefault();" style="width:36px;height:36px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);font-size:0.85rem;text-decoration:none;transition:all 0.2s ease;" onmouseover="this.style.background='rgba(201,148,26,0.15)';this.style.color='#c9941a';" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.color='rgba(255,255,255,0.4)';"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
                 </div>
-                <div class="col-lg-3 offset-lg-1">
-                    <h6 class="fw-bold mb-3 text-white">System Information</h6>
-                    <ul class="list-unstyled d-flex flex-column gap-2">
-                        <li><a href="/login.html">Warden Login</a></li>
-                        <li><a href="/admin/login.html">Admin Console Login</a></li>
-                        <li><a href="#about">About Project</a></li>
+
+                <!-- Col 2: Portal Services -->
+                <div class="col-lg-2 col-md-6 ms-lg-auto">
+                    <div class="footer-title">Portal Services</div>
+                    <ul class="footer-links">
+                        <li><a href="/warden/login.html"><i class="fa-solid fa-lock me-2" style="font-size:0.7rem;"></i>Warden Portal</a></li>
+                        <li><a href="/students.html"><i class="fa-solid fa-users me-2" style="font-size:0.7rem;"></i>Student Roster</a></li>
+                        <li><a href="/dashboard.html"><i class="fa-solid fa-chart-line me-2" style="font-size:0.7rem;"></i>Dashboard</a></li>
+                        <li><a href="#faq"><i class="fa-solid fa-circle-question me-2" style="font-size:0.7rem;"></i>FAQ</a></li>
                     </ul>
                 </div>
-                <div class="col-lg-3">
-                    <h6 class="fw-bold mb-3 text-white">Security & Support</h6>
-                    <p class="text-muted mb-0">For issues relating to MFA setup, locked accounts, or warden registrations, please contact your District Admin.</p>
+
+                <!-- Col 3: Government -->
+                <div class="col-lg-2 col-md-6">
+                    <div class="footer-title">Government</div>
+                    <ul class="footer-links">
+                        <li><a href="#about">About SWMS</a></li>
+                        <li><a href="#news">Circulars</a></li>
+                        <li><a href="#contact">Contact Office</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Support -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="footer-title">State Support</div>
+                    <ul class="footer-links">
+                        <li><span style="color:rgba(255,255,255,0.4);font-size:0.85rem;"><i class="fa-solid fa-phone me-2" style="font-size:0.7rem;"></i>(404) 492-7640</span></li>
+                        <li><a href="mailto:support@swms.gov"><i class="fa-solid fa-envelope me-2" style="font-size:0.7rem;"></i>support@swms.gov</a></li>
+                        <li><span style="color:rgba(255,255,255,0.4);font-size:0.85rem;"><i class="fa-solid fa-clock me-2" style="font-size:0.7rem;"></i>Mon–Fri, 9am–5pm</span></li>
+                        <li><span style="color:rgba(255,255,255,0.4);font-size:0.85rem;"><i class="fa-solid fa-headset me-2" style="font-size:0.7rem;"></i>1800-XXX-SWMS (toll-free)</span></li>
+                    </ul>
                 </div>
             </div>
-            <div class="gov-footer-bottom text-center">
-                <p class="mb-0">© 2026 Student Welfare Management System (SWMS) v1.0. All Rights Reserved. Built with Spring Security and Supabase.</p>
+
+            <hr class="footer-divider">
+
+            <div class="footer-bottom">
+                <div class="row align-items-center g-3">
+                    <div class="col-md-7">
+                        <p class="mb-0">© 2026 Student Welfare Management System (SWMS.GOV). An Official Government Web Application. All Rights Reserved.</p>
+                    </div>
+                    <div class="col-md-5 text-md-end">
+                        <div class="d-flex justify-content-center justify-content-md-end gap-3 flex-wrap" style="font-size:0.78rem;">
+                            <a href="#" onclick="event.preventDefault();">Accessibility</a>
+                            <span>•</span>
+                            <a href="#" onclick="event.preventDefault();">Privacy &amp; Security</a>
+                            <span>•</span>
+                            <a href="#" onclick="event.preventDefault();">Terms &amp; Conditions</a>
+                            <span>•</span>
+                            <a href="#" onclick="event.preventDefault();">Sitemap</a>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <div class="footer-flag-bar"></div>
         </div>
     </footer>
 
-    <!-- Chatbot Floating Button -->
-    <div id="swms-chatbot-launcher" onclick="toggleChatbot()">
+    <!-- ============================================================
+         CHATBOT
+    ============================================================ -->
+    <div id="swms-chatbot-launcher" onclick="toggleChatbot()" role="button" aria-label="Open support chat" tabindex="0">
         <i class="fa-solid fa-comment-dots fs-3"></i>
         <span class="launcher-tooltip">Need Help? Chat here</span>
     </div>
 
-    <!-- Chatbot Container Window -->
-    <div id="swms-chatbot-window" class="shadow-lg border border-light d-none">
-        <!-- Header -->
+    <div id="swms-chatbot-window" class="d-none">
         <div class="chatbot-header d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-2 text-white">
                 <i class="fa-solid fa-robot fs-4"></i>
                 <div>
-                    <h6 class="fw-bold mb-0" style="font-size: 0.95rem;">SWMS Support Bot</h6>
-                    <span class="badge bg-success-light text-success fw-bold" style="font-size: 0.65rem;"><i class="fa-solid fa-circle me-1 animate-pulse"></i>Online Helpdesk</span>
+                    <h6 class="fw-bold mb-0" style="font-size:0.95rem;">SWMS Support Bot</h6>
+                    <span class="badge bg-success-light text-success fw-bold" style="font-size:0.63rem;"><i class="fa-solid fa-circle me-1 animate-pulse"></i>Online Helpdesk</span>
                 </div>
             </div>
-            <button onclick="toggleChatbot()" class="btn-close btn-close-white" aria-label="Close" style="filter: invert(1); opacity: 0.8;"></button>
+            <button class="btn btn-close btn-close-white btn-sm" onclick="toggleChatbot()"></button>
         </div>
-
-        <!-- Chat Messages Area -->
-        <div id="chatbot-messages" class="chatbot-messages">
+        <div class="chatbot-messages" id="chat-messages-container">
             <div class="message-bubble bot-message">
-                Hello! I am the SWMS Support Assistant. How can I help you today? Please select an option:
-            </div>
-            <div class="chatbot-options" id="chatbot-initial-options">
-                <button onclick="selectBotOption('concern')" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-circle-exclamation me-1.5"></i>Report a Hostel Concern / Issue</button>
-                <button onclick="selectBotOption('info')" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-id-card-clip me-1.5"></i>Inquire Warden Self-Registration</button>
-                <button onclick="selectBotOption('general')" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-question-circle me-1.5"></i>General Inquiry</button>
+                Hello! Welcome to SWMS support. I can help guide you to the correct tools. Please select an option:
+                <div class="chatbot-options">
+                    <button class="btn" onclick="sendOptionQuery('Warden Login Portal')">Warden Login Portal</button>
+                    <button class="btn" onclick="sendOptionQuery('Student Occupancy Roster')">Student Occupancy Roster</button>
+                    <button class="btn" onclick="sendOptionQuery('Setup MFA Authenticator')">Setup MFA Authenticator</button>
+                    <button class="btn" onclick="sendOptionQuery('FAQ &amp; Support Directory')">FAQ &amp; Support Directory</button>
+                </div>
             </div>
         </div>
-
-        <!-- Chat Input Form -->
-        <div id="chatbot-form-input" class="chatbot-input-container">
+        <div class="chatbot-input-container">
             <div class="input-group">
-                <input type="text" id="chatbot-text-input" class="form-control form-control-sm" placeholder="Type message...">
-                <button onclick="submitChatbotInput()" class="btn btn-primary btn-sm"><i class="fa-solid fa-paper-plane"></i></button>
+                <input type="text" id="chat-user-input" class="form-control form-control-sm border-end-0" placeholder="Type a message…" onkeypress="handleChatKeyPress(event)">
+                <button class="btn btn-outline-secondary border-start-0" type="button" onclick="sendMessage()"><i class="fa-solid fa-paper-plane" style="color:var(--navy-light);"></i></button>
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap JS Bundle -->
+    <!-- ============================================================
+         SCRIPTS
+    ============================================================ -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Chatbot Script Logic -->
+    <!-- ============================================================
+         CUSTOM GOVERNMENT DIALOG (MODAL)
+         ============================================================ -->
+    <dialog id="gov-custom-alert" class="gov-dialog" aria-labelledby="gov-alert-title" aria-describedby="gov-alert-desc">
+        <div class="gov-dialog-header">
+            <span class="gov-dialog-crest"><i class="fa-solid fa-shield-halved"></i> SWMS.GOV System Notification</span>
+            <button type="button" class="gov-dialog-close" onclick="closeGovAlert()" aria-label="Close dialog">&times;</button>
+        </div>
+        <div class="gov-dialog-body">
+            <div class="gov-dialog-icon" id="gov-alert-icon-container">
+                <i class="fa-solid fa-circle-info text-primary"></i>
+            </div>
+            <div class="gov-dialog-text">
+                <h3 id="gov-alert-title">Notification</h3>
+                <p id="gov-alert-desc">Alert message details go here.</p>
+            </div>
+        </div>
+        <div class="gov-dialog-footer">
+            <button type="button" class="btn-navy-custom px-4 py-2" id="gov-alert-ok-btn" onclick="handleAlertConfirm()">OK</button>
+        </div>
+    </dialog>
+
     <script>
-        let chatbotState = {
-            step: 'initial', // 'initial', 'concern_name', 'concern_mobile', 'concern_message'
-            name: '',
-            mobile: '',
-            message: ''
-        };
+        // ─── Global Error Handler for Debugging ─────────────────────
+        window.addEventListener('error', function(event) {
+            console.error("SWMS script error:", event.error);
+            const debugDiv = document.createElement('div');
+            debugDiv.style.position = 'fixed';
+            debugDiv.style.bottom = '10px';
+            debugDiv.style.left = '10px';
+            debugDiv.style.background = 'rgba(255,0,0,0.9)';
+            debugDiv.style.color = '#fff';
+            debugDiv.style.padding = '10px';
+            debugDiv.style.zIndex = '9999';
+            debugDiv.style.fontSize = '12px';
+            debugDiv.style.borderRadius = '5px';
+            debugDiv.innerHTML = '<strong>Error:</strong> ' + event.message + ' at ' + event.filename + ':' + event.lineno;
+            document.body.appendChild(debugDiv);
+        });
 
-        function toggleChatbot() {
-            const windowEl = document.getElementById("swms-chatbot-window");
-            windowEl.classList.toggle("d-none");
+        // ─── Navbar scroll effect ───────────────────────────────────
+        const navbar = document.getElementById('main-navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // ─── Scroll reveal ──────────────────────────────────────────
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        // ─── Animated counters ──────────────────────────────────────
+        function animateCounter(el) {
+            const target = parseInt(el.getAttribute('data-target'));
+            const suffix = el.getAttribute('data-suffix') || '';
+            let current = 0;
+            const duration = 2000;
+            const step = target / (duration / 16);
+            const timer = setInterval(() => {
+                current = Math.min(current + step, target);
+                const display = target >= 1000
+                    ? (current >= 1000 ? Math.floor(current / 1000) + 'K' : Math.floor(current).toString())
+                    : Math.floor(current).toString();
+                el.innerHTML = display + '<span class="counter-suffix">' + suffix + '</span>';
+                if (current >= target) clearInterval(timer);
+            }, 16);
+        }
+
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.querySelectorAll('.counter-number').forEach(animateCounter);
+                    counterObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+
+        document.querySelectorAll('#stats').forEach(el => counterObserver.observe(el));
+
+        // ─── FAQ toggle ─────────────────────────────────────────────
+        function toggleFaq(element) {
+            document.querySelectorAll('.faq-item').forEach(item => {
+                if (item !== element && item.classList.contains('active')) {
+                    item.classList.remove('active');
+                    item.querySelector('.faq-answer').style.maxHeight = '0px';
+                }
+            });
+            element.classList.toggle('active');
+            const answer = element.querySelector('.faq-answer');
+            answer.style.maxHeight = element.classList.contains('active') ? answer.scrollHeight + 'px' : '0px';
+        }
+
+        // ─── Search ─────────────────────────────────────────────────
+        function handleSearch(query) {
+            if (!query.trim()) return;
+            const q = query.toLowerCase().trim();
             
-            if (!windowEl.classList.contains("d-none")) {
-                windowEl.style.transform = "translateY(20px)";
-                windowEl.style.opacity = "0";
-                setTimeout(() => {
-                    windowEl.style.transform = "translateY(0)";
-                    windowEl.style.opacity = "1";
-                }, 50);
-            }
-        }
+            // Clear any previous FAQ highlights
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.style.border = '';
+                item.style.boxShadow = '';
+                item.classList.remove('active');
+                item.querySelector('.faq-answer').style.maxHeight = '0px';
+            });
 
-        function appendBotMessage(text) {
-            const container = document.getElementById("chatbot-messages");
-            const bubble = document.createElement("div");
-            bubble.className = "message-bubble bot-message animate-fade-in";
-            bubble.textContent = text;
-            container.appendChild(bubble);
-            container.scrollTop = container.scrollHeight;
-        }
-
-        function appendUserMessage(text) {
-            const container = document.getElementById("chatbot-messages");
-            const bubble = document.createElement("div");
-            bubble.className = "message-bubble user-message animate-fade-in";
-            bubble.textContent = text;
-            container.appendChild(bubble);
-            container.scrollTop = container.scrollHeight;
-        }
-
-        function selectBotOption(option) {
-            document.getElementById("chatbot-initial-options").classList.add("d-none");
-
-            if (option === 'concern') {
-                appendUserMessage("Report a Hostel Concern / Issue");
-                chatbotState.step = 'concern_name';
-                setTimeout(() => {
-                    appendBotMessage("I will register your concern directly for District Administration review. Please enter your name:");
-                    document.getElementById("chatbot-text-input").focus();
-                }, 500);
-            } else if (option === 'info') {
-                appendUserMessage("Inquire Warden Self-Registration");
-                setTimeout(() => {
-                    appendBotMessage("Hostel Wardens must be pre-authorized by their District Admin. Once authorized, click 'Warden Login Portal' to configure your password and scan the MFA QR Code.");
-                    resetChatbot();
-                }, 500);
-            } else if (option === 'general') {
-                appendUserMessage("General Inquiry");
-                setTimeout(() => {
-                    appendBotMessage("The SWMS Portal helps track student enrollment and hostel amenities across the state. Contact system support at support@swms.gov.in for specific administrative assistance.");
-                    resetChatbot();
-                }, 500);
-            }
-        }
-
-        async function submitChatbotInput() {
-            const inputEl = document.getElementById("chatbot-text-input");
-            const val = inputEl.value.trim();
-            if (!val) return;
-
-            inputEl.value = "";
-            appendUserMessage(val);
-
-            // Handle custom text queries when chatbot is in initial state
-            if (chatbotState.step === 'initial') {
-                const lowerVal = val.toLowerCase();
-                
-                // Check for exit/negative responses to end conversation gracefully
-                const exitPhrases = ["no", "nope", "nothing", "none", "no thanks", "no, thanks", "thanks", "thank you", "bye", "goodbye", "exit", "ok", "okay", "fine"];
-                if (exitPhrases.some(phrase => lowerVal === phrase || lowerVal.startsWith(phrase + " ") || lowerVal.endsWith(" " + phrase))) {
-                    document.getElementById("chatbot-initial-options").classList.add("d-none");
-                    setTimeout(() => {
-                        appendBotMessage("Thank you for using the SWMS Support Assistant. Have a pleasant day! Feel free to type anything if you change your mind.");
-                        chatbotState = {
-                            step: 'initial',
-                            name: '',
-                            mobile: '',
-                            message: ''
-                        };
-                    }, 500);
-                    return;
-                }
-
-                // Hide options block temporarily while handling query
-                document.getElementById("chatbot-initial-options").classList.add("d-none");
-                
-                if (lowerVal.includes("concern") || lowerVal.includes("report") || lowerVal.includes("issue") || lowerVal.includes("complain") || lowerVal.includes("problem") || lowerVal.includes("ticket")) {
-                    chatbotState.step = 'concern_name';
-                    setTimeout(() => {
-                        appendBotMessage("I will register your concern directly for District Administration review. Please enter your name:");
-                        document.getElementById("chatbot-text-input").focus();
-                    }, 500);
-                } else if (lowerVal.includes("warden") || lowerVal.includes("register") || lowerVal.includes("self") || lowerVal.includes("signup") || lowerVal.includes("mfa") || lowerVal.includes("scan")) {
-                    setTimeout(() => {
-                        appendBotMessage("Hostel Wardens must be pre-authorized by their District Admin. Once authorized, click 'Warden Login Portal' to configure your password and scan the MFA QR Code.");
-                        resetChatbot();
-                    }, 500);
-                } else {
-                    setTimeout(() => {
-                        appendBotMessage("I am the SWMS Support Bot. For specific reports, you can start a ticket by typing 'report' or clicking the options below. You can also email support@swms.gov.in.");
-                        resetChatbot();
-                    }, 500);
-                }
+            // 1. Check for specific portal sections
+            if (q.includes('warden') || q.includes('login') || q.includes('admin')) {
+                window.location.hash = 'warden-services';
+                showGovAlert('Portal Search', 'Found resources matching "<strong>' + escapeHtml(query) + '</strong>" under Warden Services.', 'fa-magnifying-glass text-primary');
+                return;
+            } 
+            if (q.includes('student') || q.includes('roster') || q.includes('roll')) {
+                window.location.hash = 'student-services';
+                showGovAlert('Portal Search', 'Found resources matching "<strong>' + escapeHtml(query) + '</strong>" under Student Services.', 'fa-magnifying-glass text-primary');
+                return;
+            } 
+            if (q.includes('mfa') || q.includes('authenticator') || q.includes('security') || q.includes('totp') || q.includes('otp')) {
+                window.location.hash = 'additional-resources';
+                showGovAlert('Portal Search', 'Found resources matching "<strong>' + escapeHtml(query) + '</strong>" under Additional Resources (MFA & Security).', 'fa-shield-halved text-primary');
                 return;
             }
 
-            if (chatbotState.step === 'concern_name') {
-                chatbotState.name = val;
-                chatbotState.step = 'concern_mobile';
-                setTimeout(() => {
-                    appendBotMessage("Thank you, " + val + ". Please enter your mobile number:");
-                }, 500);
-            } else if (chatbotState.step === 'concern_mobile') {
-                chatbotState.mobile = val;
-                chatbotState.step = 'concern_message';
-                setTimeout(() => {
-                    appendBotMessage("Finally, please describe your concern/issue in detail:");
-                }, 500);
-            } else if (chatbotState.step === 'concern_message') {
-                chatbotState.message = val;
-                chatbotState.step = 'initial';
-                
-                appendBotMessage("Submitting your concern to the admin dashboard...");
-                
-                try {
-                    const res = await fetch("/api/concerns", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            name: chatbotState.name,
-                            mobileNumber: chatbotState.mobile,
-                            message: chatbotState.message
-                        })
-                    });
-                    
-                    if (res.ok) {
-                        setTimeout(() => {
-                            appendBotMessage("Thank you! Your concern has been submitted successfully to the Admin Console. The administrator will view it shortly.");
-                            resetChatbot();
-                        }, 1000);
-                    } else {
-                        const errData = await res.json();
-                        setTimeout(() => {
-                            appendBotMessage("Error: " + (errData.error || "Failed to submit. Please try again."));
-                            resetChatbot();
-                        }, 1000);
-                    }
-                } catch (e) {
-                    setTimeout(() => {
-                        appendBotMessage("Unable to connect to SWMS Support servers. Please try again later.");
-                        resetChatbot();
-                    }, 1000);
+            // 2. Perform FAQ search
+            let matches = [];
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                const questionText = item.querySelector('.faq-question').textContent.toLowerCase();
+                const answerText = item.querySelector('.faq-answer').textContent.toLowerCase();
+                if (questionText.includes(q) || answerText.includes(q)) {
+                    matches.push(item);
                 }
+            });
+
+            if (matches.length > 0) {
+                // Scroll to FAQ section
+                window.location.hash = 'faq';
+                
+                // Highlight and expand matching FAQs
+                matches.forEach((item, index) => {
+                    item.style.border = '2px solid var(--gold)';
+                    item.style.boxShadow = 'var(--shadow-gold)';
+                    
+                    // Expand
+                    item.classList.add('active');
+                    const answer = item.querySelector('.faq-answer');
+                    answer.style.maxHeight = answer.scrollHeight + 'px';
+                    
+                    // Scroll the first match into view
+                    if (index === 0) {
+                        setTimeout(() => {
+                            item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 300);
+                    }
+                });
+
+                showGovAlert('Search Results Found', 'Found <strong>' + matches.length + '</strong> matching FAQ topic(s) for "<strong>' + escapeHtml(query) + '</strong>" highlighted below.', 'fa-circle-question text-gold');
+            } else {
+                // General fallback to FAQ section
+                window.location.hash = 'faq';
+                showGovAlert('Portal Search', 'Showing general results matching "<strong>' + escapeHtml(query) + '</strong>". No direct FAQ matches were found.', 'fa-circle-info text-primary');
             }
         }
 
-        function resetChatbot() {
-            chatbotState = {
-                step: 'initial',
-                name: '',
-                mobile: '',
-                message: ''
-            };
-            setTimeout(() => {
-                appendBotMessage("Do you have any other concerns or inquiries?");
-                document.getElementById("chatbot-initial-options").classList.remove("d-none");
-            }, 1500);
+        // ─── Chatbot ─────────────────────────────────────────────────
+        function toggleChatbot() {
+            const chatWin = document.getElementById('swms-chatbot-window');
+            chatWin.classList.toggle('d-none');
         }
 
-        document.getElementById("chatbot-text-input").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                submitChatbotInput();
+        function sendOptionQuery(optionText) {
+            addMessage(optionText, 'user-message');
+            setTimeout(() => {
+                let reply = '';
+                if (optionText.includes('Warden Login')) {
+                    reply = `To log in as a registered warden, go to <a href='/warden/login.html' class='text-decoration-underline fw-bold'>Warden Login</a> directly.`;
+                } else if (optionText.includes('Roster')) {
+                    reply = `The active student registry is under Student Services. Open it at <a href='/students.html' class='text-decoration-underline fw-bold'>View Roster</a>.`;
+                } else if (optionText.includes('MFA')) {
+                    reply = `Set up your MFA by going to the Warden Login screen and clicking 'Configure MFA' to scan your authenticator QR code.`;
+                } else {
+                    reply = `Please review our FAQ section or call (404) 492-7640 to speak with a portal navigator.`;
+                }
+                addMessage(reply, 'bot-message');
+            }, 700);
+        }
+
+        function addMessage(text, cls) {
+            const container = document.getElementById('chat-messages-container');
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble ' + cls;
+            bubble.innerHTML = text;
+            container.appendChild(bubble);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-user-input');
+            const text = input.value.trim();
+            if (!text) return;
+            addMessage(text, 'user-message');
+            input.value = '';
+            setTimeout(() => {
+                const q = text.toLowerCase();
+                let reply = '';
+                if (q.includes('warden') || q.includes('login')) {
+                    reply = `Please visit the <a href='/warden/login.html' class='fw-bold text-decoration-underline'>Warden Login</a> page.`;
+                } else if (q.includes('student') || q.includes('roster')) {
+                    reply = `You can view the student roster at <a href='/students.html' class='fw-bold text-decoration-underline'>Student Directory</a>.`;
+                } else if (q.includes('mfa') || q.includes('authenticator') || q.includes('otp')) {
+                    reply = `MFA is configured during the login flow. Visit Warden Login → Create Account → Scan QR.`;
+                } else if (q.includes('hello') || q.includes('hi') || q.includes('help')) {
+                    reply = `Hello! I'm the SWMS support bot. How can I help you today?`;
+                } else {
+                    reply = `For assistance, please call <strong>(404) 492-7640</strong> or email <strong>support@swms.gov</strong>.`;
+                }
+                addMessage(reply, 'bot-message');
+            }, 700);
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') sendMessage();
+        }
+
+        // ─── Custom Government Alert/Dialog ─────────────────────────
+        let alertRedirectUrl = null;
+
+        function showGovAlert(title, message, iconClass = 'fa-circle-info text-primary', redirectUrl = null) {
+            const dialog = document.getElementById('gov-custom-alert');
+            const titleElem = document.getElementById('gov-alert-title');
+            const descElem = document.getElementById('gov-alert-desc');
+            const iconContainer = document.getElementById('gov-alert-icon-container');
+            const okBtn = document.getElementById('gov-alert-ok-btn');
+
+            titleElem.textContent = title;
+            descElem.innerHTML = message;
+            iconContainer.innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
+            
+            alertRedirectUrl = redirectUrl;
+            if (redirectUrl) {
+                okBtn.textContent = "Proceed to Portal";
+            } else {
+                okBtn.textContent = "OK";
+            }
+
+            dialog.showModal();
+        }
+
+        function closeGovAlert() {
+            const dialog = document.getElementById('gov-custom-alert');
+            dialog.close();
+            alertRedirectUrl = null;
+        }
+
+        function handleAlertConfirm() {
+            const dialog = document.getElementById('gov-custom-alert');
+            dialog.close();
+            if (alertRedirectUrl) {
+                window.open(alertRedirectUrl, '_blank');
+                alertRedirectUrl = null;
+            }
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        // Dismiss modal by clicking outside it (backdrop clicking)
+        document.getElementById('gov-custom-alert').addEventListener('click', function(event) {
+            const rect = this.getBoundingClientRect();
+            const isInDialog = (rect.top <= event.clientY && event.clientY <= rect.top + rect.height &&
+                                rect.left <= event.clientX && event.clientX <= rect.left + rect.width);
+            if (!isInDialog) {
+                this.close();
             }
         });
+
+        // ─── Circulars Carousel Logic ──────────────────────────────
+        const circularsData = [
+            {
+                daysAgo: 0,
+                title: "Scholarship Disbursement — FY 2026-27 Schedule",
+                tag: "Scholarship",
+                tagClass: "tag-gold",
+                content: "The Ministry has released the scholarship disbursement schedule for the financial year 2026-27. All eligible students must ensure their bank details are updated in the SWMS portal before July 15."
+            },
+            {
+                daysAgo: 1,
+                title: "Hostel Anti-Ragging Guidelines & Disciplinary SOPs",
+                tag: "Student Safety",
+                tagClass: "tag-blue",
+                content: "Strict implementation of anti-ragging measures under standard operating procedures. Emergency contact warden numbers must be displayed prominently in all hostel lobby boards."
+            },
+            {
+                daysAgo: 2,
+                title: "Mandatory MFA Enforcement — Compliance Deadline July 1",
+                tag: "Security Policy",
+                tagClass: "tag-blue",
+                content: "Effective July 1, all warden accounts without Multi-Factor Authentication will be suspended. Wardens must configure Google Authenticator before the deadline."
+            },
+            {
+                daysAgo: 4,
+                title: "Annual Inspection Protocol 2026 — Guidelines Issued",
+                tag: "Compliance",
+                tagClass: "tag-green",
+                content: "The annual hostel inspection protocol for 2026 has been finalized. All wardens must complete the pre-inspection checklist and upload the compliance report by August 31."
+            },
+            {
+                daysAgo: 5,
+                title: "Hostel Mess Nutrition & Food Safety Mandate",
+                tag: "Health & Welfare",
+                tagClass: "tag-gold",
+                content: "New guidelines on raw ingredient quality, drinking water safety, and regular health checkups for mess workers. Wardens must execute monthly hygiene audits."
+            },
+            {
+                daysAgo: 7,
+                title: "Preventative Healthcare SOPs for Monsoon Safety",
+                tag: "Medical Safety",
+                tagClass: "tag-green",
+                content: "Special advisory targeting dengue and malaria prevention. Mandatory medical checks and insect sprays must be scheduled by the warden's office."
+            }
+        ];
+
+        function formatDate(daysAgo) {
+            const d = new Date();
+            d.setDate(d.getDate() - daysAgo);
+            const options = { month: 'long', day: 'numeric', year: 'numeric' };
+            return d.toLocaleDateString('en-US', options);
+        }
+
+        function renderCirculars() {
+            const wrapper = document.getElementById('circulars-scroll-wrapper');
+            if (!wrapper) return;
+            wrapper.innerHTML = circularsData.map((c, index) => {
+                const dateStr = formatDate(c.daysAgo);
+                return `
+                    <div class="news-card-col">
+                        <div class="news-card">
+                            <div class="news-card-header">
+                                <div class="news-date-badge"><i class="fa-regular fa-calendar"></i> ${dateStr}</div>
+                                <h4>${c.title}</h4>
+                            </div>
+                            <div class="news-card-body">
+                                <span class="news-tag ${c.tagClass} mb-2">${c.tag}</span>
+                                <p>${c.content}</p>
+                                <a href="#" onclick="event.preventDefault(); showCircularDetails(${index});" class="news-read-more">Read Circular <i class="fa-solid fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function showCircularDetails(index) {
+            const c = circularsData[index];
+            if (c) {
+                showGovAlert(c.tag + ' Circular Details', c.content, 'fa-file-signature text-gold');
+            }
+        }
+
+        function scrollCirculars(direction) {
+            const wrapper = document.getElementById('circulars-scroll-wrapper');
+            if (!wrapper) return;
+            const scrollAmount = 374; // card width (350) + gap (24)
+            if (direction === 'left') {
+                wrapper.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            } else {
+                wrapper.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+        }
+
+        // Render circulars initially
+        renderCirculars();
     </script>
+
 </body>
 </html>

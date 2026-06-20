@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warden Operational Manual — SWMS.GOV</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .manual-layout {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .manual-sidebar {
+            width: 280px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 2rem;
+            height: calc(100vh - 4rem);
+            overflow-y: auto;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            box-shadow: var(--shadow-sm);
+        }
+        .manual-content {
+            flex-grow: 1;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 3rem;
+            box-shadow: var(--shadow-sm);
+            max-width: 850px;
+        }
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+        .sidebar-link:hover, .sidebar-link.active {
+            background: var(--gold-soft);
+            color: var(--gold);
+            font-weight: 600;
+        }
+        .manual-header-sec {
+            border-bottom: 2px solid var(--border-soft);
+            padding-bottom: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .gov-crest-small {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--gold);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+        .manual-title {
+            font-family: var(--font-display);
+            font-size: 2.2rem;
+            color: var(--navy-deep);
+            font-weight: 700;
+        }
+        .manual-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+        .doc-section {
+            margin-bottom: 4rem;
+            scroll-margin-top: 2rem;
+        }
+        .doc-section h2 {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            color: var(--navy-deep);
+            border-bottom: 2px solid var(--gold-light);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.25rem;
+            font-weight: 600;
+        }
+        .doc-section h3 {
+            font-size: 1.15rem;
+            color: var(--navy-light);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+        .doc-section p, .doc-section li {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+        .doc-section ul {
+            padding-left: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+        .search-box-wrap {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        .search-box-wrap input {
+            width: 100%;
+            padding: 0.6rem 1rem 0.6rem 2.2rem;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.88rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .search-box-wrap input:focus {
+            border-color: var(--gold);
+        }
+        .search-box-wrap i {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        @media (max-width: 991px) {
+            .manual-layout {
+                flex-direction: column;
+            }
+            .manual-sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+            }
+            .manual-content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body style="background-color: var(--off-white);">
+
+    <!-- Header Section -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container py-2">
+            <a class="navbar-brand text-white d-flex align-items-center" href="/">
+                <div class="swms-crest-gold me-3">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div>
+                    <span class="d-block logo-title-main">SWMS.GOV</span>
+                    <span class="logo-sub-title">Student Welfare Management System</span>
+                </div>
+            </a>
+            <div class="ms-auto">
+                <a href="/" class="btn btn-outline-light btn-sm px-3"><i class="fa-solid fa-arrow-left me-2"></i>Back to Portal</a>
+                <button onclick="window.print()" class="btn btn-navy-custom btn-sm ms-2 px-3"><i class="fa-solid fa-print me-2"></i>Print Manual</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container py-4">
+        <div class="manual-layout">
+            <!-- Sidebar Navigation -->
+            <aside class="manual-sidebar">
+                <div class="search-box-wrap">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="manual-search" placeholder="Search manual sections..." onkeyup="filterManual()">
+                </div>
+                <div class="nav flex-column" id="manual-menu">
+                    <a href="#intro" class="sidebar-link active" onclick="activateLink(this)"><i class="fa-solid fa-file-invoice"></i> 1. Introduction</a>
+                    <a href="#safety" class="sidebar-link" onclick="activateLink(this)"><i class="fa-solid fa-circle-exclamation"></i> 2. Safety Protocols</a>
+                    <a href="#checkout" class="sidebar-link" onclick="activateLink(this)"><i class="fa-solid fa-right-from-bracket"></i> 3. Room &amp; Checkout</a>
+                    <a href="#dining" class="sidebar-link" onclick="activateLink(this)"><i class="fa-solid fa-utensils"></i> 4. Dining &amp; Hygiene</a>
+                    <a href="#compliance" class="sidebar-link" onclick="activateLink(this)"><i class="fa-solid fa-clipboard-check"></i> 5. Compliance Rules</a>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="manual-content" id="manual-doc">
+                <div class="manual-header-sec">
+                    <div class="gov-crest-small"><i class="fa-solid fa-shield-halved"></i> Official State Policy Directive</div>
+                    <h1 class="manual-title">Warden Operational Manual</h1>
+                    <div class="manual-meta">
+                        <span><strong>Document ID:</strong> SWMS-OP-2026-v2</span> | 
+                        <span><strong>Last Revised:</strong> June 15, 2026</span> | 
+                        <span><strong>Status:</strong> Approved &amp; Enforced</span>
+                    </div>
+                </div>
+
+                <!-- Section 1 -->
+                <section id="intro" class="doc-section">
+                    <h2>1. Introduction &amp; General Purpose</h2>
+                    <p>This operational manual establishes mandatory procedures, checklists, and compliance protocols for wardens managing state-funded student hostels. All registered wardens must familiarize themselves with these guidelines to ensure structural security, regulatory compliance, and student welfare.</p>
+                    <h3>1.1 Warden Mandate &amp; Role</h3>
+                    <p>Hostel wardens are official state officers tasked with managing residential safety, coordinating check-in/out records, enforcing multi-factor security configurations, and monitoring dining hall hygiene codes. Standard duties include daily roll calls, check-out authorizations, and immediate incident reporting.</p>
+                </section>
+
+                <!-- Section 2 -->
+                <section id="safety" class="doc-section">
+                    <h2>2. Safety &amp; Emergency Protocols</h2>
+                    <p>Securing the residential campus remains the primary priority. Wardens must supervise immediate emergency evacuations and maintain contact numbers for quick medical/structural responders.</p>
+                    <h3>2.1 Emergency Fire &amp; Medical Drills</h3>
+                    <ul>
+                        <li>Conduct mandatory building evacuation drills once every semester.</li>
+                        <li>Verify that fire alarm systems and extinguishers are tested and certified monthly.</li>
+                        <li>Emergency exit doors must remain unlocked from the inside at all times.</li>
+                    </ul>
+                    <h3>2.2 Reporting Incidents</h3>
+                    <p>Any safety compromise, physical altercation, or medical emergency must be registered immediately in the SWMS Admin panel under the Audit Logs tab. Serious injuries must be called in directly to state dispatch before portal logging.</p>
+                </section>
+
+                <!-- Section 3 -->
+                <section id="checkout" class="doc-section">
+                    <h2>3. Room Allocations &amp; Check-out Rules</h2>
+                    <p>Accurate record keeping is mandatory to track student presence and avoid unauthorized occupancy.</p>
+                    <h3>3.1 Allocation Checklists</h3>
+                    <p>Verify parent/guardian credentials and confirm the official enrollment registry before issuing room keys. Student records must be updated immediately upon room assignment.</p>
+                    <h3>3.2 Standard Check-out Authorization</h3>
+                    <ul>
+                        <li>Temporary check-outs (weekend leave, holidays) require a digital request submission with verifiable parent consent.</li>
+                        <li>Confirm the student's expected return date in the database.</li>
+                        <li>Permanent check-outs require room inspection and key return clearance before record archiving.</li>
+                    </ul>
+                </section>
+
+                <!-- Section 4 -->
+                <section id="dining" class="doc-section">
+                    <h2>4. Dining Hall Audits &amp; Hygiene Codes</h2>
+                    <p>Ensuring nutritional health and food sanitation standards is vital to student welfare.</p>
+                    <h3>4.1 Sanitation Checklists</h3>
+                    <p>Wardens must conduct weekly visual inspections of cooking surfaces, cold-storage temperatures, and kitchen waste disposals. Food preparation areas must adhere strictly to State Health Code 409.</p>
+                    <h3>4.2 Menu Compliance</h3>
+                    <ul>
+                        <li>Compare meals served against the pre-approved weekly mess calendar.</li>
+                        <li>Report ingredients variance or supplier delays via the Support Concern interface.</li>
+                    </ul>
+                </section>
+
+                <!-- Section 5 -->
+                <section id="compliance" class="doc-section">
+                    <h2>5. Compliance Rules &amp; Security Audits</h2>
+                    <p>As state-authorized operators, wardens must comply with strict technical and data security standards.</p>
+                    <h3>5.1 Multi-Factor Authentication (MFA)</h3>
+                    <p>All wardens must activate a 6-digit Google Authenticator TOTP configuration on their profile. Under no circumstance should authenticator secret keys or login passwords be shared with student representatives or third parties.</p>
+                    <h3>5.2 Data Privacy</h3>
+                    <p>Student parent mobile numbers, roll numbers, and health indicators are protected under state privacy laws. Keep records secure and log out of the SWMS dashboard when leaving terminal workstations.</p>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- JS Logic -->
+    <script>
+        function activateLink(element) {
+            document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        function filterManual() {
+            const query = document.getElementById('manual-search').value.toLowerCase();
+            const sections = document.querySelectorAll('.doc-section');
+            const menuLinks = document.querySelectorAll('.sidebar-link');
+
+            sections.forEach((sec, index) => {
+                const text = sec.textContent.toLowerCase();
+                const matched = text.includes(query);
+                
+                // Show/hide section
+                sec.style.display = matched ? 'block' : 'none';
+                
+                // Show/hide matching menu links
+                if (menuLinks[index]) {
+                    menuLinks[index].style.display = matched ? 'flex' : 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

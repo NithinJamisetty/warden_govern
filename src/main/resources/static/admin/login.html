@@ -3,315 +3,483 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administrator Console Sign In</title>
-    <!-- Bootstrap 5 CSS -->
+    <title>Administrator Console Sign In — SWMS.GOV</title>
+    <meta name="description" content="Restricted access: SWMS System Administrator Console. Authorized admin personnel only.">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome 6 Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/style.css">
     <style>
+        html, body { height: 100%; margin: 0; }
         body {
-            background: radial-gradient(circle at top right, #1e293b, #0f172a);
-            color: #f8fafc;
-        }
-        .login-card-admin {
-            background-color: #1e293b;
-            border-radius: var(--border-radius-lg);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            overflow: hidden;
-            border: 1px solid #334155;
-        }
-        .login-banner-admin {
-            background: linear-gradient(135deg, #0284c7, #0d9488);
-            color: var(--white);
-            padding: 3rem 2.5rem;
+            background: linear-gradient(135deg, #060f1e 0%, #0a1628 40%, #091525 100%);
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
+            position: relative;
+        }
+
+        /* Animated background grid */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(201,148,26,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(201,148,26,0.04) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: -200px; right: -200px;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(201,148,26,0.05) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+            animation: bgPulse 8s ease-in-out infinite;
+        }
+
+        @keyframes bgPulse {
+            0%,100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .admin-navbar {
+            position: relative; z-index: 10;
+            border-bottom: 1px solid rgba(201,148,26,0.2);
+            padding: 1rem 0;
+        }
+
+        .admin-content-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
             justify-content: center;
+            padding: 3rem 1rem;
+            position: relative;
+            z-index: 10;
         }
-        .form-control-admin {
-            background-color: #0f172a;
-            border: 1.5px solid #334155;
-            color: #f8fafc;
-            border-radius: var(--border-radius-sm);
-            padding: 0.75rem 1rem;
+
+        .admin-card {
+            background: rgba(30,42,60,0.8);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(201,148,26,0.2);
+            border-radius: 20px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04) inset;
+            overflow: hidden;
+            width: 100%;
+            max-width: 860px;
+        }
+
+        .admin-left {
+            background: linear-gradient(160deg, rgba(10,22,40,0.95), rgba(6,15,30,0.9));
+            border-right: 1px solid rgba(201,148,26,0.15);
+            padding: 3rem 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-left::before {
+            content: '';
+            position: absolute;
+            bottom: -80px; right: -80px;
+            width: 240px; height: 240px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(201,148,26,0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .admin-right {
+            background: rgba(15,22,35,0.7);
+            padding: 3rem 2.5rem;
+        }
+
+        .restricted-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(181,32,32,0.15);
+            border: 1px solid rgba(181,32,32,0.3);
+            color: #ff8080;
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 0.4rem 1rem;
+            border-radius: var(--radius-full);
+            margin-bottom: 2rem;
+            animation: restrictedPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes restrictedPulse {
+            0%,100% { box-shadow: 0 0 0 0 rgba(181,32,32,0.2); }
+            50% { box-shadow: 0 0 0 8px rgba(181,32,32,0); }
+        }
+
+        .admin-input {
+            width: 100%;
+            background: rgba(10,18,30,0.8);
+            border: 1.5px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius-md);
+            color: rgba(255,255,255,0.9);
+            font-size: 0.92rem;
+            padding: 0.85rem 1rem 0.85rem 2.8rem;
+            outline: none;
+            transition: all 0.25s ease;
+        }
+
+        .admin-input:focus {
+            border-color: rgba(201,148,26,0.5);
+            box-shadow: 0 0 0 4px rgba(201,148,26,0.08);
+            background: rgba(10,18,30,0.95);
+        }
+
+        .admin-input::placeholder { color: rgba(255,255,255,0.25); }
+
+        .admin-input-wrap { position: relative; }
+        .admin-input-wrap i {
+            position: absolute;
+            left: 1rem; top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.2);
+            font-size: 0.85rem;
+        }
+
+        .admin-field-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.35);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .admin-btn-primary {
+            width: 100%;
+            background: linear-gradient(135deg, var(--gold) 0%, #8a6300 100%);
+            color: var(--navy-deep);
+            border: none;
+            border-radius: var(--radius-md);
+            font-family: var(--font-heading);
             font-size: 0.95rem;
-            transition: all 0.3s ease;
+            font-weight: 800;
+            padding: 0.9rem;
+            cursor: pointer;
+            transition: all 0.25s var(--ease);
+            letter-spacing: 0.3px;
         }
-        .form-control-admin:focus {
-            background-color: #0f172a;
-            border-color: #38bdf8;
-            color: #f8fafc;
-            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.15);
+
+        .admin-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(201,148,26,0.3);
         }
-        .input-group-text-admin {
-            background-color: #1e293b;
-            border: 1.5px solid #334155;
-            border-right: none;
-            color: #94a3b8;
+
+        .admin-btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .admin-mfa-input {
+            width: 100%;
+            background: rgba(10,18,30,0.8);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: var(--radius-md);
+            color: rgba(255,255,255,0.9);
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 0.6rem;
+            text-align: center;
+            padding: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            font-family: var(--font-heading);
         }
-        .form-label {
-            color: #cbd5e1 !important;
+
+        .admin-mfa-input:focus {
+            border-color: rgba(201,148,26,0.5);
+            box-shadow: 0 0 0 4px rgba(201,148,26,0.08);
+        }
+
+        .admin-mfa-input::placeholder { color: rgba(255,255,255,0.15); font-size: 1.2rem; }
+
+        .admin-alert {
+            background: rgba(181,32,32,0.12);
+            border: 1px solid rgba(181,32,32,0.25);
+            border-left: 4px solid var(--ruby);
+            border-radius: var(--radius-md);
+            padding: 0.85rem 1.1rem;
+            font-size: 0.84rem;
+            color: #ff9090;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .admin-step-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(201,148,26,0.1);
+            border: 1px solid rgba(201,148,26,0.2);
+            color: #c9941a;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 0.35rem 0.9rem;
+            border-radius: var(--radius-full);
+            margin-bottom: 1.25rem;
+        }
+
+        .qr-admin-panel {
+            background: rgba(10,18,30,0.6);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .qr-admin-panel img {
+            width: 160px; height: 160px;
+            border-radius: 10px;
+            border: 3px solid rgba(201,148,26,0.3);
+        }
+
+        .audit-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.85rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: var(--radius-sm);
+            margin-top: 0.5rem;
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .audit-row i { font-size: 0.85rem; margin-top: 0.1rem; flex-shrink: 0; }
+        .audit-row p { font-size: 0.78rem; color: rgba(255,255,255,0.3); margin-bottom: 0; line-height: 1.5; }
+        .audit-row p strong { color: rgba(255,255,255,0.45); }
+
+        .admin-footer {
+            position: relative; z-index: 10;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 1.2rem 0;
+            text-align: center;
+        }
+
+        @media (max-width: 767px) {
+            .admin-left { padding: 2rem 1.5rem; }
+            .admin-right { padding: 2rem 1.5rem; }
         }
     </style>
 </head>
-<body class="d-flex flex-column min-vh-100">
+<body>
     <div class="gov-top-bar"></div>
 
-    <header class="py-3 border-bottom border-secondary border-opacity-10 mb-5">
+    <!-- Admin Navbar -->
+    <div class="admin-navbar">
         <div class="container d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-2">
-                <i class="fa-solid fa-user-shield text-info fs-3"></i>
-                <span class="fw-bold text-white fs-5 display-font">SWMS Admin Console</span>
+                <svg width="36" height="36" viewBox="0 0 100 110" fill="none">
+                    <path d="M50 5 L92 22 L92 55 C92 78 72 98 50 105 C28 98 8 78 8 55 L8 22 Z" fill="url(#adminGrad)" stroke="#c9941a" stroke-width="3"/>
+                    <defs><linearGradient id="adminGrad" x1="50" y1="5" x2="50" y2="105" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#1e3a5f"/><stop offset="100%" stop-color="#0a1628"/></linearGradient></defs>
+                    <text x="50" y="52" text-anchor="middle" font-family="Arial" font-weight="900" font-size="22" fill="white">SW</text>
+                    <text x="50" y="72" text-anchor="middle" font-family="Arial" font-weight="900" font-size="14" fill="#c9941a" letter-spacing="2">MS</text>
+                </svg>
+                <span style="font-family:var(--font-heading);font-weight:800;font-size:1.2rem;color:rgba(255,255,255,0.85);">SWMS<span style="color:#c9941a;">.</span>GOV</span>
+                <span style="font-size:0.7rem;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:1.5px;margin-left:0.5rem;">Admin Console</span>
             </div>
-            <a href="/index.html" class="btn btn-outline-light btn-sm"><i class="fa-solid fa-arrow-left me-1"></i>Portal Home</a>
+            <a href="/" style="font-size:0.82rem;font-weight:600;color:rgba(255,255,255,0.4);text-decoration:none;display:flex;align-items:center;gap:0.5rem;transition:color 0.2s;" onmouseover="this.style.color='rgba(201,148,26,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">
+                <i class="fa-solid fa-arrow-left"></i> Portal Home
+            </a>
         </div>
-    </header>
+    </div>
 
-    <main class="flex-grow-1 d-flex align-items-center">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-10">
-                    <div class="login-card-admin">
-                        <div class="row g-0">
-                            <!-- Left Banner -->
-                            <div class="col-md-5 login-banner-admin">
-                                <div class="mb-4">
-                                    <span class="badge bg-white text-info fw-bold text-uppercase px-3 py-2 rounded-pill mb-3">Admin Restricted</span>
-                                    <h2 class="fw-bold text-white mb-3">System Control Dashboard</h2>
-                                    <p class="text-white-50">This console is strictly for District and Super Administrators. System-wide configuration, warden enrollment, and audit logs are managed here.</p>
-                                </div>
-                                <div class="mt-auto">
-                                    <div class="d-flex align-items-center gap-3 p-3 bg-white bg-opacity-10 rounded-3 border border-white border-opacity-10">
-                                        <i class="fa-solid fa-shield-halved text-warning fs-3"></i>
-                                        <small class="text-white-50">All logins and operational modifications are captured in immutable audit tables.</small>
-                                    </div>
+    <!-- Main Content -->
+    <div class="admin-content-wrap">
+        <div class="admin-card">
+            <div class="row g-0">
+                <!-- Left Panel -->
+                <div class="col-md-5 admin-left">
+                    <div class="restricted-badge">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Restricted Area
+                    </div>
+                    <h2 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:white;line-height:1.25;margin-bottom:1rem;">
+                        System Control Console
+                    </h2>
+                    <p style="color:rgba(255,255,255,0.35);font-size:0.88rem;line-height:1.65;margin-bottom:2rem;">
+                        Strictly for District &amp; Super Administrators. System-wide configuration, warden enrollment, and full audit log access is managed here.
+                    </p>
+
+                    <div class="audit-row">
+                        <i class="fa-solid fa-shield-halved" style="color:#c9941a;"></i>
+                        <p>All admin logins are <strong>logged in immutable audit tables</strong> — timestamp, IP, and action.</p>
+                    </div>
+                    <div class="audit-row">
+                        <i class="fa-solid fa-lock" style="color:#60a5fa;"></i>
+                        <p>MFA is <strong>mandatory</strong> for all administrator sessions. No exceptions.</p>
+                    </div>
+                    <div class="audit-row">
+                        <i class="fa-solid fa-eye" style="color:rgba(255,255,255,0.25);"></i>
+                        <p>Unauthorized access attempts are <strong>reported to State Security team</strong> automatically.</p>
+                    </div>
+
+                    <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.06);">
+                        <p style="font-size:0.75rem;color:rgba(255,255,255,0.2);line-height:1.6;margin-bottom:0;">
+                            Not an administrator? <a href="/warden/login.html" style="color:rgba(201,148,26,0.6);text-decoration:none;">Warden login →</a>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right Form Panel -->
+                <div class="col-md-7 admin-right">
+
+                    <!-- Alert -->
+                    <div id="login-alert" class="admin-alert d-none">
+                        <i class="fa-solid fa-circle-exclamation flex-shrink-0"></i>
+                        <span id="login-alert-msg">Incorrect password or unauthorized console access.</span>
+                    </div>
+
+                    <!-- STEP 1: Admin Credentials -->
+                    <div id="login-step1">
+                        <div class="admin-step-badge"><i class="fa-solid fa-lock"></i> Administrator Credentials</div>
+                        <h4 style="font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:white;margin-bottom:0.35rem;">Admin Sign In</h4>
+                        <p style="font-size:0.85rem;color:rgba(255,255,255,0.35);margin-bottom:2rem;">Access to this console is restricted to authorized government system administrators.</p>
+
+                        <form id="form-step1">
+                            <div class="mb-4">
+                                <label class="admin-field-label" for="username">Admin Username</label>
+                                <div class="admin-input-wrap">
+                                    <i class="fa-solid fa-user-shield"></i>
+                                    <input type="text" class="admin-input" id="username" required placeholder="Enter admin username" autocomplete="username">
                                 </div>
                             </div>
-                            
-                            <!-- Right Form -->
-                            <div class="col-md-7 p-5">
-                                <div id="login-alert" class="alert alert-danger d-none" role="alert">
-                                    Incorrect password or unauthorized console access.
+                            <div class="mb-5">
+                                <label class="admin-field-label" for="password">Password</label>
+                                <div class="admin-input-wrap">
+                                    <i class="fa-solid fa-key"></i>
+                                    <input type="password" class="admin-input" id="password" required placeholder="Enter admin password" autocomplete="current-password">
                                 </div>
+                            </div>
+                            <button type="submit" id="btn-login-step1" class="admin-btn-primary">
+                                Verify Admin Password <i class="fa-solid fa-arrow-right ms-2"></i>
+                            </button>
+                        </form>
+                    </div>
 
-                                <!-- STEP 1: Admin Credentials -->
-                                <div id="login-step1">
-                                    <h4 class="fw-bold mb-4 display-font text-white"><i class="fa-solid fa-lock text-info me-2"></i>Admin Sign In</h4>
-                                    <form id="form-step1">
-                                        <div class="mb-3">
-                                            <label for="username" class="form-label fw-semibold text-secondary">Admin Username</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text input-group-text-admin"><i class="fa-solid fa-user-shield"></i></span>
-                                                <input type="text" class="form-control form-control-admin" id="username" required placeholder="Enter admin username">
-                                            </div>
-                                        </div>
-                                        <div class="mb-4">
-                                            <label for="password" class="form-label fw-semibold text-secondary">Password</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text input-group-text-admin"><i class="fa-solid fa-key"></i></span>
-                                                <input type="password" class="form-control form-control-admin" id="password" required placeholder="Enter admin password">
-                                            </div>
-                                        </div>
-                                        <div class="d-grid">
-                                            <button type="submit" id="btn-login-step1" class="btn btn-info text-white py-2.5 fw-bold">
-                                                Verify Admin Password <i class="fa-solid fa-arrow-right ms-2"></i>
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
+                    <!-- STEP 2A: MFA Setup -->
+                    <div id="login-step2-setup" class="d-none">
+                        <div class="admin-step-badge"><i class="fa-solid fa-qrcode"></i> MFA Activation</div>
+                        <h4 style="font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:white;margin-bottom:0.35rem;">Setup Authenticator</h4>
+                        <p style="font-size:0.85rem;color:rgba(255,255,255,0.35);margin-bottom:1.5rem;">Scan this QR code with Google Authenticator and enter the generated code below.</p>
 
-                                <!-- STEP 2A: MFA Setup -->
-                                <div id="login-step2-setup" class="d-none">
-                                    <h4 class="fw-bold mb-3 display-font text-white"><i class="fa-solid fa-qrcode text-info me-2"></i>MFA Activation</h4>
-                                    <p class="text-secondary mb-4 small">An administrator MFA is required. Scan the QR code, save the secret, and enter the validation code below.</p>
-                                    
-                                    <div class="qr-container bg-dark border-secondary p-3 mb-4 rounded text-center">
-                                        <img id="qr-code-img" src="" alt="MFA QR Code" class="qr-code-img mb-3">
-                                        <div>
-                                            <span class="text-secondary d-block small mb-1">Secret Key:</span>
-                                            <code id="mfa-secret-text" class="bg-black border border-secondary px-3 py-1 rounded fw-bold text-info"></code>
-                                        </div>
-                                    </div>
-
-                                    <form id="form-step2-setup">
-                                        <div class="mb-4">
-                                            <label for="setup-code" class="form-label fw-semibold text-secondary">6-Digit Authenticator Code</label>
-                                            <input type="text" class="form-control form-control-admin text-center fs-4 fw-bold" id="setup-code" required placeholder="000000" maxlength="6" pattern="\d{6}">
-                                        </div>
-                                        <div class="d-grid gap-2">
-                                            <button type="submit" class="btn btn-info text-white py-2.5 fw-bold">
-                                                Activate & Sign In <i class="fa-solid fa-check ms-2"></i>
-                                            </button>
-                                            <button type="button" onclick="resetLoginState()" class="btn btn-link btn-sm text-secondary">Cancel</button>
-                                        </div>
-                                    </form>
-                                </div>
-
-                                <!-- STEP 2B: MFA Verification -->
-                                <div id="login-step2-verify" class="d-none">
-                                    <h4 class="fw-bold mb-3 display-font text-white"><i class="fa-solid fa-shield-halved text-info me-2"></i>Admin Verification</h4>
-                                    <p class="text-secondary mb-4 small">Input the current 6-digit verification code from your Google Authenticator app.</p>
-
-                                    <form id="form-step2-verify">
-                                        <div class="mb-4">
-                                            <label for="verify-code" class="form-label fw-semibold text-secondary">Authenticator Code</label>
-                                            <input type="text" class="form-control form-control-admin text-center fs-3 fw-bold" id="verify-code" required placeholder="000000" maxlength="6" pattern="\d{6}">
-                                        </div>
-                                        <div class="d-grid gap-2">
-                                            <button type="submit" class="btn btn-info text-white py-2.5 fw-bold">
-                                                Verify & Access Console <i class="fa-solid fa-right-to-bracket ms-2"></i>
-                                            </button>
-                                            <button type="button" onclick="resetLoginState()" class="btn btn-link btn-sm text-secondary">Cancel</button>
-                                        </div>
-                                    </form>
-                                </div>
+                        <div class="qr-admin-panel">
+                            <img id="qr-code-img" src="" alt="Admin MFA QR Code">
+                            <div style="margin-top:1rem;">
+                                <span style="font-size:0.68rem;color:rgba(255,255,255,0.3);display:block;margin-bottom:0.4rem;">Manual key:</span>
+                                <code id="mfa-secret-text" style="font-size:0.82rem;font-weight:700;color:#c9941a;display:block;word-break:break-all;"></code>
                             </div>
                         </div>
+
+                        <form id="form-step2-setup">
+                            <div class="mb-4">
+                                <label class="admin-field-label" for="setup-code">6-Digit Authenticator Code</label>
+                                <input type="text" class="admin-mfa-input" id="setup-code" required placeholder="000000" maxlength="6" pattern="\d{6}" inputmode="numeric">
+                            </div>
+                            <button type="submit" class="admin-btn-primary mb-3">
+                                Activate &amp; Sign In <i class="fa-solid fa-check ms-2"></i>
+                            </button>
+                        </form>
+                        <button type="button" onclick="resetLoginState()" style="width:100%;background:none;border:none;color:rgba(255,255,255,0.25);font-size:0.82rem;cursor:pointer;padding:0.5rem;transition:color 0.2s;" onmouseover="this.style.color='rgba(255,255,255,0.55)'" onmouseout="this.style.color='rgba(255,255,255,0.25)'">Cancel &amp; Go Back</button>
+                    </div>
+
+                    <!-- STEP 2B: MFA Verification -->
+                    <div id="login-step2-verify" class="d-none">
+                        <div class="admin-step-badge"><i class="fa-solid fa-shield-halved"></i> Admin MFA Verification</div>
+                        <h4 style="font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:white;margin-bottom:0.35rem;">Admin Verification</h4>
+                        <p style="font-size:0.85rem;color:rgba(255,255,255,0.35);margin-bottom:1.5rem;">Enter the current 6-digit code from your Google Authenticator application.</p>
+
+                        <div style="background:rgba(201,148,26,0.07);border:1px solid rgba(201,148,26,0.2);border-radius:var(--radius-md);padding:0.9rem 1.1rem;margin-bottom:1.5rem;font-size:0.8rem;color:rgba(201,148,26,0.7);display:flex;align-items:center;gap:0.6rem;">
+                            <i class="fa-solid fa-mobile-screen-button"></i>
+                            Open <strong>Google Authenticator</strong> on your registered device.
+                        </div>
+
+                        <form id="form-step2-verify">
+                            <div class="mb-4">
+                                <label class="admin-field-label" for="verify-code">Security Code</label>
+                                <input type="text" class="admin-mfa-input" id="verify-code" required placeholder="000000" maxlength="6" pattern="\d{6}" inputmode="numeric" autocomplete="one-time-code">
+                            </div>
+                            <button type="submit" class="admin-btn-primary mb-3">
+                                Verify &amp; Access Console <i class="fa-solid fa-right-to-bracket ms-2"></i>
+                            </button>
+                        </form>
+                        <button type="button" onclick="resetLoginState()" style="width:100%;background:none;border:none;color:rgba(255,255,255,0.25);font-size:0.82rem;cursor:pointer;padding:0.5rem;transition:color 0.2s;" onmouseover="this.style.color='rgba(255,255,255,0.55)'" onmouseout="this.style.color='rgba(255,255,255,0.25)'">Cancel &amp; Go Back</button>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 
-    <footer class="py-4 border-top border-secondary border-opacity-10 mt-auto text-center text-secondary">
-        <small>© 2026 SWMS Admin System Console. All Operations Tracked.</small>
-    </footer>
+    <!-- Footer -->
+    <div class="admin-footer">
+        <small style="color:rgba(255,255,255,0.2);font-size:0.75rem;">© 2026 SWMS Admin System Console — All Operations Tracked &amp; Logged</small>
+    </div>
 
-    <!-- JS files -->
     <script src="/js/auth.js"></script>
     <script>
         let tempToken = "";
 
-        // Redirect if already logged in as Admin; clear token if another role is active
         if (getToken()) {
             const user = getUser();
-            if (user && (user.role === "SUPER_ADMIN" || user.role === "DISTRICT_ADMIN")) {
-                window.location.href = "/admin/dashboard.html";
-            } else {
-                removeToken();
-            }
+            if (user && (user.role === "SUPER_ADMIN" || user.role === "DISTRICT_ADMIN")) { window.location.href = "/admin/dashboard.html"; }
+            else { removeToken(); }
         }
 
         const alertEl = document.getElementById("login-alert");
+        function showAlert(msg) { document.getElementById("login-alert-msg").textContent = msg; alertEl.classList.remove("d-none"); }
+        function hideAlert() { alertEl.classList.add("d-none"); }
 
-        function showAlert(msg) {
-            alertEl.textContent = msg;
-            alertEl.classList.remove("d-none");
-        }
-
-        function hideAlert() {
-            alertEl.classList.add("d-none");
-        }
-
-        // STEP 1 submission
         document.getElementById("form-step1").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            hideAlert();
-
+            e.preventDefault(); hideAlert();
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
             const btn = document.getElementById("btn-login-step1");
-
-            btn.disabled = true;
-            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Validating...`;
-
+            btn.disabled = true; btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status"></span>Validating…`;
             try {
-                const response = await fetch("/api/auth/login", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username, password })
-                });
-
+                const response = await fetch("/api/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password }) });
                 const data = await response.json();
-
-                if (!response.ok) {
-                    showAlert(data.message || "Invalid credentials.");
-                    btn.disabled = false;
-                    btn.innerHTML = `Verify Admin Password <i class="fa-solid fa-arrow-right ms-2"></i>`;
-                    return;
-                }
-
-                // Verify that the logged in user is actually an admin!
-                if (data.role !== "SUPER_ADMIN" && data.role !== "DISTRICT_ADMIN") {
-                    showAlert("Access Denied: Wardens must sign in via the public login portal.");
-                    btn.disabled = false;
-                    btn.innerHTML = `Verify Admin Password <i class="fa-solid fa-arrow-right ms-2"></i>`;
-                    return;
-                }
-
+                if (!response.ok) { showAlert(data.message || "Invalid credentials."); btn.disabled = false; btn.innerHTML = `Verify Admin Password <i class="fa-solid fa-arrow-right ms-2"></i>`; return; }
+                if (data.role !== "SUPER_ADMIN" && data.role !== "DISTRICT_ADMIN") { showAlert("Access Denied: Wardens must sign in via the public login portal."); btn.disabled = false; btn.innerHTML = `Verify Admin Password <i class="fa-solid fa-arrow-right ms-2"></i>`; return; }
                 tempToken = data.tempToken;
-
-                if (data.mfaSetupRequired) {
-                    document.getElementById("login-step1").classList.add("d-none");
-                    document.getElementById("login-step2-setup").classList.remove("d-none");
-                    document.getElementById("qr-code-img").src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(data.qrCodeUrl)}`;
-                    document.getElementById("mfa-secret-text").textContent = data.mfaSecret;
-                } else if (data.mfaRequired) {
-                    document.getElementById("login-step1").classList.add("d-none");
-                    document.getElementById("login-step2-verify").classList.remove("d-none");
-                }
-            } catch (err) {
-                showAlert("Network connection error.");
-                btn.disabled = false;
-                btn.innerHTML = `Verify Admin Password <i class="fa-solid fa-arrow-right ms-2"></i>`;
-            }
+                if (data.mfaSetupRequired) { document.getElementById("login-step1").classList.add("d-none"); document.getElementById("login-step2-setup").classList.remove("d-none"); document.getElementById("qr-code-img").src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(data.qrCodeUrl)}`; document.getElementById("mfa-secret-text").textContent = data.mfaSecret; }
+                else if (data.mfaRequired) { document.getElementById("login-step1").classList.add("d-none"); document.getElementById("login-step2-verify").classList.remove("d-none"); }
+            } catch (err) { showAlert("Network connection error."); btn.disabled = false; btn.innerHTML = `Verify Admin Password <i class="fa-solid fa-arrow-right ms-2"></i>`; }
         });
 
-        // STEP 2A Submission (MFA Setup)
-        document.getElementById("form-step2-setup").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            hideAlert();
-            const code = document.getElementById("setup-code").value;
-            await verifyMfaCode(code);
-        });
-
-        // STEP 2B Submission (MFA Verify)
-        document.getElementById("form-step2-verify").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            hideAlert();
-            const code = document.getElementById("verify-code").value;
-            await verifyMfaCode(code);
-        });
+        document.getElementById("form-step2-setup").addEventListener("submit", async (e) => { e.preventDefault(); hideAlert(); await verifyMfaCode(document.getElementById("setup-code").value); });
+        document.getElementById("form-step2-verify").addEventListener("submit", async (e) => { e.preventDefault(); hideAlert(); await verifyMfaCode(document.getElementById("verify-code").value); });
 
         async function verifyMfaCode(code) {
             try {
-                const response = await fetch("/api/auth/mfa/verify", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ tempToken, code })
-                });
-
+                const response = await fetch("/api/auth/mfa/verify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ tempToken, code }) });
                 const data = await response.json();
-
-                if (!response.ok) {
-                    showAlert(data.message || "Invalid authenticator code.");
-                    return;
-                }
-
+                if (!response.ok) { showAlert(data.message || "Invalid authenticator code."); return; }
                 setToken(data.token);
                 window.location.href = "/admin/dashboard.html";
-            } catch (err) {
-                showAlert("Verification failed.");
-            }
+            } catch (err) { showAlert("Verification failed."); }
         }
 
         function resetLoginState() {
             tempToken = "";
-            document.getElementById("username").value = "";
-            document.getElementById("password").value = "";
-            document.getElementById("setup-code").value = "";
-            document.getElementById("verify-code").value = "";
-            
+            ["username","password","setup-code","verify-code"].forEach(id => { const el = document.getElementById(id); if (el) el.value = ""; });
             document.getElementById("login-step1").classList.remove("d-none");
-            document.getElementById("login-step2-setup").classList.add("d-none");
-            document.getElementById("login-step2-verify").classList.add("d-none");
-            
+            ["login-step2-setup","login-step2-verify"].forEach(id => document.getElementById(id).classList.add("d-none"));
             const btn = document.getElementById("btn-login-step1");
-            btn.disabled = false;
-            btn.innerHTML = `Verify Admin Password <i class="fa-solid fa-arrow-right ms-2"></i>`;
-            
+            btn.disabled = false; btn.innerHTML = `Verify Admin Password <i class="fa-solid fa-arrow-right ms-2"></i>`;
             hideAlert();
         }
     </script>

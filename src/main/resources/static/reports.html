@@ -3,87 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reports - SWMS</title>
-    <!-- Bootstrap 5 CSS -->
+    <title>Reports — SWMS.GOV</title>
+    <meta name="description" content="Generate, review and export official SWMS hostel student registries for audit submissions.">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome 6 Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
-    <!-- Security check -->
+<body style="background-color: var(--bg-main);">
     <script src="/js/auth.js"></script>
-    <script>
-        // Check if Warden is authenticated
-        const currentUser = checkAuth(["WARDEN"]);
-    </script>
+    <script>const currentUser = checkAuth(["WARDEN"]);</script>
 
     <div class="gov-top-bar"></div>
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-custom">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <i class="fa-solid fa-building-columns text-primary"></i>
-                <span class="display-font">SWMS Portal</span>
+    <nav class="navbar navbar-expand-lg navbar-inner sticky-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="/">
+                <svg width="32" height="32" viewBox="0 0 100 110" fill="none">
+                    <path d="M50 5 L92 22 L92 55 C92 78 72 98 50 105 C28 98 8 78 8 55 L8 22 Z" fill="url(#rGrad)" stroke="#c59b27" stroke-width="3"/>
+                    <defs><linearGradient id="rGrad" x1="50" y1="5" x2="50" y2="105" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#003d75"/><stop offset="100%" stop-color="#001f3d"/></linearGradient></defs>
+                    <text x="50" y="52" text-anchor="middle" font-family="Arial" font-weight="900" font-size="22" fill="white">SW</text>
+                    <text x="50" y="72" text-anchor="middle" font-family="Arial" font-weight="900" font-size="14" fill="#c59b27" letter-spacing="2">MS</text>
+                </svg>
+                SWMS<span style="color:var(--color-accent);">.</span>GOV
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navReports">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarText">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-custom" href="/dashboard.html"><i class="fa-solid fa-chart-line me-2"></i>Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-custom" href="/students.html"><i class="fa-solid fa-users me-2"></i>Student Management</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-custom active" aria-current="page" href="/reports.html"><i class="fa-solid fa-file-invoice-dollar me-2"></i>Reports</a>
-                    </li>
+            <div class="collapse navbar-collapse" id="navReports">
+                <ul class="navbar-nav ms-4 mb-2 mb-lg-0 gap-1">
+                    <li class="nav-item"><a class="nav-pill-link" href="/dashboard.html"><i class="fa-solid fa-chart-line me-2"></i>Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-pill-link" href="/students.html"><i class="fa-solid fa-users me-2"></i>Student Management</a></li>
+                    <li class="nav-item"><a class="nav-pill-link active" href="/reports.html"><i class="fa-solid fa-file-chart-column me-2"></i>Reports</a></li>
                 </ul>
-                <div class="d-flex align-items-center gap-3">
+                <div class="ms-auto d-flex align-items-center gap-3">
                     <div class="text-end d-none d-md-block">
-                        <span class="fw-bold d-block text-dark" id="nav-username">Warden Name</span>
-                        <span class="badge bg-primary-light text-primary" id="nav-user-hostel">Hostel Name</span>
+                        <span class="d-block fw-bold" style="font-size:0.88rem; color:var(--text-primary);" id="nav-username">Warden</span>
+                        <span class="badge-status badge-class" id="nav-user-hostel">Hostel</span>
                     </div>
-                    <button onclick="logout()" class="btn btn-outline-danger btn-sm"><i class="fa-solid fa-right-from-bracket me-1"></i>Logout</button>
+                    <button onclick="logout()" class="btn btn-sm" style="border:1.5px solid var(--border-color); color:var(--text-secondary); border-radius:50px; padding:0.4rem 1rem; font-size:0.83rem;" onmouseover="this.style.borderColor='#e05c3c';this.style.color='#e05c3c';" onmouseout="this.style.borderColor='var(--border-color)';this.style.color='var(--text-secondary)';">
+                        <i class="fa-solid fa-right-from-bracket me-1"></i>Logout
+                    </button>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="container my-4">
-        <!-- Section Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <!-- Page Header -->
+    <div class="page-header-section">
+        <div class="container-fluid px-4" style="max-width:1280px; margin:0 auto;">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                    <div class="page-header-eyebrow"><i class="fa-solid fa-shield-halved me-2"></i>Warden Secure Portal</div>
+                    <h1 class="page-header-title"><i class="fa-solid fa-file-chart-column me-3" style="color:var(--color-accent); font-size:1.6rem;"></i>Hostel Student Reports</h1>
+                    <p class="page-header-subtitle">Generate, review, and export audit-ready registries for <strong id="report-hostel-name">your hostel</strong>.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button onclick="exportToExcel()" class="btn btn-secondary-custom">
+                        <i class="fa-solid fa-file-excel me-2"></i>Export Excel
+                    </button>
+                    <button onclick="exportToPDF()" class="btn btn-primary-custom">
+                        <i class="fa-solid fa-file-pdf me-2"></i>Export PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="container-fluid px-4" style="max-width:1280px; margin:0 auto; padding-top:2rem; padding-bottom:2rem;">
+
+        <!-- Session Info Banner -->
+        <div class="notice-card notice-blue mb-4 d-flex align-items-center gap-3" style="flex-direction:row;">
+            <div style="width:40px; height:40px; background:rgba(35,76,111,0.1); border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                <i class="fa-solid fa-circle-info" style="color:var(--color-blue);"></i>
+            </div>
             <div>
-                <h3 class="fw-bold display-font text-dark mb-1"><i class="fa-solid fa-file-chart-column text-primary me-2"></i>Hostel Student Reports</h3>
-                <p class="text-muted mb-0">Generate, review, and export active student registries for audit submissions.</p>
-            </div>
-            <div class="d-flex gap-2">
-                <button onclick="exportToExcel()" class="btn btn-success"><i class="fa-solid fa-file-excel me-2"></i>Export to Excel</button>
-                <button onclick="exportToPDF()" class="btn btn-danger"><i class="fa-solid fa-file-pdf me-2"></i>Export to PDF</button>
+                <h6 style="margin-bottom:0.15rem;">Report Parameters</h6>
+                <p>Currently generating reports specifically for <strong id="session-hostel-name">your hostel</strong>. Session verified: <span class="badge-status badge-active">Warden Authenticated</span></p>
             </div>
         </div>
 
-        <!-- Filter bar -->
-        <div class="p-3 bg-white rounded-3 border border-light shadow-sm mb-4">
-            <div class="row g-2 align-items-center">
-                <div class="col-md-8">
-                    <h6 class="mb-0 fw-bold"><i class="fa-solid fa-circle-info text-info me-2"></i>Report Parameters</h6>
-                    <small class="text-muted">Currently generating reports specifically for <strong id="report-hostel-name">your hostel</strong>.</small>
-                </div>
-                <div class="col-md-4 text-md-end">
-                    <span class="badge bg-secondary-light text-secondary px-3 py-2 rounded"><i class="fa-solid fa-user-check me-2"></i>Verified Warden Session</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Table Container -->
-        <div class="table-responsive table-container">
-            <table class="table table-hover table-custom align-middle" id="report-table">
+        <!-- Data Table -->
+        <div class="data-table-wrap">
+            <table class="table align-middle" id="report-table">
                 <thead>
                     <tr>
                         <th>Roll Number</th>
@@ -95,37 +97,30 @@
                     </tr>
                 </thead>
                 <tbody id="report-table-body">
-                    <tr>
-                        <td colspan="6" class="text-center py-4 text-muted">
-                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Loading student registry...
-                        </td>
-                    </tr>
+                    <tr><td colspan="6" class="text-center py-5 text-secondary">
+                        <span class="spinner-border spinner-border-sm me-2" role="status"></span>Loading student registry…
+                    </td></tr>
                 </tbody>
             </table>
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="py-4 bg-white border-top mt-5">
-        <div class="container text-center text-muted">
-            <small>© 2026 Student Welfare Management System (SWMS) • Highly Secured Link</small>
-        </div>
+    <!-- Inner Footer -->
+    <footer class="inner-footer">
+        <p>© 2026 Student Welfare Management System (SWMS.GOV) &nbsp;•&nbsp; Ministry of Education &amp; Child Development</p>
     </footer>
 
-    <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- PDF Export Libraries (jsPDF + AutoTable) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
-    
-    <!-- Excel Export Library (SheetJS) -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
     <script>
         let studentsList = [];
 
+        document.getElementById("nav-username").textContent = currentUser.username;
+        document.getElementById("nav-user-hostel").textContent = currentUser.hostelName || "Hostel";
         document.getElementById("report-hostel-name").textContent = currentUser.hostelName || "All Hostels";
+        document.getElementById("session-hostel-name").textContent = currentUser.hostelName || "your hostel";
 
         document.addEventListener("DOMContentLoaded", async () => {
             try {
@@ -133,115 +128,60 @@
                 studentsList = await response.json();
                 renderTable(studentsList);
             } catch (err) {
-                document.getElementById("report-table-body").innerHTML = `
-                    <tr>
-                        <td colspan="6" class="text-center py-4 text-danger fw-semibold">
-                            <i class="fa-solid fa-circle-exclamation me-2"></i>Failed to fetch reports.
-                        </td>
-                    </tr>`;
+                document.getElementById("report-table-body").innerHTML = `<tr><td colspan="6" class="text-center py-5 text-danger fw-semibold"><i class="fa-solid fa-circle-exclamation me-2"></i>Failed to fetch reports.</td></tr>`;
             }
         });
 
         function renderTable(list) {
             const tbody = document.getElementById("report-table-body");
             if (list.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">No student records in this hostel registry.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5"><i class="fa-solid fa-folder-open" style="font-size:2rem; color:var(--border-color); display:block; margin-bottom:1rem;"></i><span style="color:var(--text-secondary); font-size:0.9rem;">No student records in this hostel registry.</span></td></tr>`;
                 return;
             }
-
-            tbody.innerHTML = list.map(student => {
-                const dateStr = student.createdAt ? student.createdAt.substring(0, 10) : "N/A";
-                return `
-                    <tr>
-                        <td class="fw-semibold text-primary">${student.rollNumber}</td>
-                        <td class="fw-bold">${student.studentName}</td>
-                        <td><span class="badge bg-light text-dark">${student.className}</span></td>
-                        <td>${student.parentMobile}</td>
-                        <td class="text-muted">${student.hostelName}</td>
-                        <td>${dateStr}</td>
-                    </tr>
-                `;
+            tbody.innerHTML = list.map(s => {
+                const dateStr = s.createdAt ? s.createdAt.substring(0, 10) : "N/A";
+                return `<tr>
+                    <td><span class="badge-status badge-class">${s.rollNumber}</span></td>
+                    <td><span style="font-weight:600; color:var(--text-primary);">${s.studentName}</span></td>
+                    <td><span class="badge-status badge-class">${s.className}</span></td>
+                    <td style="color:var(--text-secondary);"><i class="fa-solid fa-phone me-2" style="font-size:0.72rem;"></i>${s.parentMobile}</td>
+                    <td style="color:var(--text-secondary);">${s.hostelName}</td>
+                    <td style="color:var(--text-secondary); font-size:0.83rem;">${dateStr}</td>
+                </tr>`;
             }).join('');
         }
 
-        // Export to Excel function using SheetJS
         function exportToExcel() {
-            if (studentsList.length === 0) {
-                alert("No records to export.");
-                return;
-            }
-
+            if (studentsList.length === 0) { alert("No records to export."); return; }
             try {
-                const data = studentsList.map(s => ({
-                    "Roll Number": s.rollNumber,
-                    "Student Name": s.studentName,
-                    "Class": s.className,
-                    "Parent Mobile": s.parentMobile,
-                    "Hostel Name": s.hostelName,
-                    "Registration Date": s.createdAt ? s.createdAt.substring(0, 10) : "N/A"
-                }));
-
+                const data = studentsList.map(s => ({"Roll Number": s.rollNumber, "Student Name": s.studentName, "Class": s.className, "Parent Mobile": s.parentMobile, "Hostel Name": s.hostelName, "Registration Date": s.createdAt ? s.createdAt.substring(0, 10) : "N/A"}));
                 const wb = XLSX.utils.book_new();
-                const ws = XLSX.utils.json_to_sheet(data);
-                
-                // Add header columns styles configurations if needed
-                XLSX.utils.book_append_sheet(wb, ws, "Students Registry");
-                
-                const fileName = `SWMS_${currentUser.hostelName.replace(/\s+/g, '_')}_Report.xlsx`;
-                XLSX.writeFile(wb, fileName);
-            } catch (err) {
-                alert("Export to Excel failed.");
-            }
+                XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(data), "Students Registry");
+                XLSX.writeFile(wb, `SWMS_${currentUser.hostelName.replace(/\s+/g, '_')}_Report.xlsx`);
+            } catch (err) { alert("Export to Excel failed."); }
         }
 
-        // Export to PDF function using jsPDF + AutoTable
         function exportToPDF() {
-            if (studentsList.length === 0) {
-                alert("No records to export.");
-                return;
-            }
-
+            if (studentsList.length === 0) { alert("No records to export."); return; }
             try {
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF('p', 'mm', 'a4');
-                
-                // Set metadata / Title
-                doc.setFont("Helvetica", "bold");
-                doc.setFontSize(16);
-                doc.setTextColor(0, 119, 182); // Sky Blue Primary
-                doc.text("Government Welfare Department", 14, 15);
-                
-                doc.setFontSize(12);
-                doc.setFont("Helvetica", "normal");
-                doc.setTextColor(43, 45, 66); // Dark Gray
-                doc.text(`Hostel Registry: ${currentUser.hostelName}`, 14, 22);
-                doc.text(`Warden In-Charge: ${currentUser.username}`, 14, 28);
-                doc.text(`Generation Date: ${new Date().toLocaleString()}`, 14, 34);
-                
-                // AutoTable
-                const body = studentsList.map(s => [
-                    s.rollNumber,
-                    s.studentName,
-                    s.className,
-                    s.parentMobile,
-                    s.hostelName,
-                    s.createdAt ? s.createdAt.substring(0, 10) : "N/A"
-                ]);
-
+                doc.setFont("Helvetica", "bold"); doc.setFontSize(14); doc.setTextColor(35, 76, 111);
+                doc.text("SWMS.GOV — Student Welfare Management System", 14, 15);
+                doc.setFontSize(10); doc.setFont("Helvetica", "normal"); doc.setTextColor(95, 109, 122);
+                doc.text(`Hostel Registry: ${currentUser.hostelName}`, 14, 23);
+                doc.text(`Warden: ${currentUser.username}`, 14, 29);
+                doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 35);
                 doc.autoTable({
-                    startY: 40,
+                    startY: 42,
                     head: [['Roll Number', 'Student Name', 'Class', 'Parent Mobile', 'Hostel', 'Reg Date']],
-                    body: body,
-                    headStyles: { fillColor: [0, 119, 182], textColor: [255, 255, 255] },
-                    alternateRowStyles: { fillColor: [248, 249, 250] },
-                    margin: { top: 40 }
+                    body: studentsList.map(s => [s.rollNumber, s.studentName, s.className, s.parentMobile, s.hostelName, s.createdAt ? s.createdAt.substring(0, 10) : "N/A"]),
+                    headStyles: { fillColor: [35, 76, 111], textColor: [255, 255, 255], fontStyle: 'bold' },
+                    alternateRowStyles: { fillColor: [249, 248, 244] },
+                    margin: { top: 42 }
                 });
-
-                const fileName = `SWMS_${currentUser.hostelName.replace(/\s+/g, '_')}_Report.pdf`;
-                doc.save(fileName);
-            } catch (err) {
-                alert("Export to PDF failed.");
-            }
+                doc.save(`SWMS_${currentUser.hostelName.replace(/\s+/g, '_')}_Report.pdf`);
+            } catch (err) { alert("Export to PDF failed."); }
         }
     </script>
 </body>

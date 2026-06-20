@@ -3,13 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - SWMS</title>
-    <!-- Bootstrap 5 CSS -->
+    <title>Admin Control Center — SWMS.GOV</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome 6 Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .sidebar-admin {
+            background: var(--navy-deep);
+            min-height: calc(100vh - 77px);
+            padding: 1.5rem 0;
+        }
+        .sidebar-heading {
+            display: block;
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(255,255,255,0.25);
+            padding: 0.5rem 1.5rem 0.5rem 1.5rem;
+            margin-top: 0.5rem;
+        }
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            color: rgba(255,255,255,0.45);
+            font-size: 0.87rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+        .sidebar-link:hover { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.75); }
+        .sidebar-link.active {
+            color: var(--gold-light);
+            background: rgba(201,148,26,0.08);
+            border-left-color: var(--gold);
+        }
+        .dashboard-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 2rem 1.75rem;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s var(--ease);
+        }
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+        }
+        .dashboard-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+        .card-blue::before  { background: var(--navy-light); }
+        .card-green::before { background: var(--emerald); }
+        .card-orange::before{ background: var(--gold); }
+        .card-icon-container {
+            width: 52px; height: 52px;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem;
+            margin-bottom: 1.2rem;
+        }
+        .card-blue .card-icon-container  { background: var(--navy-soft); color: var(--navy-light); }
+        .card-green .card-icon-container { background: var(--emerald-soft); color: var(--emerald); }
+        .card-orange .card-icon-container{ background: var(--gold-soft); color: #8a6300; }
+    </style>
 </head>
 <body>
     <!-- Security check -->
@@ -22,15 +84,16 @@
     <div class="gov-top-bar"></div>
 
     <!-- Header Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-custom">
+    <nav class="navbar-inner navbar navbar-expand-lg sticky-top">
         <div class="container-fluid">
-            <span class="navbar-brand">
-                <i class="fa-solid fa-user-shield text-primary"></i>
-                <span class="display-font">SWMS Admin Console</span>
-            </span>
-            <div class="d-flex align-items-center gap-3">
-                <span class="badge bg-danger text-white px-3 py-2" id="nav-user-role">Super Admin</span>
-                <button onclick="logout()" class="btn btn-outline-danger btn-sm"><i class="fa-solid fa-right-from-bracket me-1"></i>Logout</button>
+            <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+                <svg width="28" height="28" viewBox="0 0 100 110" fill="none"><path d="M50 5 L92 22 L92 55 C92 78 72 98 50 105 C28 98 8 78 8 55 L8 22 Z" fill="url(#adGrad)" stroke="#c9941a" stroke-width="3"/><defs><linearGradient id="adGrad" x1="50" y1="5" x2="50" y2="105" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#1e3a5f"/><stop offset="100%" stop-color="#0a1628"/></linearGradient></defs><text x="50" y="52" text-anchor="middle" font-family="Arial" font-weight="900" font-size="22" fill="white">SW</text><text x="50" y="72" text-anchor="middle" font-family="Arial" font-weight="900" font-size="14" fill="#c9941a" letter-spacing="2">MS</text></svg>
+                SWMS<span style="color:var(--gold);">.</span>GOV
+            </a>
+            <div class="ms-2 d-none d-md-block" style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);">Admin Console</div>
+            <div class="ms-auto d-flex align-items-center gap-3">
+                <span class="badge-status badge-class" id="nav-user-role"><i class="fa-solid fa-user-shield me-1"></i>Super Admin</span>
+                <button onclick="logout()" class="btn btn-sm" style="border:1.5px solid var(--border-color); color:var(--text-secondary); border-radius:50px; padding:0.4rem 1rem; font-size:0.83rem; transition:all 0.2s;" onmouseover="this.style.borderColor='#e05c3c';this.style.color='#e05c3c';" onmouseout="this.style.borderColor='var(--border-color)';this.style.color='var(--text-secondary)';"><i class="fa-solid fa-right-from-bracket me-1"></i>Logout</button>
             </div>
         </div>
     </nav>
@@ -61,95 +124,72 @@
 
             <!-- Dashboard Main Content -->
             <div class="col-md-9 col-lg-10 py-4 px-md-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h3 class="fw-bold display-font text-dark mb-1">Control Center</h3>
-                        <p class="text-muted mb-0">System-wide monitoring dashboard for all hostels and student enrollment.</p>
-                    </div>
+                <div class="mb-4">
+                    <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--gold);margin-bottom:0.4rem;"><i class="fa-solid fa-shield-halved me-1"></i> Admin Restricted Area</div>
+                    <h3 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;margin-bottom:0.3rem;">Control Center</h3>
+                    <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:0;">System-wide monitoring dashboard for all hostels and student enrollment.</p>
                 </div>
 
                 <!-- Stats Cards Row -->
                 <div class="row g-3 mb-5">
                     <div class="col-md-4">
                         <div class="dashboard-card card-blue">
-                            <div class="card-icon-container">
-                                <i class="fa-solid fa-users"></i>
-                            </div>
-                            <h6 class="text-muted fw-semibold uppercase mb-1">Total Enrolled Students</h6>
-                            <h3 class="fw-bold display-font text-dark mb-0" id="admin-total-students">0</h3>
+                            <div class="card-icon-container"><i class="fa-solid fa-users"></i></div>
+                            <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-secondary);margin-bottom:0.4rem;">Total Enrolled Students</div>
+                            <div class="stat-value" id="admin-total-students">0</div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="dashboard-card card-green">
-                            <div class="card-icon-container">
-                                <i class="fa-solid fa-hotel"></i>
-                            </div>
-                            <h6 class="text-muted fw-semibold uppercase mb-1">Monitored Hostels</h6>
-                            <h3 class="fw-bold display-font text-dark mb-0" id="admin-total-hostels">0</h3>
+                            <div class="card-icon-container"><i class="fa-solid fa-hotel"></i></div>
+                            <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-secondary);margin-bottom:0.4rem;">Monitored Hostels</div>
+                            <div class="stat-value" id="admin-total-hostels">0</div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="dashboard-card card-orange">
-                            <div class="card-icon-container">
-                                <i class="fa-solid fa-user-check"></i>
-                            </div>
-                            <h6 class="text-muted fw-semibold uppercase mb-1">Active Wardens</h6>
-                            <h3 class="fw-bold display-font text-dark mb-0" id="admin-active-wardens">0</h3>
+                            <div class="card-icon-container"><i class="fa-solid fa-user-check"></i></div>
+                            <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-secondary);margin-bottom:0.4rem;">Active Wardens</div>
+                            <div class="stat-value" id="admin-active-wardens">0</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Graphical Aggregations -->
                 <div class="row g-4">
-                    <!-- Left: Hostel comparison chart -->
                     <div class="col-lg-7">
-                        <div class="p-4 bg-white rounded-4 shadow-sm border border-light h-100">
-                            <h5 class="fw-bold mb-4 display-font text-dark"><i class="fa-solid fa-chart-column text-primary me-2"></i>Students per Hostel</h5>
-                            <div style="position: relative; height:320px; width:100%">
-                                <canvas id="hostelChart"></canvas>
-                            </div>
+                        <div class="panel-card h-100">
+                            <div class="panel-card-title"><div class="panel-icon stat-icon-blue"><i class="fa-solid fa-chart-column" style="font-size:0.85rem;"></i></div> Students per Hostel</div>
+                            <div style="position:relative; height:320px; width:100%;"><canvas id="hostelChart"></canvas></div>
                         </div>
                     </div>
-
-                    <!-- Right: Class breakdown chart -->
                     <div class="col-lg-5">
-                        <div class="p-4 bg-white rounded-4 shadow-sm border border-light h-100">
-                            <h5 class="fw-bold mb-4 display-font text-dark"><i class="fa-solid fa-chart-pie text-primary me-2"></i>Class Distribution</h5>
-                            <div style="position: relative; height:320px; width:100%">
-                                <canvas id="classChart"></canvas>
-                            </div>
+                        <div class="panel-card h-100">
+                            <div class="panel-card-title"><div class="panel-icon stat-icon-blue"><i class="fa-solid fa-chart-pie" style="font-size:0.85rem;"></i></div> Class Distribution</div>
+                            <div style="position:relative; height:320px; width:100%;"><canvas id="classChart"></canvas></div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Support Concerns Table -->
-                <div class="mt-5 p-4 bg-white rounded-4 shadow-sm border border-light">
-                    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-                        <div>
-                            <h5 class="fw-bold display-font text-dark mb-1"><i class="fa-solid fa-comments text-primary me-2"></i>Public Support Concerns</h5>
-                            <p class="text-muted small mb-0">Review support tickets and hostel concerns reported by visitors via the chatbot.</p>
+                <div class="mt-5">
+                    <div class="panel-card">
+                        <div class="panel-card-title">
+                            <div class="panel-icon stat-icon-blue"><i class="fa-solid fa-comments" style="font-size:0.85rem;"></i></div>
+                            Public Support Concerns
+                            <span class="ms-auto badge-status badge-pending" id="concern-badge-count">0 Tickets</span>
                         </div>
-                        <span class="badge bg-primary px-3 py-2 text-white" id="concern-badge-count">0 Tickets</span>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-custom align-middle">
-                            <thead>
-                                <tr>
-                                    <th>Submitted At</th>
-                                    <th>Name</th>
-                                    <th>Mobile Number</th>
-                                    <th>Concern Description</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="concerns-table-body">
-                                <tr>
-                                    <td colspan="5" class="text-center py-4 text-muted">
-                                        <span class="spinner-border spinner-border-sm me-2"></span>Loading support tickets...
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:1.5rem;">Support tickets reported by visitors via the chatbot. Review and dismiss resolved tickets.</p>
+                        <div class="data-table-wrap">
+                            <table class="table align-middle" id="concerns-table">
+                                <thead>
+                                    <tr><th>Submitted At</th><th>Name</th><th>Mobile Number</th><th>Concern Description</th><th class="text-center">Actions</th></tr>
+                                </thead>
+                                <tbody id="concerns-table-body">
+                                    <tr><td colspan="5" class="text-center py-4 text-muted"><span class="spinner-border spinner-border-sm me-2"></span>Loading support tickets...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

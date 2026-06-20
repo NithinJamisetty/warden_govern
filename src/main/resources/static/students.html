@@ -3,144 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Management - SWMS</title>
-    <!-- Bootstrap 5 CSS -->
+    <title>Student Management — SWMS.GOV</title>
+    <meta name="description" content="Official SWMS Student Management Portal. Search, register, and manage hostel student records.">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome 6 Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-    <!-- Security check -->
-    <script src="/js/auth.js"></script>
+    <!-- PWA Settings -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0a1628">
     <script>
-        // Check if Warden is authenticated
-        const currentUser = checkAuth(["WARDEN"]);
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('Service Worker registered successfully!', reg))
+                    .catch(err => console.error('Service Worker registration failed:', err));
+            });
+        }
     </script>
+</head>
+<body style="background-color: var(--bg-main);">
+    <script src="/js/auth.js"></script>
+    <script>const currentUser = checkAuth(["WARDEN"]);</script>
 
     <div class="gov-top-bar"></div>
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-custom">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <i class="fa-solid fa-building-columns text-primary"></i>
-                <span class="display-font">SWMS Portal</span>
+    <nav class="navbar navbar-expand-lg navbar-inner sticky-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="/">
+                <svg width="32" height="32" viewBox="0 0 100 110" fill="none">
+                    <path d="M50 5 L92 22 L92 55 C92 78 72 98 50 105 C28 98 8 78 8 55 L8 22 Z" fill="url(#sGrad)" stroke="#c59b27" stroke-width="3"/>
+                    <defs><linearGradient id="sGrad" x1="50" y1="5" x2="50" y2="105" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#003d75"/><stop offset="100%" stop-color="#001f3d"/></linearGradient></defs>
+                    <text x="50" y="52" text-anchor="middle" font-family="Arial" font-weight="900" font-size="22" fill="white">SW</text>
+                    <text x="50" y="72" text-anchor="middle" font-family="Arial" font-weight="900" font-size="14" fill="#c59b27" letter-spacing="2">MS</text>
+                </svg>
+                SWMS<span style="color:var(--color-accent);">.</span>GOV
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navStudents">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarText">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-custom" href="/dashboard.html"><i class="fa-solid fa-chart-line me-2"></i>Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-custom active" aria-current="page" href="/students.html"><i class="fa-solid fa-users me-2"></i>Student Management</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-custom" href="/reports.html"><i class="fa-solid fa-file-invoice-dollar me-2"></i>Reports</a>
-                    </li>
+            <div class="collapse navbar-collapse" id="navStudents">
+                <ul class="navbar-nav ms-4 mb-2 mb-lg-0 gap-1">
+                    <li class="nav-item"><a class="nav-pill-link" href="/dashboard.html"><i class="fa-solid fa-chart-line me-2"></i>Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-pill-link active" href="/students.html"><i class="fa-solid fa-users me-2"></i>Student Management</a></li>
+                    <li class="nav-item"><a class="nav-pill-link" href="/reports.html"><i class="fa-solid fa-file-chart-column me-2"></i>Reports</a></li>
                 </ul>
-                <div class="d-flex align-items-center gap-3">
+                <div class="ms-auto d-flex align-items-center gap-3">
                     <div class="text-end d-none d-md-block">
-                        <span class="fw-bold d-block text-dark" id="nav-username">Warden Name</span>
-                        <span class="badge bg-primary-light text-primary" id="nav-user-hostel">Hostel Name</span>
+                        <span class="d-block fw-bold" style="font-size:0.88rem; color:var(--text-primary);" id="nav-username">Warden</span>
+                        <span class="badge-status badge-class" id="nav-user-hostel">Hostel</span>
                     </div>
-                    <button onclick="logout()" class="btn btn-outline-danger btn-sm"><i class="fa-solid fa-right-from-bracket me-1"></i>Logout</button>
+                    <button onclick="logout()" class="btn btn-sm" style="border:1.5px solid var(--border-color); color:var(--text-secondary); border-radius:50px; padding:0.4rem 1rem; font-size:0.83rem;" onmouseover="this.style.borderColor='#e05c3c';this.style.color='#e05c3c';" onmouseout="this.style.borderColor='var(--border-color)';this.style.color='var(--text-secondary)';">
+                        <i class="fa-solid fa-right-from-bracket me-1"></i>Logout
+                    </button>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="container my-4">
-        <!-- Section Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-            <div>
-                <h3 class="fw-bold display-font text-dark mb-1"><i class="fa-solid fa-graduation-cap text-primary me-2"></i>Student Directory</h3>
-                <p class="text-muted mb-0">Manage registry records of students in <strong id="hostel-name-tag">your hostel</strong>.</p>
-            </div>
-            <div>
-                <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addStudentModal"><i class="fa-solid fa-plus me-2"></i>Register New Student</button>
-            </div>
-        </div>
-
-        <!-- Search and Filter Bar -->
-        <div class="p-3 bg-white rounded-3 border border-light shadow-sm mb-4">
-            <form id="search-form" class="row g-2 align-items-center">
-                <div class="col-md-9">
-                    <div class="input-group">
-                        <span class="input-group-text bg-white border-end-0 text-muted"><i class="fa-solid fa-magnifying-glass"></i></span>
-                        <input type="text" id="search-query" class="form-control form-control-custom border-start-0 ps-0" placeholder="Search by Student Name, Roll Number, or Class...">
+    <!-- Page Header -->
+    <div class="page-header-section">
+        <div class="container-fluid px-4" style="max-width:1280px; margin:0 auto;">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                    <div class="page-header-eyebrow"><i class="fa-solid fa-building-columns me-2"></i>Ministry of Education &amp; Child Development · <i class="fa-solid fa-shield-halved mx-2"></i>Warden Secure Portal</div>
+                    <h1 class="page-header-title"><i class="fa-solid fa-graduation-cap me-3" style="color:var(--gold-light); font-size:1.6rem;"></i>Student Directory</h1>
+                    <p class="page-header-subtitle">Manage registered student roll records for <strong id="hostel-name-tag">your hostel</strong>.</p>
+                    <div class="d-flex gap-2 mt-2">
+                        <span class="badge-status badge-active"><i class="fa-solid fa-circle" style="font-size:0.4rem;"></i> Portal Live</span>
+                        <span class="badge-status badge-class">Session: <span id="nav-username" style="display:inline;">Warden</span></span>
                     </div>
                 </div>
-                <div class="col-md-3 d-grid">
-                    <button type="submit" class="btn btn-secondary-custom"><i class="fa-solid fa-search me-2"></i>Search Records</button>
-                </div>
-            </form>
+                <button class="btn btn-primary-custom px-4" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+                    <i class="fa-solid fa-user-plus me-2"></i>Register New Student
+                </button>
+            </div>
         </div>
+    </div>
 
-        <!-- Feedback Alerts -->
-        <div id="status-alert" class="alert alert-success d-none alert-dismissible fade show" role="alert">
-            <span id="status-msg">Success message here.</span>
+    <main class="container-fluid px-4" style="max-width:1280px; margin:0 auto; padding-top:2rem; padding-bottom:2rem;">
+
+        <!-- Status Alert -->
+        <div id="status-alert" class="alert d-none alert-dismissible fade show" style="border-radius:var(--border-radius-md); border:1px solid rgba(49,106,87,0.3); background:rgba(49,106,87,0.08); color:var(--color-green);" role="alert">
+            <i class="fa-solid fa-circle-check me-2"></i><span id="status-msg">Success.</span>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
 
-        <!-- Table Container -->
-        <div class="table-responsive table-container">
-            <table class="table table-hover table-custom align-middle">
+        <!-- Search Toolbar -->
+        <div class="table-toolbar">
+            <div class="search-input-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="search-query" placeholder="Search by student name, roll number, or class…">
+            </div>
+            <button id="search-btn" class="btn btn-primary-custom px-4" style="border-radius:50px;">
+                <i class="fa-solid fa-search me-2"></i>Search
+            </button>
+            <button onclick="loadStudents()" class="btn btn-sm" style="border:1.5px solid var(--border-color); border-radius:50px; color:var(--text-secondary); padding:0.55rem 1.1rem;">
+                <i class="fa-solid fa-rotate-right me-1"></i>Refresh
+            </button>
+        </div>
+
+        <!-- Data Table -->
+        <div class="data-table-wrap">
+            <table class="table align-middle" id="student-table">
                 <thead>
                     <tr>
                         <th>Roll Number</th>
                         <th>Student Name</th>
                         <th>Class</th>
                         <th>Parent Mobile</th>
-                        <th>Hostel Name</th>
+                        <th>Hostel</th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="student-table-body">
-                    <tr>
-                        <td colspan="6" class="text-center py-4 text-muted">
-                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Loading student records...
-                        </td>
-                    </tr>
+                    <tr><td colspan="6" class="text-center py-5 text-secondary">
+                        <span class="spinner-border spinner-border-sm me-2" role="status"></span>Loading student records…
+                    </td></tr>
                 </tbody>
             </table>
         </div>
     </main>
 
-    <!-- Modal: Add Student -->
+    <!-- Add Student Modal -->
     <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content modal-content-custom">
-                <div class="modal-header modal-header-custom">
-                    <h5 class="modal-title fw-bold" id="addStudentModalLabel"><i class="fa-solid fa-user-plus me-2"></i>Register Student</h5>
-                    <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-content" style="border-radius:var(--border-radius-lg); border:1px solid var(--border-color); overflow:hidden;">
+                <div class="modal-header" style="background: linear-gradient(135deg, var(--color-blue), #0f2a42); color:white; padding:1.5rem 2rem;">
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0" id="addStudentModalLabel"><i class="fa-solid fa-user-plus me-2"></i>Register New Student</h5>
+                        <p style="font-size:0.82rem; color:rgba(255,255,255,0.6); margin-bottom:0; margin-top:0.2rem;">Add a student to the hostel roll registry</p>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal"></button>
                 </div>
                 <form id="add-student-form">
-                    <div class="modal-body modal-body-custom">
-                        <div class="mb-3">
-                            <label for="add-name" class="form-label fw-semibold text-muted">Full Name</label>
-                            <input type="text" class="form-control form-control-custom" id="add-name" required placeholder="Enter student's full name">
-                        </div>
-                        <div class="mb-3">
-                            <label for="add-roll" class="form-label fw-semibold text-muted">Roll Number</label>
-                            <input type="text" class="form-control form-control-custom" id="add-roll" required placeholder="e.g. SWMS2026101">
-                        </div>
-                        <div class="mb-3">
-                            <label for="add-class" class="form-label fw-semibold text-muted">Class Name</label>
-                            <input type="text" class="form-control form-control-custom" id="add-class" required placeholder="e.g. Class IX">
-                        </div>
-                        <div class="mb-3">
-                            <label for="add-parent-mobile" class="form-label fw-semibold text-muted">Parent Mobile Number</label>
-                            <input type="tel" class="form-control form-control-custom" id="add-parent-mobile" required placeholder="Enter 10-digit number" pattern="\d{10}">
+                    <div class="modal-body" style="padding:2rem; background:var(--bg-main);">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label for="add-name" class="form-label fw-semibold" style="font-size:0.85rem; color:var(--text-secondary);">Full Name</label>
+                                <input type="text" class="form-control" id="add-name" required placeholder="Enter student's full name" style="border-radius:var(--border-radius-md); border:1.5px solid var(--border-color); padding:0.7rem 1rem;">
+                            </div>
+                            <div class="col-12">
+                                <label for="add-roll" class="form-label fw-semibold" style="font-size:0.85rem; color:var(--text-secondary);">Roll Number</label>
+                                <input type="text" class="form-control" id="add-roll" required placeholder="e.g. SWMS2026101" style="border-radius:var(--border-radius-md); border:1.5px solid var(--border-color); padding:0.7rem 1rem;">
+                            </div>
+                            <div class="col-6">
+                                <label for="add-class" class="form-label fw-semibold" style="font-size:0.85rem; color:var(--text-secondary);">Class Name</label>
+                                <input type="text" class="form-control" id="add-class" required placeholder="e.g. Class IX" style="border-radius:var(--border-radius-md); border:1.5px solid var(--border-color); padding:0.7rem 1rem;">
+                            </div>
+                            <div class="col-6">
+                                <label for="add-parent-mobile" class="form-label fw-semibold" style="font-size:0.85rem; color:var(--text-secondary);">Parent Mobile</label>
+                                <input type="tel" class="form-control" id="add-parent-mobile" required placeholder="10-digit number" pattern="\d{10}" style="border-radius:var(--border-radius-md); border:1.5px solid var(--border-color); padding:0.7rem 1rem;">
+                            </div>
                         </div>
                     </div>
-                    <div class="modal-footer bg-light">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <div class="modal-footer" style="padding:1rem 2rem; background:var(--white); border-top:1px solid var(--border-color);">
+                        <button type="button" class="btn btn-sm" style="border:1.5px solid var(--border-color); border-radius:50px; color:var(--text-secondary); padding:0.45rem 1.2rem;" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary-custom">Save Record</button>
                     </div>
                 </form>
@@ -148,255 +166,208 @@
         </div>
     </div>
 
-    <!-- Modal: Edit Student -->
+    <!-- Edit Student Modal -->
     <div class="modal fade" id="editStudentModal" tabindex="-1" aria-labelledby="editStudentModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content modal-content-custom">
-                <div class="modal-header modal-header-custom">
-                    <h5 class="modal-title fw-bold" id="editStudentModalLabel"><i class="fa-solid fa-user-pen me-2"></i>Edit Student Record</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-content" style="border-radius:var(--border-radius-lg); border:1px solid var(--border-color); overflow:hidden;">
+                <div class="modal-header" style="background: linear-gradient(135deg, var(--color-green), #1a3d2e); color:white; padding:1.5rem 2rem;">
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0" id="editStudentModalLabel"><i class="fa-solid fa-user-pen me-2"></i>Edit Student Record</h5>
+                        <p style="font-size:0.82rem; color:rgba(255,255,255,0.6); margin-bottom:0; margin-top:0.2rem;">Update existing registration details</p>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal"></button>
                 </div>
                 <form id="edit-student-form">
                     <input type="hidden" id="edit-id">
-                    <div class="modal-body modal-body-custom">
-                        <div class="mb-3">
-                            <label for="edit-name" class="form-label fw-semibold text-muted">Full Name</label>
-                            <input type="text" class="form-control form-control-custom" id="edit-name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit-roll" class="form-label fw-semibold text-muted">Roll Number</label>
-                            <input type="text" class="form-control form-control-custom" id="edit-roll" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit-class" class="form-label fw-semibold text-muted">Class Name</label>
-                            <input type="text" class="form-control form-control-custom" id="edit-class" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit-parent-mobile" class="form-label fw-semibold text-muted">Parent Mobile Number</label>
-                            <input type="tel" class="form-control form-control-custom" id="edit-parent-mobile" required pattern="\d{10}">
+                    <div class="modal-body" style="padding:2rem; background:var(--bg-main);">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label for="edit-name" class="form-label fw-semibold" style="font-size:0.85rem; color:var(--text-secondary);">Full Name</label>
+                                <input type="text" class="form-control" id="edit-name" required style="border-radius:var(--border-radius-md); border:1.5px solid var(--border-color); padding:0.7rem 1rem;">
+                            </div>
+                            <div class="col-12">
+                                <label for="edit-roll" class="form-label fw-semibold" style="font-size:0.85rem; color:var(--text-secondary);">Roll Number</label>
+                                <input type="text" class="form-control" id="edit-roll" required style="border-radius:var(--border-radius-md); border:1.5px solid var(--border-color); padding:0.7rem 1rem;">
+                            </div>
+                            <div class="col-6">
+                                <label for="edit-class" class="form-label fw-semibold" style="font-size:0.85rem; color:var(--text-secondary);">Class</label>
+                                <input type="text" class="form-control" id="edit-class" required style="border-radius:var(--border-radius-md); border:1.5px solid var(--border-color); padding:0.7rem 1rem;">
+                            </div>
+                            <div class="col-6">
+                                <label for="edit-parent-mobile" class="form-label fw-semibold" style="font-size:0.85rem; color:var(--text-secondary);">Parent Mobile</label>
+                                <input type="tel" class="form-control" id="edit-parent-mobile" required pattern="\d{10}" style="border-radius:var(--border-radius-md); border:1.5px solid var(--border-color); padding:0.7rem 1rem;">
+                            </div>
                         </div>
                     </div>
-                    <div class="modal-footer bg-light">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary-custom">Update Details</button>
+                    <div class="modal-footer" style="padding:1rem 2rem; background:var(--white); border-top:1px solid var(--border-color);">
+                        <button type="button" class="btn btn-sm" style="border:1.5px solid var(--border-color); border-radius:50px; color:var(--text-secondary); padding:0.45rem 1.2rem;" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-secondary-custom">Update Details</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Modal: Delete Confirmation -->
+    <!-- Delete Confirmation Modal -->
     <div class="modal fade" id="deleteStudentModal" tabindex="-1" aria-labelledby="deleteStudentModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm">
-            <div class="modal-content modal-content-custom">
-                <div class="modal-header bg-danger text-white">
-                    <h6 class="modal-title fw-bold" id="deleteStudentModalLabel"><i class="fa-solid fa-triangle-exclamation me-2"></i>Confirm Delete</h6>
-                    <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-content" style="border-radius:var(--border-radius-lg); border:1px solid var(--border-color); overflow:hidden;">
+                <div class="modal-header" style="background:#c0392b; color:white; padding:1.2rem 1.5rem;">
+                    <h6 class="modal-title fw-bold mb-0" id="deleteStudentModalLabel"><i class="fa-solid fa-triangle-exclamation me-2"></i>Confirm Deletion</h6>
+                    <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body p-3 text-center">
-                    <p class="mb-0 text-muted">Are you sure you want to permanently delete this student record?</p>
-                    <strong class="text-dark d-block mt-2" id="delete-student-name"></strong>
+                <div class="modal-body text-center" style="padding:2rem 1.5rem; background:var(--bg-main);">
+                    <div style="width:52px; height:52px; background:rgba(192,57,43,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem auto;">
+                        <i class="fa-solid fa-trash-can" style="color:#c0392b; font-size:1.2rem;"></i>
+                    </div>
+                    <p class="mb-1" style="font-size:0.9rem; color:var(--text-secondary);">Permanently delete this student record?</p>
+                    <strong id="delete-student-name" style="color:var(--text-primary);"></strong>
                 </div>
-                <div class="modal-footer p-2 bg-light">
-                    <button type="button" class="btn btn-link btn-sm text-muted" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" id="confirm-delete-btn" class="btn btn-danger btn-sm px-3">Delete</button>
+                <div class="modal-footer" style="padding:1rem 1.5rem; background:var(--white); border-top:1px solid var(--border-color);">
+                    <button type="button" class="btn btn-sm" style="border:1.5px solid var(--border-color); border-radius:50px; color:var(--text-secondary); padding:0.45rem 1.2rem;" data-bs-dismiss="modal">Cancel</button>
+                    <button id="confirm-delete-btn" class="btn btn-sm" style="background:#c0392b; color:white; border-radius:50px; padding:0.45rem 1.2rem;">Delete Record</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="py-4 bg-white border-top mt-5">
-        <div class="container text-center text-muted">
-            <small>© 2026 Student Welfare Management System (SWMS) • Highly Secured Link</small>
-        </div>
+    <!-- Inner Footer -->
+    <footer class="inner-footer">
+        <p>© 2026 Student Welfare Management System (SWMS.GOV) &nbsp;•&nbsp; Ministry of Education &amp; Child Development</p>
     </footer>
 
-    <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let studentsList = [];
         let activeDeleteId = null;
 
         document.getElementById("hostel-name-tag").textContent = currentUser.hostelName || "your hostel";
+        document.getElementById("nav-username").textContent = currentUser.username;
+        document.getElementById("nav-user-hostel").textContent = currentUser.hostelName || "Hostel";
 
-        // Load students on start
         document.addEventListener("DOMContentLoaded", loadStudents);
 
         async function loadStudents() {
+            document.getElementById("student-table-body").innerHTML = `<tr><td colspan="6" class="text-center py-5 text-secondary"><span class="spinner-border spinner-border-sm me-2" role="status"></span>Loading records…</td></tr>`;
             try {
                 const response = await fetchApi("/api/students");
                 studentsList = await response.json();
                 renderTable(studentsList);
             } catch (err) {
-                document.getElementById("student-table-body").innerHTML = `
-                    <tr>
-                        <td colspan="6" class="text-center py-4 text-danger fw-semibold">
-                            <i class="fa-solid fa-circle-exclamation me-2"></i>Failed to fetch records.
-                        </td>
-                    </tr>`;
+                document.getElementById("student-table-body").innerHTML = `<tr><td colspan="6" class="text-center py-5 text-danger fw-semibold"><i class="fa-solid fa-circle-exclamation me-2"></i>Failed to fetch records.</td></tr>`;
             }
         }
 
         function renderTable(list) {
             const tbody = document.getElementById("student-table-body");
             if (list.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">No student records found.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5">
+                    <i class="fa-solid fa-users-slash" style="font-size:2rem; color:var(--border-color); display:block; margin-bottom:1rem;"></i>
+                    <span style="color:var(--text-secondary); font-size:0.9rem;">No student records found.</span>
+                </td></tr>`;
                 return;
             }
-
-            tbody.innerHTML = list.map(student => `
+            const avatarColors = ['avatar-blue','avatar-green','avatar-gold','avatar-ruby'];
+            tbody.innerHTML = list.map((s, idx) => {
+                const initial = s.studentName.charAt(0).toUpperCase();
+                const avatarClass = avatarColors[idx % avatarColors.length];
+                return `
                 <tr>
-                    <td class="fw-semibold text-primary">${student.rollNumber}</td>
-                    <td class="fw-bold">${student.studentName}</td>
-                    <td><span class="badge bg-light text-dark">${student.className}</span></td>
-                    <td><i class="fa-solid fa-phone text-muted me-1.5 small"></i>${student.parentMobile}</td>
-                    <td class="text-muted">${student.hostelName}</td>
-                    <td class="text-center">
-                        <div class="d-flex justify-content-center gap-2">
-                            <button onclick="openEditModal(${student.id})" class="btn btn-outline-primary btn-sm" title="Edit Student"><i class="fa-solid fa-user-pen"></i></button>
-                            <button onclick="openDeleteModal(${student.id}, '${student.studentName}')" class="btn btn-outline-danger btn-sm" title="Delete Student"><i class="fa-solid fa-trash-can"></i></button>
+                    <td><span class="badge-status badge-class">${s.rollNumber}</span></td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="student-avatar ${avatarClass}">${initial}</div>
+                            <span style="font-weight:700; color:var(--text-primary);">${s.studentName}</span>
                         </div>
                     </td>
-                </tr>
-            `).join('');
+                    <td><span class="badge-status badge-class">${s.className}</span></td>
+                    <td style="color:var(--text-secondary);"><i class="fa-solid fa-phone me-2" style="font-size:0.72rem; color:var(--text-muted);"></i>${s.parentMobile}</td>
+                    <td><span class="badge-status badge-active"><i class="fa-solid fa-circle" style="font-size:0.4rem;"></i>${s.hostelName}</span></td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center gap-2">
+                            <button onclick="openEditModal(${s.id})" class="btn btn-sm" style="background:var(--navy-soft);border:1px solid var(--border);border-radius:8px;color:var(--navy-light);padding:0.4rem 0.75rem;transition:all 0.2s ease;" title="Edit" onmouseover="this.style.background='var(--navy-light)';this.style.color='white';" onmouseout="this.style.background='var(--navy-soft)';this.style.color='var(--navy-light)';"><i class="fa-solid fa-user-pen"></i></button>
+                            <button onclick="openDeleteModal(${s.id}, '${s.studentName}')" class="btn btn-sm" style="background:var(--ruby-soft);border:1px solid rgba(181,32,32,0.2);border-radius:8px;color:var(--ruby);padding:0.4rem 0.75rem;transition:all 0.2s ease;" title="Delete" onmouseover="this.style.background='var(--ruby)';this.style.color='white';" onmouseout="this.style.background='var(--ruby-soft)';this.style.color='var(--ruby)';"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </td>
+                </tr>`;
+            }).join('');
         }
 
-        // Search action
-        document.getElementById("search-form").addEventListener("submit", async (e) => {
-            e.preventDefault();
+        document.getElementById("search-btn").addEventListener("click", async () => {
             const query = document.getElementById("search-query").value.trim();
-            const tbody = document.getElementById("student-table-body");
-            tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted"><span class="spinner-border spinner-border-sm me-2"></span>Searching...</td></tr>`;
-            
+            document.getElementById("student-table-body").innerHTML = `<tr><td colspan="6" class="text-center py-5 text-secondary"><span class="spinner-border spinner-border-sm me-2"></span>Searching…</td></tr>`;
             try {
                 const response = await fetchApi(`/api/students?query=${encodeURIComponent(query)}`);
-                const list = await response.json();
-                renderTable(list);
+                renderTable(await response.json());
             } catch (err) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-danger fw-semibold">Search failed.</td></tr>`;
+                document.getElementById("student-table-body").innerHTML = `<tr><td colspan="6" class="text-center py-5 text-danger fw-semibold">Search failed.</td></tr>`;
             }
         });
 
-        // Add Student form submission
+        // Support Enter key in search
+        document.getElementById("search-query").addEventListener("keypress", e => { if (e.key === "Enter") { e.preventDefault(); document.getElementById("search-btn").click(); }});
+
         document.getElementById("add-student-form").addEventListener("submit", async (e) => {
             e.preventDefault();
-            const student = {
-                studentName: document.getElementById("add-name").value,
-                rollNumber: document.getElementById("add-roll").value,
-                className: document.getElementById("add-class").value,
-                parentMobile: document.getElementById("add-parent-mobile").value
-            };
-
+            const student = { studentName: document.getElementById("add-name").value, rollNumber: document.getElementById("add-roll").value, className: document.getElementById("add-class").value, parentMobile: document.getElementById("add-parent-mobile").value };
             try {
-                const response = await fetchApi("/api/students", {
-                    method: "POST",
-                    body: JSON.stringify(student)
-                });
-
+                const response = await fetchApi("/api/students", { method: "POST", body: JSON.stringify(student) });
                 const data = await response.json();
-
-                if (!response.ok) {
-                    alert(data.message || "Registration failed. Verify details.");
-                    return;
-                }
-
-                // Hide modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('addStudentModal'));
-                modal.hide();
-
-                // Clear form
+                if (!response.ok) { alert(data.message || "Registration failed."); return; }
+                bootstrap.Modal.getInstance(document.getElementById('addStudentModal')).hide();
                 document.getElementById("add-student-form").reset();
-
-                // Show success alert
                 showStatusAlert("Student profile registered successfully!");
                 loadStudents();
-            } catch (err) {
-                alert("An error occurred during submission.");
-            }
+            } catch (err) { alert("An error occurred."); }
         });
 
-        // Edit Modal Open
         function openEditModal(id) {
-            const student = studentsList.find(s => s.id === id);
-            if (!student) return;
-
-            document.getElementById("edit-id").value = student.id;
-            document.getElementById("edit-name").value = student.studentName;
-            document.getElementById("edit-roll").value = student.rollNumber;
-            document.getElementById("edit-class").value = student.className;
-            document.getElementById("edit-parent-mobile").value = student.parentMobile;
-
-            const modal = new bootstrap.Modal(document.getElementById('editStudentModal'));
-            modal.show();
+            const s = studentsList.find(x => x.id === id);
+            if (!s) return;
+            document.getElementById("edit-id").value = s.id;
+            document.getElementById("edit-name").value = s.studentName;
+            document.getElementById("edit-roll").value = s.rollNumber;
+            document.getElementById("edit-class").value = s.className;
+            document.getElementById("edit-parent-mobile").value = s.parentMobile;
+            new bootstrap.Modal(document.getElementById('editStudentModal')).show();
         }
 
-        // Edit form submission
         document.getElementById("edit-student-form").addEventListener("submit", async (e) => {
             e.preventDefault();
             const id = document.getElementById("edit-id").value;
-            const student = {
-                studentName: document.getElementById("edit-name").value,
-                rollNumber: document.getElementById("edit-roll").value,
-                className: document.getElementById("edit-class").value,
-                parentMobile: document.getElementById("edit-parent-mobile").value
-            };
-
+            const student = { studentName: document.getElementById("edit-name").value, rollNumber: document.getElementById("edit-roll").value, className: document.getElementById("edit-class").value, parentMobile: document.getElementById("edit-parent-mobile").value };
             try {
-                const response = await fetchApi(`/api/students/${id}`, {
-                    method: "PUT",
-                    body: JSON.stringify(student)
-                });
-
+                const response = await fetchApi(`/api/students/${id}`, { method: "PUT", body: JSON.stringify(student) });
                 const data = await response.json();
-
-                if (!response.ok) {
-                    alert(data.message || "Failed to update record.");
-                    return;
-                }
-
+                if (!response.ok) { alert(data.message || "Failed to update."); return; }
                 bootstrap.Modal.getInstance(document.getElementById('editStudentModal')).hide();
                 showStatusAlert("Student profile updated successfully!");
                 loadStudents();
-            } catch (err) {
-                alert("An error occurred during submission.");
-            }
+            } catch (err) { alert("An error occurred."); }
         });
 
-        // Delete Modal Open
         function openDeleteModal(id, name) {
             activeDeleteId = id;
             document.getElementById("delete-student-name").textContent = name;
-            const modal = new bootstrap.Modal(document.getElementById('deleteStudentModal'));
-            modal.show();
+            new bootstrap.Modal(document.getElementById('deleteStudentModal')).show();
         }
 
-        // Confirm Delete action
         document.getElementById("confirm-delete-btn").addEventListener("click", async () => {
             if (!activeDeleteId) return;
-
             try {
-                const response = await fetchApi(`/api/students/${activeDeleteId}`, {
-                    method: "DELETE"
-                });
-
+                await fetchApi(`/api/students/${activeDeleteId}`, { method: "DELETE" });
                 bootstrap.Modal.getInstance(document.getElementById('deleteStudentModal')).hide();
                 showStatusAlert("Student profile deleted successfully.");
                 loadStudents();
-            } catch (err) {
-                alert("Failed to delete student record.");
-            } finally {
-                activeDeleteId = null;
-            }
+            } catch (err) { alert("Failed to delete."); }
+            finally { activeDeleteId = null; }
         });
 
         function showStatusAlert(msg) {
             document.getElementById("status-msg").textContent = msg;
             const alertBox = document.getElementById("status-alert");
             alertBox.classList.remove("d-none");
-            setTimeout(() => {
-                alertBox.classList.add("d-none");
-            }, 4000);
+            setTimeout(() => alertBox.classList.add("d-none"), 4500);
         }
     </script>
 </body>

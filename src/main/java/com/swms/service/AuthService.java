@@ -298,4 +298,17 @@ public class AuthService {
             auditLogService.log(creator, "TOGGLE_WARDEN_STATUS - Set warden: " + warden.getUsername() + " status to " + state, ipAddress);
         }
     }
+
+    public List<Map<String, String>> getPublicWardensList() {
+        List<User> wardens = userRepository.findByRole("WARDEN");
+        List<Map<String, String>> result = new java.util.ArrayList<>();
+        for (User w : wardens) {
+            Map<String, String> map = new java.util.HashMap<>();
+            map.put("username", w.getUsername());
+            map.put("hostelName", w.getHostelName());
+            map.put("mobileNumber", w.getMobileNumber());
+            result.add(map);
+        }
+        return result;
+    }
 }

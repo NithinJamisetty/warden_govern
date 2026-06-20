@@ -137,4 +137,9 @@ public class AuthController {
         }
         return xfHeader.split(",")[0].trim();
     }
+
+    @GetMapping("/public/wardens")
+    public ResponseEntity<?> getPublicWardens() {
+        return ResponseEntity.ok(authService.getPublicWardensList());
+    }
 }

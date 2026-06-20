@@ -3,143 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warden Dashboard - SWMS</title>
-    <!-- Bootstrap 5 CSS -->
+    <title>Warden Dashboard — SWMS.GOV</title>
+    <meta name="description" content="Official SWMS Warden Dashboard. View enrolled students, hostel stats, and administrative tools.">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome 6 Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
-    <!-- Security check -->
+<body style="background-color: var(--off-white);">
     <script src="/js/auth.js"></script>
-    <script>
-        // Check if Warden is authenticated
-        const currentUser = checkAuth(["WARDEN"]);
-    </script>
+    <script>const currentUser = checkAuth(["WARDEN"]);</script>
 
     <div class="gov-top-bar"></div>
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-custom">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <i class="fa-solid fa-building-columns text-primary"></i>
-                <span class="display-font">SWMS Portal</span>
+    <nav class="navbar navbar-expand-lg navbar-inner sticky-top">
+        <div class="container-fluid px-4" style="max-width:1360px;margin:0 auto;">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+                <svg width="32" height="32" viewBox="0 0 100 110" fill="none">
+                    <path d="M50 5 L92 22 L92 55 C92 78 72 98 50 105 C28 98 8 78 8 55 L8 22 Z" fill="url(#dGrad)" stroke="#c9941a" stroke-width="3"/>
+                    <defs><linearGradient id="dGrad" x1="50" y1="5" x2="50" y2="105" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#1e3a5f"/><stop offset="100%" stop-color="#0a1628"/></linearGradient></defs>
+                    <text x="50" y="52" text-anchor="middle" font-family="Arial" font-weight="900" font-size="22" fill="white">SW</text>
+                    <text x="50" y="72" text-anchor="middle" font-family="Arial" font-weight="900" font-size="14" fill="#c9941a" letter-spacing="2">MS</text>
+                </svg>
+                SWMS<span style="color:var(--gold);">.</span>GOV
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navDash">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarText">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-custom active" aria-current="page" href="/dashboard.html"><i class="fa-solid fa-chart-line me-2"></i>Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-custom" href="/students.html"><i class="fa-solid fa-users me-2"></i>Student Management</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-custom" href="/reports.html"><i class="fa-solid fa-file-invoice-dollar me-2"></i>Reports</a>
-                    </li>
+            <div class="collapse navbar-collapse" id="navDash">
+                <ul class="navbar-nav ms-4 mb-2 mb-lg-0 gap-1">
+                    <li class="nav-item"><a class="nav-pill-link active" href="/dashboard.html"><i class="fa-solid fa-chart-line me-2"></i>Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-pill-link" href="/students.html"><i class="fa-solid fa-users me-2"></i>Student Management</a></li>
+                    <li class="nav-item"><a class="nav-pill-link" href="/reports.html"><i class="fa-solid fa-file-chart-column me-2"></i>Reports</a></li>
                 </ul>
-                <div class="d-flex align-items-center gap-3">
+                <div class="ms-auto d-flex align-items-center gap-3">
                     <div class="text-end d-none d-md-block">
-                        <span class="fw-bold d-block text-dark" id="nav-username">Warden Name</span>
-                        <span class="badge bg-primary-light text-primary" id="nav-user-hostel">Hostel Name</span>
+                        <span class="d-block fw-bold" style="font-size:0.88rem; color:var(--text-primary);" id="nav-username">Warden</span>
+                        <span class="badge-status badge-class" id="nav-user-hostel">Hostel</span>
                     </div>
-                    <button onclick="logout()" class="btn btn-outline-danger btn-sm"><i class="fa-solid fa-right-from-bracket me-1"></i>Logout</button>
+                    <button onclick="logout()" class="btn btn-sm" style="border:1.5px solid var(--border-color); color:var(--text-secondary); border-radius:50px; padding:0.4rem 1rem; font-size:0.83rem; transition:all 0.2s ease;" onmouseover="this.style.borderColor='#e05c3c';this.style.color='#e05c3c';" onmouseout="this.style.borderColor='var(--border-color)';this.style.color='var(--text-secondary)';">
+                        <i class="fa-solid fa-right-from-bracket me-1"></i>Logout
+                    </button>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="container my-4">
-        <!-- Welcome Jumbotron -->
-        <div class="p-4 bg-white rounded-4 shadow-sm border border-light mb-4">
+    <main class="container-fluid px-4" style="padding-top:2rem; padding-bottom:4rem; max-width:1360px; margin:0 auto;">
+
+        <!-- Welcome Banner -->
+        <div class="welcome-banner mb-4">
             <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h3 class="fw-bold text-dark display-font mb-2">Namaskar, <span id="welcome-username" class="text-primary">Warden</span>!</h3>
-                    <p class="text-muted mb-0">Manage and collect hostel details for <strong class="text-dark" id="hostel-name-display">your hostel</strong>. Check statistics below or proceed to Student Management.</p>
+                <div class="col-md-7">
+                    <div style="display:flex;align-items:center;gap:1.25rem;margin-bottom:0.75rem;">
+                        <!-- Avatar initial -->
+                        <div id="warden-avatar" style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#a57810);display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:800;font-size:1.4rem;color:var(--navy-deep);flex-shrink:0;border:3px solid rgba(201,148,26,0.4);">W</div>
+                        <div>
+                            <p style="color:rgba(255,255,255,0.4); font-size:0.72rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; margin-bottom:0.2rem;">SWMS.GOV — Warden Portal</p>
+                            <h3 style="margin-bottom:0;">Namaskar, <span id="welcome-username">Warden</span>!</h3>
+                        </div>
+                    </div>
+                    <p style="color:rgba(255,255,255,0.55);font-size:0.9rem;margin-bottom:0;">Managing <strong style="color:rgba(255,255,255,0.85);" id="hostel-name-display">your hostel</strong>. Review today's stats or navigate to student management below.</p>
                 </div>
-                <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                    <span class="text-muted small d-block"><i class="fa-regular fa-calendar-days me-1"></i>Current System Time:</span>
-                    <strong class="text-dark" id="system-time">2026-06-09</strong>
+                <div class="col-md-5 text-md-end mt-3 mt-md-0">
+                    <div class="d-flex flex-column align-items-md-end gap-2">
+                        <div class="time-badge">
+                            <i class="fa-regular fa-clock me-2"></i><span id="system-time">Loading...</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.78rem;color:rgba(255,255,255,0.35);">
+                            <i class="fa-solid fa-circle text-success" style="font-size:0.5rem;"></i> All systems operational
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Dashboard Stats Cards -->
-        <div class="row g-4 mb-5">
+        <!-- Stat Widgets Row -->
+        <div class="row g-4 mb-4">
             <div class="col-md-4">
-                <div class="dashboard-card card-blue">
-                    <div class="card-icon-container">
-                        <i class="fa-solid fa-users"></i>
+                <div class="stat-widget blue">
+                    <div class="stat-widget-icon stat-icon-blue"><i class="fa-solid fa-users"></i></div>
+                    <div class="stat-widget-body">
+                        <div class="stat-label">Total Enrolled Students</div>
+                        <div class="stat-value" id="stat-total-students">—</div>
+                        <div class="stat-sub">Registered in your hostel</div>
                     </div>
-                    <h6 class="text-muted fw-semibold uppercase mb-1">Total Enrolled Students</h6>
-                    <h3 class="fw-bold display-font text-dark mb-0" id="stat-total-students">0</h3>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="dashboard-card card-green">
-                    <div class="card-icon-container">
-                        <i class="fa-solid fa-house-chimney"></i>
+                <div class="stat-widget green">
+                    <div class="stat-widget-icon stat-icon-green"><i class="fa-solid fa-house-chimney"></i></div>
+                    <div class="stat-widget-body">
+                        <div class="stat-label">Assigned Hostel</div>
+                        <div class="stat-value" style="font-size:1.4rem;" id="stat-hostel-name">Loading…</div>
+                        <div class="stat-sub">Your managed facility</div>
                     </div>
-                    <h6 class="text-muted fw-semibold uppercase mb-1">Assigned Hostel</h6>
-                    <h4 class="fw-bold display-font text-dark mb-0 text-truncate" id="stat-hostel-name">Loading...</h4>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="dashboard-card card-orange">
-                    <div class="card-icon-container">
-                        <i class="fa-solid fa-user-shield"></i>
+                <div class="stat-widget gold">
+                    <div class="stat-widget-icon stat-icon-terra"><i class="fa-solid fa-user-shield"></i></div>
+                    <div class="stat-widget-body">
+                        <div class="stat-label">MFA Security Mode</div>
+                        <div class="stat-value" style="font-size:1.3rem; color:var(--emerald);"><i class="fa-solid fa-circle-check me-2" style="font-size:1.1rem;"></i>Active (TOTP)</div>
+                        <div class="stat-sub">2-Factor authentication enabled</div>
                     </div>
-                    <h6 class="text-muted fw-semibold uppercase mb-1">MFA Security Mode</h6>
-                    <h4 class="fw-bold display-font text-success mb-0"><i class="fa-solid fa-circle-check me-2"></i>Active (TOTP)</h4>
                 </div>
             </div>
         </div>
 
-        <div class="row g-4">
-            <!-- Left Side: Class-wise student graph -->
-            <div class="col-lg-6">
-                <div class="p-4 bg-white rounded-4 shadow-sm border border-light h-100">
-                    <h5 class="fw-bold mb-4 display-font text-dark"><i class="fa-solid fa-chart-pie text-primary me-2"></i>Student Count by Class</h5>
-                    <div style="position: relative; height:300px; width:100%">
+        <!-- Chart + Right Panel -->
+        <div class="row g-4 mb-4">
+            <div class="col-lg-7">
+                <div class="panel-card">
+                    <div class="panel-card-title">
+                        <div class="panel-icon stat-icon-blue"><i class="fa-solid fa-chart-pie" style="font-size:0.85rem;"></i></div>
+                        Student Distribution by Class
+                        <span class="ms-auto badge-status badge-class" style="font-size:0.7rem;">Live Data</span>
+                    </div>
+                    <div style="position:relative; height:300px; width:100%;">
                         <canvas id="classChart"></canvas>
                     </div>
                 </div>
             </div>
-
-            <!-- Right Side: Quick Links and Notices -->
-            <div class="col-lg-6">
-                <div class="p-4 bg-white rounded-4 shadow-sm border border-light h-100 d-flex flex-column">
-                    <h5 class="fw-bold mb-4 display-font text-dark"><i class="fa-solid fa-wand-magic-sparkles text-primary me-2"></i>Quick Operations</h5>
-                    <div class="row g-3 mb-4">
-                        <div class="col-6">
-                            <a href="/students.html" class="btn btn-outline-primary w-100 py-3 rounded-3 text-start d-flex flex-column align-items-start gap-2">
-                                <i class="fa-solid fa-user-plus fs-4"></i>
-                                <span>Add New Student</span>
-                            </a>
+            <div class="col-lg-5">
+                <div class="panel-card d-flex flex-column gap-4">
+                    <!-- Quick Ops -->
+                    <div>
+                        <div class="panel-card-title">
+                            <div class="panel-icon stat-icon-terra"><i class="fa-solid fa-bolt" style="font-size:0.85rem;"></i></div>
+                            Quick Operations
                         </div>
-                        <div class="col-6">
-                            <a href="/reports.html" class="btn btn-outline-success w-100 py-3 rounded-3 text-start d-flex flex-column align-items-start gap-2">
-                                <i class="fa-solid fa-file-export fs-4"></i>
-                                <span>Export Reports</span>
-                            </a>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <a href="/students.html" class="quick-op-btn">
+                                    <div class="op-icon stat-icon-blue"><i class="fa-solid fa-user-plus"></i></div>
+                                    <div class="op-label">Add New Student</div>
+                                    <div class="op-sub">Register to hostel roll</div>
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="/reports.html" class="quick-op-btn">
+                                    <div class="op-icon stat-icon-green"><i class="fa-solid fa-file-export"></i></div>
+                                    <div class="op-label">Export Reports</div>
+                                    <div class="op-sub">PDF &amp; Excel formats</div>
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="/students.html" class="quick-op-btn">
+                                    <div class="op-icon stat-icon-terra"><i class="fa-solid fa-magnifying-glass"></i></div>
+                                    <div class="op-label">Search Student</div>
+                                    <div class="op-sub">By name or roll no.</div>
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="/reports.html" class="quick-op-btn">
+                                    <div class="op-icon stat-icon-gold"><i class="fa-solid fa-chart-bar"></i></div>
+                                    <div class="op-label">View Analytics</div>
+                                    <div class="op-sub">Class distribution</div>
+                                </a>
+                            </div>
                         </div>
                     </div>
-
-                    <h5 class="fw-bold mb-3 display-font text-dark"><i class="fa-solid fa-bullhorn text-warning me-2"></i>Government Notices</h5>
-                    <div class="d-flex flex-column gap-3 flex-grow-1">
-                        <div class="p-3 bg-light rounded-3 border-start border-primary border-4">
-                            <h6 class="fw-bold mb-1">MFA Verification Policy</h6>
-                            <p class="text-muted mb-0 small">As per welfare cybersecurity guidelines, changing user accounts or resetting devices requires validation by a District Admin.</p>
+                    <!-- Govt Notices -->
+                    <div>
+                        <div class="panel-card-title mb-3">
+                            <div class="panel-icon stat-icon-gold"><i class="fa-solid fa-bullhorn" style="font-size:0.85rem; color:#b38600;"></i></div>
+                            Government Notices
                         </div>
-                        <div class="p-3 bg-light rounded-3 border-start border-warning border-4">
-                            <h6 class="fw-bold mb-1">Scholarship Verification</h6>
-                            <p class="text-muted mb-0 small">Please review and verify roll numbers and mobile contacts of all Class X students for immediate welfare payouts.</p>
+                        <div class="d-flex flex-column gap-3">
+                            <div class="notice-card notice-blue">
+                                <h6><i class="fa-solid fa-shield-halved me-2" style="color:var(--navy-light);"></i>MFA Verification Policy</h6>
+                                <p>As per welfare cybersecurity guidelines, changing user accounts or resetting devices requires validation by a District Admin.</p>
+                            </div>
+                            <div class="notice-card notice-gold">
+                                <h6><i class="fa-solid fa-circle-exclamation me-2" style="color:#c9941a;"></i>Scholarship Verification</h6>
+                                <p>Review and verify roll numbers and mobile contacts of all Class X students for immediate welfare payouts.</p>
+                            </div>
+                            <div class="notice-card notice-green">
+                                <h6><i class="fa-solid fa-calendar-check me-2" style="color:var(--emerald);"></i>Annual Inspection</h6>
+                                <p>Pre-inspection checklist to be submitted by August 31, 2026 through the admin portal.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Feed Row -->
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="panel-card">
+                    <div class="panel-card-title">
+                        <div class="panel-icon stat-icon-blue"><i class="fa-solid fa-clock-rotate-left" style="font-size:0.85rem;"></i></div>
+                        Recent Activity
+                        <span class="ms-auto badge-status badge-active" style="font-size:0.68rem;">Auto-refresh</span>
+                    </div>
+                    <div class="d-flex flex-column gap-1" id="activity-feed">
+                        <!-- Filled dynamically or with placeholder -->
+                        <div class="d-flex align-items-start gap-3 py-3" style="border-bottom:1px solid var(--border-soft);">
+                            <div style="width:36px;height:36px;border-radius:50%;background:var(--navy-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fa-solid fa-user-plus" style="font-size:0.8rem;color:var(--navy-light);"></i></div>
+                            <div>
+                                <div style="font-size:0.87rem;font-weight:600;color:var(--text-primary);">Student registration updated</div>
+                                <div style="font-size:0.78rem;color:var(--text-muted);">Today, <span id="sys-date">—</span> · by <span id="activity-warden">Warden</span></div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start gap-3 py-3" style="border-bottom:1px solid var(--border-soft);">
+                            <div style="width:36px;height:36px;border-radius:50%;background:var(--emerald-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fa-solid fa-lock" style="font-size:0.8rem;color:var(--emerald);"></i></div>
+                            <div>
+                                <div style="font-size:0.87rem;font-weight:600;color:var(--text-primary);">MFA session authenticated</div>
+                                <div style="font-size:0.78rem;color:var(--text-muted);">Today · TOTP Verified ✓</div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start gap-3 py-3">
+                            <div style="width:36px;height:36px;border-radius:50%;background:var(--gold-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fa-solid fa-chart-pie" style="font-size:0.8rem;color:#8a6300;"></i></div>
+                            <div>
+                                <div style="font-size:0.87rem;font-weight:600;color:var(--text-primary);">Dashboard report generated</div>
+                                <div style="font-size:0.78rem;color:var(--text-muted);">Today · Student distribution chart loaded</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="panel-card h-100">
+                    <div class="panel-card-title">
+                        <div class="panel-icon stat-icon-terra"><i class="fa-solid fa-circle-info" style="font-size:0.85rem;color:#b38600;"></i></div>
+                        Portal Info
+                    </div>
+                    <div class="d-flex flex-column gap-3">
+                        <div>
+                            <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:0.4rem;">Portal Version</div>
+                            <div style="font-size:0.88rem;font-weight:600;color:var(--text-primary);">SWMS.GOV v3.1.4</div>
+                        </div>
+                        <div>
+                            <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:0.4rem;">Security Status</div>
+                            <div style="font-size:0.88rem;font-weight:600;color:var(--emerald);"><i class="fa-solid fa-circle-check me-1"></i>All Systems Secured</div>
+                        </div>
+                        <div>
+                            <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:0.4rem;">Last Login</div>
+                            <div style="font-size:0.88rem;font-weight:600;color:var(--text-primary);" id="last-login-info">Today</div>
+                        </div>
+                        <div style="margin-top:auto;">
+                            <a href="/students.html" class="btn btn-primary-custom btn-sm w-100 mt-3">
+                                <i class="fa-solid fa-users me-2"></i>Manage Students
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -147,41 +255,39 @@
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="py-4 bg-white border-top mt-5">
-        <div class="container text-center text-muted">
-            <small>© 2026 Student Welfare Management System (SWMS) • Ministry of Education & Child Development</small>
-        </div>
+    <!-- Inner Footer -->
+    <footer class="inner-footer">
+        <p>© 2026 Student Welfare Management System (SWMS.GOV) &nbsp;•&nbsp; Ministry of Education &amp; Child Development</p>
     </footer>
 
-    <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
-            // Set welcome labels
             document.getElementById("welcome-username").textContent = currentUser.username;
             document.getElementById("hostel-name-display").textContent = currentUser.hostelName || "your hostel";
             document.getElementById("stat-hostel-name").textContent = currentUser.hostelName || "N/A";
-            
-            // Set current system date
-            const d = new Date();
-            document.getElementById("system-time").textContent = d.toDateString() + " " + d.toLocaleTimeString();
+            document.getElementById("nav-username").textContent = currentUser.username;
+            document.getElementById("nav-user-hostel").textContent = currentUser.hostelName || "Hostel";
+            document.getElementById("activity-warden").textContent = currentUser.username;
 
-            // Load counts
+            // Set avatar initial
+            const initials = (currentUser.username || "W").charAt(0).toUpperCase();
+            document.getElementById("warden-avatar").textContent = initials;
+
+            const d = new Date();
+            const timeStr = d.toDateString() + " — " + d.toLocaleTimeString();
+            document.getElementById("system-time").textContent = timeStr;
+            document.getElementById("sys-date").textContent = d.toLocaleDateString();
+            document.getElementById("last-login-info").textContent = d.toLocaleDateString() + " at " + d.toLocaleTimeString();
+
             try {
-                // Fetch student records to count
                 const studentsRes = await fetchApi("/api/students");
                 const students = await studentsRes.json();
-                
                 document.getElementById("stat-total-students").textContent = students.length;
 
-                // Load class breakdown chart
                 const classesRes = await fetchApi("/api/reports/classes");
                 const classData = await classesRes.json();
-
-                // If classData is empty, we can show a placeholder or empty chart
                 const labels = classData.map(item => item.className);
                 const counts = classData.map(item => item.studentCount);
 
@@ -191,27 +297,28 @@
                     data: {
                         labels: labels.length > 0 ? labels : ['No Students Yet'],
                         datasets: [{
-                            data: counts.length > 0 ? counts : [0],
-                            backgroundColor: ['#0077b6', '#2a9d8f', '#f4a261', '#e76f51', '#e9c46a', '#457b9d'],
-                            borderWidth: 2,
-                            borderColor: '#ffffff'
+                            data: counts.length > 0 ? counts : [1],
+                            backgroundColor: ['#1e3a5f','#1a6b4a','#c9941a','#b52020','#5b7fa6','#7cb39a'],
+                            borderWidth: 3,
+                            borderColor: '#ffffff',
+                            hoverBorderWidth: 4
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        cutout: '65%',
                         plugins: {
                             legend: {
                                 position: 'bottom',
-                                labels: {
-                                    font: { family: 'Inter', size: 12 }
-                                }
+                                labels: { font: { family: 'Inter', size: 12 }, padding: 16, color: '#4a5f78' }
                             }
                         }
                     }
                 });
             } catch (err) {
-                console.error("Error loading dashboard data", err);
+                console.error("Dashboard data error:", err);
+                document.getElementById("stat-total-students").textContent = "—";
             }
         });
     </script>

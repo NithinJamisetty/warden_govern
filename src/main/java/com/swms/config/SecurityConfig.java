@@ -33,10 +33,10 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/index.html", "/login.html", "/warden/login.html", "/dashboard.html", "/students.html", "/reports.html", "/dashboard").permitAll()
+                .requestMatchers("/", "/index.html", "/login.html", "/warden/login.html", "/dashboard.html", "/students.html", "/reports.html", "/dashboard", "/warden-manual.html", "/student-guidelines.html").permitAll()
                 .requestMatchers("/admin/login.html", "/admin/dashboard.html", "/admin/wardens.html", "/admin/logs.html").permitAll()
                 .requestMatchers("/css/**", "/js/**", "/assets/**", "/mfa_code.txt").permitAll()
-                .requestMatchers("/api/auth/login", "/api/auth/mfa/verify", "/api/auth/mfa/setup", "/api/auth/register-warden", "/api/auth/mfa/test-code", "/api/concerns").permitAll()
+                .requestMatchers("/api/auth/login", "/api/auth/mfa/verify", "/api/auth/mfa/setup", "/api/auth/register-warden", "/api/auth/mfa/test-code", "/api/auth/public/wardens", "/api/concerns").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/admin/**").hasAnyRole("SUPER_ADMIN", "DISTRICT_ADMIN")
                 .requestMatchers("/api/admin/**").hasAnyRole("SUPER_ADMIN", "DISTRICT_ADMIN")

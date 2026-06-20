@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System Audit Logs - SWMS Admin</title>
-    <!-- Bootstrap 5 CSS -->
+    <title>System Audit Logs — SWMS.GOV Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome 6 Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .sidebar-admin { background: var(--navy-deep); min-height: calc(100vh - 77px); padding: 1.5rem 0; }
+        .sidebar-heading { display:block; font-size:0.65rem; font-weight:800; text-transform:uppercase; letter-spacing:2px; color:rgba(255,255,255,0.25); padding:0.5rem 1.5rem; margin-top:0.5rem; }
+        .sidebar-link { display:flex; align-items:center; gap:0.75rem; padding:0.75rem 1.5rem; color:rgba(255,255,255,0.45); font-size:0.87rem; font-weight:600; text-decoration:none; transition:all 0.2s ease; border-left:3px solid transparent; }
+        .sidebar-link:hover { background:rgba(255,255,255,0.04); color:rgba(255,255,255,0.75); }
+        .sidebar-link.active { color:var(--gold-light); background:rgba(201,148,26,0.08); border-left-color:var(--gold); }
+    </style>
 </head>
 <body>
     <!-- Security check -->
@@ -21,15 +25,16 @@
     <div class="gov-top-bar"></div>
 
     <!-- Header Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-custom">
+    <nav class="navbar-inner navbar navbar-expand-lg sticky-top">
         <div class="container-fluid">
-            <span class="navbar-brand">
-                <i class="fa-solid fa-user-shield text-primary"></i>
-                <span class="display-font">SWMS Admin Console</span>
-            </span>
-            <div class="d-flex align-items-center gap-3">
-                <span class="badge bg-danger text-white px-3 py-2" id="nav-user-role">Super Admin</span>
-                <button onclick="logout()" class="btn btn-outline-danger btn-sm"><i class="fa-solid fa-right-from-bracket me-1"></i>Logout</button>
+            <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+                <svg width="28" height="28" viewBox="0 0 100 110" fill="none"><path d="M50 5 L92 22 L92 55 C92 78 72 98 50 105 C28 98 8 78 8 55 L8 22 Z" fill="url(#lgGrad)" stroke="#c9941a" stroke-width="3"/><defs><linearGradient id="lgGrad" x1="50" y1="5" x2="50" y2="105" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#1e3a5f"/><stop offset="100%" stop-color="#0a1628"/></linearGradient></defs><text x="50" y="52" text-anchor="middle" font-family="Arial" font-weight="900" font-size="22" fill="white">SW</text><text x="50" y="72" text-anchor="middle" font-family="Arial" font-weight="900" font-size="14" fill="#c9941a" letter-spacing="2">MS</text></svg>
+                SWMS<span style="color:var(--gold);">.</span>GOV
+            </a>
+            <div class="ms-2 d-none d-md-block" style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);">Admin Console</div>
+            <div class="ms-auto d-flex align-items-center gap-3">
+                <span class="badge-status badge-class" id="nav-user-role"><i class="fa-solid fa-user-shield me-1"></i>Super Admin</span>
+                <button onclick="logout()" class="btn btn-sm" style="border:1.5px solid var(--border-color); color:var(--text-secondary); border-radius:50px; padding:0.4rem 1rem; font-size:0.83rem; transition:all 0.2s;" onmouseover="this.style.borderColor='#e05c3c';this.style.color='#e05c3c';" onmouseout="this.style.borderColor='var(--border-color)';this.style.color='var(--text-secondary)';"><i class="fa-solid fa-right-from-bracket me-1"></i>Logout</button>
             </div>
         </div>
     </nav>
@@ -60,40 +65,42 @@
 
             <!-- Content Area -->
             <div class="col-md-9 col-lg-10 py-4 px-md-4">
-                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-                    <div>
-                        <h3 class="fw-bold display-font text-dark mb-1"><i class="fa-solid fa-clock-rotate-left text-primary me-2"></i>Security Audit Trail</h3>
-                        <p class="text-muted mb-0">Review real-time system audit logs. All admin authorizations and warden student actions are recorded.</p>
-                    </div>
+                <div class="mb-4">
+                    <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--gold);margin-bottom:0.4rem;"><i class="fa-solid fa-shield-halved me-1"></i> Admin Restricted Area</div>
+                    <h3 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;margin-bottom:0.3rem;"><i class="fa-solid fa-clock-rotate-left me-2" style="color:var(--navy-light);"></i>Security Audit Trail</h3>
+                    <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:0;">Review real-time system audit logs. All admin authorizations and warden student actions are recorded.</p>
                 </div>
 
                 <!-- Table Container -->
-                <div class="table-responsive table-container shadow-sm bg-white rounded-3 mb-4">
-                    <table class="table table-hover table-custom align-middle">
-                        <thead>
-                            <tr>
-                                <th>Timestamp</th>
-                                <th>User Account</th>
-                                <th>Operational Event</th>
-                                <th>Source IP Address</th>
-                            </tr>
-                        </thead>
-                        <tbody id="logs-table-body">
-                            <tr>
-                                <td colspan="4" class="text-center py-4 text-muted">
-                                    <span class="spinner-border spinner-border-sm me-2"></span>Loading audit trails...
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="panel-card mb-4">
+                    <div class="panel-card-title">
+                        <div class="panel-icon stat-icon-blue"><i class="fa-solid fa-clock-rotate-left" style="font-size:0.85rem;"></i></div>
+                        Audit Log Entries
+                        <span class="ms-auto badge-status badge-pending">Immutable</span>
+                    </div>
+                    <div class="data-table-wrap">
+                        <table class="table align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>User Account</th>
+                                    <th>Operational Event</th>
+                                    <th>Source IP Address</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logs-table-body">
+                                <tr><td colspan="4" class="text-center py-4 text-muted"><span class="spinner-border spinner-border-sm me-2"></span>Loading audit trails...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <!-- Pagination controls -->
                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                    <span class="text-muted small">Showing Page <span id="current-page-num" class="fw-bold text-dark">1</span></span>
+                    <span class="text-muted small">Showing Page <span id="current-page-num" class="fw-bold" style="color:var(--text-primary);">1</span></span>
                     <div class="d-flex gap-2">
-                        <button id="prev-page-btn" onclick="goToPrevPage()" class="btn btn-outline-secondary btn-sm px-3" disabled><i class="fa-solid fa-angle-left me-1.5"></i>Previous</button>
-                        <button id="next-page-btn" onclick="goToNextPage()" class="btn btn-outline-secondary btn-sm px-3" disabled>Next<i class="fa-solid fa-angle-right ms-1.5"></i></button>
+                        <button id="prev-page-btn" onclick="goToPrevPage()" class="btn-ghost-sm" disabled><i class="fa-solid fa-angle-left me-1"></i>Previous</button>
+                        <button id="next-page-btn" onclick="goToNextPage()" class="btn-ghost-sm" disabled>Next <i class="fa-solid fa-angle-right ms-1"></i></button>
                     </div>
                 </div>
             </div>
