@@ -2555,22 +2555,6 @@ img { max-width: 100%; height: auto; }
         height: auto;
     }
     .gallery-item:first-child { grid-row: auto; }
-}
-
-/* ============================================================
-   RESPONSIVE — MOBILE (≤768px)
-   ============================================================ */
-@media (max-width: 768px) {
-
-    /* ── BODY / BASE ── */
-    html, body {
-        overflow-x: hidden;
-        scroll-behavior: smooth;
-    }
-    body {
-        /* Ensure page can scroll vertically */
-        overflow-y: auto !important;
-    }
 
     /* ── NAVBAR (index page) ── */
     .navbar-custom {
@@ -2630,6 +2614,22 @@ img { max-width: 100%; height: auto; }
     .navbar-inner .nav-pill-link.active {
         background: var(--off-white);
         color: var(--navy-mid) !important;
+    }
+}
+
+/* ============================================================
+   RESPONSIVE — MOBILE (≤768px)
+   ============================================================ */
+@media (max-width: 768px) {
+
+    /* ── BODY / BASE ── */
+    html, body {
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+    }
+    body {
+        /* Ensure page can scroll vertically */
+        overflow-y: auto !important;
     }
 
     /* ── HERO ── */

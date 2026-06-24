@@ -7,21 +7,40 @@
     <meta name="description" content="Official government portal for student hostel welfare management. Secure warden portal, student roster, MFA-protected access for State administration.">
     <meta name="keywords" content="SWMS, student welfare, government portal, hostel management, warden portal, official">
 
+    <!-- ✅ No-Cache headers — prevents browser from serving stale HTML -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- SWMS Design System -->
-    <link rel="stylesheet" href="/css/style.css">
+    <!-- SWMS Design System — versioned to bust cache on every deploy -->
+    <link rel="stylesheet" href="/css/style.css?v=20260624-4">
     <!-- PWA Settings -->
     <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#0a1628">
+    <meta name="theme-color" content="#060e1e">
     <script>
+        // ✅ Service Worker registration with auto-update check
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(reg => console.log('Service Worker registered successfully!', reg))
-                    .catch(err => console.error('Service Worker registration failed:', err));
+                navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })
+                    .then(reg => {
+                        console.log('[SW] Registered:', reg.scope);
+                        // Force check for updates on every page load
+                        reg.update();
+                    })
+                    .catch(err => console.error('[SW] Registration failed:', err));
+
+                // Auto-reload the page when a new service worker takes control
+                let refreshing = false;
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    if (!refreshing) {
+                        refreshing = true;
+                        window.location.reload();
+                    }
+                });
             });
         }
     </script>
@@ -1141,24 +1160,29 @@
                 // ── Concern submission flow ──
                 if (chatState === 'concern_name') {
                     concernData.name = text;
-                    chatState = 'concern_room';
-                    addBotMessage(`Thanks, <strong>${escapeHtml(text)}</strong>! 👍<br><br>What is your <strong>room number or hostel block</strong>?`);
+                    chatState = 'concern_mobile';
+                    addBotMessage(`Thanks, <strong>${escapeHtml(text)}</strong>! 👍<br><br>Please share your <strong>mobile number</strong> so we can contact you:`);
                     return;
                 }
-                if (chatState === 'concern_room') {
-                    concernData.room = text;
+                if (chatState === 'concern_mobile') {
+                    const mobileClean = text.replace(/\D/g, '');
+                    if (mobileClean.length < 10) {
+                        addBotMessage(`⚠️ That doesn't look like a valid mobile number. Please enter a 10-digit mobile number:`);
+                        return;
+                    }
+                    concernData.mobileNumber = text;
                     chatState = 'concern_desc';
-                    addBotMessage(`Got it — Room/Block: <strong>${escapeHtml(text)}</strong>.<br><br>Now please describe your <strong>concern or complaint</strong> in detail. I'm listening:`);
+                    addBotMessage(`Got it — Mobile: <strong>${escapeHtml(text)}</strong>.<br><br>Now please describe your <strong>concern or complaint</strong> in detail (include room/block info if relevant):`);
                     return;
                 }
                 if (chatState === 'concern_desc') {
-                    concernData.description = text;
+                    concernData.message = text;
                     chatState = 'concern_confirm';
                     addBotMessage(`
                         Here's a summary of your concern:<br><br>
                         👤 <strong>Name:</strong> ${escapeHtml(concernData.name)}<br>
-                        🏠 <strong>Room/Block:</strong> ${escapeHtml(concernData.room)}<br>
-                        📝 <strong>Concern:</strong> ${escapeHtml(concernData.description)}<br><br>
+                        📞 <strong>Mobile:</strong> ${escapeHtml(concernData.mobileNumber)}<br>
+                        📝 <strong>Concern:</strong> ${escapeHtml(concernData.message)}<br><br>
                         Shall I submit this to the hostel administration? Type <strong>yes</strong> to confirm or <strong>no</strong> to cancel.
                     `);
                     return;
@@ -1167,20 +1191,36 @@
                     const q = text.toLowerCase();
                     if (q === 'yes' || q === 'y' || q.includes('confirm') || q.includes('submit')) {
                         chatState = 'idle';
-                        // Store in localStorage as a submitted concern
-                        const concern = {
-                            id: 'C' + Date.now(),
-                            name: concernData.name,
-                            room: concernData.room,
-                            description: concernData.description,
-                            timestamp: new Date().toLocaleString(),
-                            status: 'Submitted'
-                        };
-                        const existing = JSON.parse(localStorage.getItem('swms_concerns') || '[]');
-                        existing.push(concern);
-                        localStorage.setItem('swms_concerns', JSON.stringify(existing));
-                        addBotMessage(`✅ <strong>Concern submitted successfully!</strong><br><br>Your reference ID is <strong>${concern.id}</strong>. Our hostel administration team will review it and get back to you.<br><br>For urgent issues, call <strong>8978771345</strong> (Nithin) directly.<br><br>Is there anything else I can help you with?<br><br><div class="chatbot-options"><button class="btn" onclick="sendOptionQuery('Submit a Concern')">📝 New Concern</button><button class="btn" onclick="sendOptionQuery('FAQ & Support Directory')">❓ FAQ</button></div>`);
-                        concernData = {};
+                        addBotMessage(`<span class="spinner-border spinner-border-sm me-2"></span>Submitting your concern...`);
+                        
+                        fetch('/api/concerns', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                name: concernData.name,
+                                mobileNumber: concernData.mobileNumber,
+                                message: concernData.message
+                            })
+                        })
+                        .then(res => {
+                            if (res.ok) {
+                                return res.json();
+                            } else {
+                                return res.json().then(errData => {
+                                    throw new Error(errData.error || 'Failed to submit concern');
+                                });
+                            }
+                        })
+                        .then(data => {
+                            addBotMessage(`✅ <strong>Concern submitted successfully!</strong><br><br>Our hostel administration team will review it and get back to you.<br><br>For urgent issues, call <strong>8978771345</strong> (Nithin) directly.<br><br>Is there anything else I can help you with?<br><br><div class="chatbot-options"><button class="btn" onclick="sendOptionQuery('Submit a Concern')">📝 New Concern</button><button class="btn" onclick="sendOptionQuery('FAQ & Support Directory')">❓ FAQ</button></div>`);
+                            concernData = {};
+                        })
+                        .catch(err => {
+                            addBotMessage(`❌ <strong>Failed to submit concern:</strong> ${escapeHtml(err.message)}<br><br>Please try again or call <strong>8978771345</strong> (Nithin) directly.`);
+                            concernData = {};
+                        });
                     } else {
                         chatState = 'idle';
                         concernData = {};

@@ -43,7 +43,10 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             );
 
-        http.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
+        http.headers(headers -> headers
+            .frameOptions(frame -> frame.sameOrigin())
+            .cacheControl(cache -> cache.disable())
+        );
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
