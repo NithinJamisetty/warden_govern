@@ -2299,7 +2299,7 @@ img { max-width: 100%; height: auto; }
     background: var(--white);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
-    overflow: hidden;
+    overflow-x: auto;
     box-shadow: var(--shadow-xs);
 }
 
