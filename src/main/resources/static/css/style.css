@@ -400,7 +400,8 @@ img { max-width: 100%; height: auto; }
     overflow: hidden;
     border-bottom: 4px solid var(--gold);
     padding: 5rem 0;
-    background: var(--navy-deep);
+    background: url('../assets/gov-building.png') no-repeat center center;
+    background-size: cover;
 }
 
 .hero-video-bg {
@@ -1084,12 +1085,48 @@ img { max-width: 100%; height: auto; }
     border-bottom: 1px solid var(--border);
 }
 
+/* Carousel outer wrapper */
+.gallery-carousel-outer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Scroll buttons */
+.gallery-scroll-btn {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 2px solid var(--border);
+    color: var(--navy-mid);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.25s var(--ease);
+    box-shadow: var(--shadow-sm);
+    z-index: 2;
+    flex: none;
+}
+.gallery-scroll-btn:hover {
+    background: var(--navy-mid);
+    color: var(--white);
+    border-color: var(--navy-mid);
+    transform: scale(1.08);
+    box-shadow: var(--shadow-md);
+}
+
 .gallery-grid {
     display: grid;
     grid-template-columns: 1.5fr 1fr 1fr;
     grid-template-rows: auto auto;
     gap: 1rem;
     height: 480px;
+    flex: 1;
 }
 
 .gallery-item {
@@ -2412,36 +2449,285 @@ img { max-width: 100%; height: auto; }
 /* ============================================================
    RESPONSIVE
    ============================================================ */
+/* ============================================================
+   RESPONSIVE — TABLET (≤991px)
+   ============================================================ */
 @media (max-width: 991px) {
     .hero-title { font-size: 2.8rem; }
     .hero-stats-strip { gap: 1.5rem; }
     .gallery-grid {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(2, minmax(260px,1fr));
         grid-template-rows: auto;
         height: auto;
     }
     .gallery-item:first-child { grid-row: auto; }
 }
 
+/* ============================================================
+   RESPONSIVE — MOBILE (≤768px)
+   ============================================================ */
 @media (max-width: 768px) {
-    .hero-title { font-size: 2.2rem; }
-    .hero-lead  { font-size: 1rem; }
-    .hero-stats-strip { flex-wrap: wrap; gap: 1.5rem; }
-    .counter-number { font-size: 2.5rem; }
-    .service-search { flex-direction: column; }
+
+    /* ── BODY / BASE ── */
+    html, body {
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+    }
+    body {
+        /* Ensure page can scroll vertically */
+        overflow-y: auto !important;
+    }
+
+    /* ── NAVBAR (index page) ── */
+    .navbar-custom {
+        padding: 0 1rem;
+        height: auto;
+        min-height: 60px;
+    }
+    .navbar-custom .navbar-collapse {
+        background: var(--white);
+        border-top: 2px solid var(--gold);
+        border-radius: 0 0 var(--radius-md) var(--radius-md);
+        box-shadow: 0 8px 24px rgba(10,22,40,0.12);
+        padding: 0.75rem 0.5rem 1rem;
+        margin-top: 0;
+    }
+    .navbar-custom .nav-link-custom {
+        display: block;
+        padding: 0.75rem 1.25rem !important;
+        border-radius: var(--radius-sm);
+        color: var(--text-primary) !important;
+        font-size: 0.95rem;
+    }
+    .navbar-custom .nav-link-custom:hover {
+        background: var(--off-white);
+        color: var(--navy-mid) !important;
+    }
+    .navbar-custom .btn-primary-custom {
+        display: block;
+        text-align: center;
+        margin: 0.5rem 1.25rem 0;
+    }
+    .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(10,22,40,0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2.5' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+
+    /* ── NAVBAR (inner pages: dashboard, students) ── */
+    .navbar-inner {
+        padding: 0 1rem;
+        height: auto;
+        min-height: 60px;
+    }
+    .navbar-inner .navbar-collapse {
+        background: var(--white);
+        border-top: 2px solid var(--gold);
+        border-radius: 0 0 var(--radius-md) var(--radius-md);
+        box-shadow: 0 8px 24px rgba(10,22,40,0.12);
+        padding: 0.75rem 0.5rem 1rem;
+    }
+    .navbar-inner .nav-pill-link {
+        display: block;
+        padding: 0.75rem 1.25rem !important;
+        border-radius: var(--radius-sm);
+        color: var(--text-primary) !important;
+        font-size: 0.95rem;
+    }
+    .navbar-inner .nav-pill-link:hover,
+    .navbar-inner .nav-pill-link.active {
+        background: var(--off-white);
+        color: var(--navy-mid) !important;
+    }
+
+    /* ── HERO ── */
+    .hero-section {
+        min-height: auto;
+        padding: 4rem 0 3rem;
+    }
+    .hero-title { font-size: 1.9rem; line-height: 1.2; }
+    .hero-lead  { font-size: 0.96rem; }
+    .hero-eyebrow { font-size: 0.75rem; }
+    .hero-cta-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    .hero-cta-group .btn {
+        width: 100%;
+        text-align: center;
+    }
+    .hero-stats-strip {
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+    }
+    .hero-stat-item .stat-num { font-size: 1.5rem; }
+    .hero-official-panel { display: none !important; }
+
+    /* ── SECTIONS GENERAL SPACING ── */
+    section, .track-section, .stats-section,
+    .gallery-section, .news-section, .faq-section,
+    .about-section, .contact-section, .portal-finder {
+        padding: 3rem 0;
+    }
+    .container, .container-fluid {
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+    }
+
+    /* ── SECTION HEADINGS ── */
+    .section-kicker { font-size: 0.72rem; }
+    h2 { font-size: 1.6rem !important; }
+    h3 { font-size: 1.25rem !important; }
+
+    /* ── GALLERY (horizontal scroll carousel on mobile) ── */
+    .gallery-carousel-outer {
+        gap: 0.5rem;
+    }
+    .gallery-scroll-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 0.85rem;
+        flex-shrink: 0;
+    }
+    .gallery-grid {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 0.75rem;
+        height: 220px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+        flex: 1;
+    }
+    .gallery-grid::-webkit-scrollbar { display: none; }
+    .gallery-item {
+        min-width: 200px;
+        width: 200px;
+        flex-shrink: 0;
+        height: 100%;
+        scroll-snap-align: start;
+    }
+    .gallery-item:first-child { grid-row: auto; }
+    /* Show captions always on mobile */
+    .gallery-overlay {
+        opacity: 1;
+        background: linear-gradient(to top, rgba(10,22,40,0.85) 0%, transparent 70%);
+    }
+
+    /* ── STATS SECTION ── */
+    .counter-number { font-size: 2.2rem; }
+
+    /* ── SERVICE SEARCH ── */
+    .service-search { flex-direction: column; gap: 0.5rem; }
     .service-search button {
         justify-content: center;
         padding: 0.75rem 1rem;
+        width: 100%;
     }
-    .priority-actions { grid-template-columns: 1fr 1fr; }
-    .gov-service-tile { flex-direction: column; }
-    .gov-tile-list { grid-template-columns: 1fr; }
+    .service-search input { width: 100%; }
+
+    /* ── PRIORITY ACTIONS ── */
+    .priority-actions { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+
+    /* ── SERVICE TILES ── */
+    .gov-service-tile { flex-direction: column; gap: 0.75rem; }
+    .gov-tile-list { grid-template-columns: 1fr; gap: 0.5rem; }
     .agency-fact-row { grid-template-columns: 1fr; gap: 0.5rem; }
-    .gallery-grid { grid-template-columns: 1fr; height: auto; }
-    .hero-official-panel { min-width: auto; }
+
+    /* ── ANNOUNCEMENT TICKER ── */
     .announcement-ticker { display: none; }
-    #swms-chatbot-window { width: calc(100vw - 2rem); right: 1rem; }
-    .welcome-banner { padding: 1.75rem; }
+
+    /* ── CONTACT SECTION ── */
+    .contact-section .row > [class*='col-'] { margin-bottom: 1.5rem; }
+    .contact-section .row > [class*='col-']:last-child { margin-bottom: 0; }
+
+    /* ── FAQ ── */
+    .faq-section .accordion-button { font-size: 0.9rem; padding: 1rem; }
+    .faq-section .accordion-body { font-size: 0.88rem; padding: 0.75rem 1rem; }
+
+    /* ── FOOTER ── */
+    .gov-footer {
+        padding: 3.5rem 0 2rem;
+    }
+    .gov-footer .row > [class*='col-'] {
+        margin-bottom: 2.5rem;
+    }
+    .gov-footer .row > [class*='col-']:last-child { margin-bottom: 0; }
+    .footer-divider { margin: 2.5rem 0 1.5rem; }
+    .footer-bottom {
+        text-align: center;
+        font-size: 0.75rem;
+    }
+
+    /* ── CHATBOT ── */
+    #swms-chatbot-window {
+        width: calc(100vw - 1.5rem);
+        right: 0.75rem;
+        bottom: 80px;
+        max-height: 65vh;
+    }
+    #swms-chatbot-launcher {
+        bottom: 1.25rem;
+        right: 1.25rem;
+    }
+
+    /* ── DASHBOARD ── */
+    .welcome-banner { padding: 1.5rem; }
+    .welcome-banner h3 { font-size: 1.3rem; }
+    .stat-widget {
+        padding: 1.25rem;
+        gap: 1rem;
+    }
+    .stat-widget-body .stat-value { font-size: 1.8rem; }
+    .panel-card { padding: 1.25rem; }
+
+    /* ── DATA TABLE (students / warden pages) — horizontal scroll ── */
+    .data-table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: var(--radius-md);
+    }
+    .data-table-wrap .table {
+        min-width: 600px;
+    }
+    .table-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+        padding: 1rem;
+    }
+    .search-input-wrap { min-width: unset; width: 100%; }
+    .table-toolbar .btn { width: 100%; justify-content: center; }
+
+    /* ── PAGE HEADER (inner pages) ── */
+    .page-header-section { padding: 2rem 0 1.5rem; }
+    .page-header-section h1 { font-size: 1.5rem; }
+
+    /* ── ABOUT / STATS PANELS ── */
+    .about-section .row > [class*='col-'] { margin-bottom: 1.5rem; }
+
+    /* ── NEWS CARDS ── */
+    .news-section .row > [class*='col-'] { margin-bottom: 1.25rem; }
+
+    /* ── INNER-PAGE MAIN ── */
+    main.container-fluid { padding-left: 1rem !important; padding-right: 1rem !important; }
+}
+
+/* ============================================================
+   RESPONSIVE — SMALL MOBILE (≤480px)
+   ============================================================ */
+@media (max-width: 480px) {
+    .hero-title { font-size: 1.65rem; }
+    .priority-actions { grid-template-columns: 1fr; }
+    .gallery-item { min-width: 170px; width: 170px; }
+    .gallery-grid { height: 190px; }
+    .navbar-brand { font-size: 1.1rem; }
+    .stat-widget { flex-direction: column; align-items: flex-start; }
+    .data-table-wrap .table { min-width: 520px; }
 }
 
 @media (min-width: 769px) and (max-width: 1100px) {

@@ -144,14 +144,9 @@
     <section class="hero-section" id="home">
         <!-- Video Background -->
         <div class="hero-video-bg" aria-hidden="true">
-            <iframe
-                src="https://www.youtube.com/embed/7cwUcdpUayQ?autoplay=1&mute=1&loop=1&playlist=7cwUcdpUayQ&controls=0&disablekb=1&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3"
-                frameborder="0"
-                allow="autoplay; encrypted-media"
-                allowfullscreen
-                referrerpolicy="strict-origin-when-cross-origin"
-                title="Background">
-            </iframe>
+            <video autoplay muted loop playsinline preload="auto" poster="/assets/gov-building.png">
+                <source src="https://videos.pexels.com/video-files/36802723/36802723-uhd_2560_1440_25fps.mp4" type="video/mp4">
+            </video>
         </div>
         <div class="hero-video-overlay"></div>
 
@@ -536,52 +531,56 @@
                 <h2 style="font-family:'Playfair Display',serif; font-size:2.2rem; margin-bottom:0.5rem;">Our Facilities &amp; People</h2>
                 <p class="text-secondary">Serving thousands of students across government-managed residential facilities.</p>
             </div>
-            <div class="gallery-grid reveal">
-                <div class="gallery-item">
-                    <img src="/assets/hostel-campus.png" alt="School hostel campus aerial view">
-                    <div class="gallery-overlay">
-                        <div class="gallery-caption">
-                            Government Hostel Campus
-                            <span>State-managed residential facility</span>
+            <div class="gallery-carousel-outer reveal">
+                <button type="button" class="gallery-scroll-btn gallery-scroll-left" onclick="scrollGallery('left')" aria-label="Scroll gallery left"><i class="fa-solid fa-chevron-left"></i></button>
+                <div class="gallery-grid" id="gallery-scroll-container">
+                    <div class="gallery-item">
+                        <img src="/assets/hostel-campus.png" alt="School hostel campus aerial view">
+                        <div class="gallery-overlay">
+                            <div class="gallery-caption">
+                                Government Hostel Campus
+                                <span>State-managed residential facility</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="/assets/gov-building.png" alt="Government building">
+                        <div class="gallery-overlay">
+                            <div class="gallery-caption">
+                                Ministry of Education
+                                <span>Administrative headquarters</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="/assets/students-study.png" alt="Students studying">
+                        <div class="gallery-overlay">
+                            <div class="gallery-caption">
+                                Study Hall — Evening Session
+                                <span>Mandatory study hours enforced</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="/assets/warden-official.png" alt="Hostel warden at work">
+                        <div class="gallery-overlay">
+                            <div class="gallery-caption">
+                                Warden Administration
+                                <span>Day-to-day hostel oversight</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="/assets/sports-field.png" alt="Student sports facility">
+                        <div class="gallery-overlay">
+                            <div class="gallery-caption">
+                                Sports &amp; Recreation
+                                <span>Athletic fields &amp; physical wellness</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="gallery-item">
-                    <img src="/assets/gov-building.png" alt="Government building">
-                    <div class="gallery-overlay">
-                        <div class="gallery-caption">
-                            Ministry of Education
-                            <span>Administrative headquarters</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="/assets/students-study.png" alt="Students studying">
-                    <div class="gallery-overlay">
-                        <div class="gallery-caption">
-                            Study Hall — Evening Session
-                            <span>Mandatory study hours enforced</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="/assets/warden-official.png" alt="Hostel warden at work">
-                    <div class="gallery-overlay">
-                        <div class="gallery-caption">
-                            Warden Administration
-                            <span>Day-to-day hostel oversight</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="/assets/sports-field.png" alt="Student sports facility">
-                    <div class="gallery-overlay">
-                        <div class="gallery-caption">
-                            Sports &amp; Recreation
-                            <span>Athletic fields &amp; physical wellness</span>
-                        </div>
-                    </div>
-                </div>
+                <button type="button" class="gallery-scroll-btn gallery-scroll-right" onclick="scrollGallery('right')" aria-label="Scroll gallery right"><i class="fa-solid fa-chevron-right"></i></button>
             </div>
         </div>
     </section>
@@ -660,7 +659,7 @@
                             <i class="fa-solid fa-chevron-down faq-icon"></i>
                         </div>
                         <div class="faq-answer">
-                            If you cannot access your MFA token, contact the State Portal Support Navigator desk at (404) 492-7640 or submit a recovery ticket to support@swms.gov. Our team will verify your identity and issue a new MFA configuration key.
+                             If you cannot access your MFA token, contact Nithin at the State Portal Support Navigator desk at 8978771345 or submit a recovery ticket to support@swms.gov. Our team will verify your identity and issue a new MFA configuration key.
                         </div>
                     </div>
                     <div class="faq-item reveal reveal-delay-4" onclick="toggleFaq(this)">
@@ -744,14 +743,14 @@
                     <div class="contact-info-box reveal reveal-delay-1">
                         <i class="fa-solid fa-location-dot"></i>
                         <h3>Office Location</h3>
-                        <p>255 Capitol Street NE<br>Salem, OR 97310<br><span style="font-size:0.82rem; color:var(--text-muted);">Ministry of Education — Block C</span></p>
+                        <p>Nellore<br>Andhra Pradesh<br><span style="font-size:0.82rem; color:var(--text-muted);">Welfare Department Office</span></p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="contact-info-box reveal reveal-delay-2">
                         <i class="fa-solid fa-phone"></i>
                         <h3>Telephone</h3>
-                        <p>(404) 492-7640<br>Monday to Friday, 9 AM – 5 PM<br><span style="font-size:0.82rem; color:var(--text-muted);">Emergency: 1800-XXX-SWMS (toll-free)</span></p>
+                        <p><strong>Nithin</strong> — Point of Contact<br>8978771345<br>Monday to Friday, 9 AM – 5 PM<br><span style="font-size:0.82rem; color:var(--text-muted);">Emergency: 1800-XXX-SWMS (toll-free)</span></p>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -823,7 +822,8 @@
                 <div class="col-lg-3 col-md-6">
                     <div class="footer-title">State Support</div>
                     <ul class="footer-links">
-                        <li><span style="color:rgba(255,255,255,0.4);font-size:0.85rem;"><i class="fa-solid fa-phone me-2" style="font-size:0.7rem;"></i>(404) 492-7640</span></li>
+                        <li><span style="color:rgba(255,255,255,0.4);font-size:0.85rem;"><i class="fa-solid fa-user me-2" style="font-size:0.7rem;"></i>Nithin (Point of Contact)</span></li>
+                        <li><span style="color:rgba(255,255,255,0.4);font-size:0.85rem;"><i class="fa-solid fa-phone me-2" style="font-size:0.7rem;"></i>8978771345</span></li>
                         <li><a href="mailto:support@swms.gov"><i class="fa-solid fa-envelope me-2" style="font-size:0.7rem;"></i>support@swms.gov</a></li>
                         <li><span style="color:rgba(255,255,255,0.4);font-size:0.85rem;"><i class="fa-solid fa-clock me-2" style="font-size:0.7rem;"></i>Mon–Fri, 9am–5pm</span></li>
                         <li><span style="color:rgba(255,255,255,0.4);font-size:0.85rem;"><i class="fa-solid fa-headset me-2" style="font-size:0.7rem;"></i>1800-XXX-SWMS (toll-free)</span></li>
@@ -1084,7 +1084,7 @@
                 } else if (optionText.includes('MFA')) {
                     reply = `Set up your MFA by going to the Warden Login screen and clicking 'Configure MFA' to scan your authenticator QR code.`;
                 } else {
-                    reply = `Please review our FAQ section or call (404) 492-7640 to speak with a portal navigator.`;
+                    reply = `Please review our FAQ section or call 8978771345 (Nithin) to speak with a portal navigator.`;
                 }
                 addMessage(reply, 'bot-message');
             }, 700);
@@ -1117,7 +1117,7 @@
                 } else if (q.includes('hello') || q.includes('hi') || q.includes('help')) {
                     reply = `Hello! I'm the SWMS support bot. How can I help you today?`;
                 } else {
-                    reply = `For assistance, please call <strong>(404) 492-7640</strong> or email <strong>support@swms.gov</strong>.`;
+                    reply = `For assistance, please call Nithin at <strong>8978771345</strong> or email <strong>support@swms.gov</strong>.`;
                 }
                 addMessage(reply, 'bot-message');
             }, 700);
@@ -1276,6 +1276,18 @@
 
         // Render circulars initially
         renderCirculars();
+
+        // Gallery horizontal scroll
+        function scrollGallery(direction) {
+            const container = document.getElementById('gallery-scroll-container');
+            if (!container) return;
+            const scrollAmount = 320;
+            if (direction === 'left') {
+                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            } else {
+                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+        }
     </script>
 
 </body>
