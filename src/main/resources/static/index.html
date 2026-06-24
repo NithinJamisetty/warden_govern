@@ -876,18 +876,19 @@
         </div>
         <div class="chatbot-messages" id="chat-messages-container">
             <div class="message-bubble bot-message">
-                Hello! Welcome to SWMS support. I can help guide you to the correct tools. Please select an option:
+                👋 Hello! I'm the <strong>SWMS Support Assistant</strong>. I'm here to help with hostel concerns, student issues, or portal guidance. What can I do for you today?
                 <div class="chatbot-options">
-                    <button class="btn" onclick="sendOptionQuery('Warden Login Portal')">Warden Login Portal</button>
-                    <button class="btn" onclick="sendOptionQuery('Student Occupancy Roster')">Student Occupancy Roster</button>
-                    <button class="btn" onclick="sendOptionQuery('Setup MFA Authenticator')">Setup MFA Authenticator</button>
-                    <button class="btn" onclick="sendOptionQuery('FAQ &amp; Support Directory')">FAQ &amp; Support Directory</button>
+                    <button class="btn" onclick="sendOptionQuery('Submit a Concern')">📝 Submit a Concern</button>
+                    <button class="btn" onclick="sendOptionQuery('Warden Login Portal')">🔐 Warden Login Portal</button>
+                    <button class="btn" onclick="sendOptionQuery('Student Occupancy Roster')">🎓 Student Roster</button>
+                    <button class="btn" onclick="sendOptionQuery('Setup MFA Authenticator')">🔑 Setup MFA</button>
+                    <button class="btn" onclick="sendOptionQuery('FAQ & Support Directory')">❓ FAQ & Support</button>
                 </div>
             </div>
         </div>
         <div class="chatbot-input-container">
             <div class="input-group">
-                <input type="text" id="chat-user-input" class="form-control form-control-sm border-end-0" placeholder="Type a message…" onkeypress="handleChatKeyPress(event)">
+                <input type="text" id="chat-user-input" class="form-control form-control-sm border-end-0" placeholder="Type your concern or message…" onkeypress="handleChatKeyPress(event)">
                 <button class="btn btn-outline-secondary border-start-0" type="button" onclick="sendMessage()"><i class="fa-solid fa-paper-plane" style="color:var(--navy-light);"></i></button>
             </div>
         </div>
@@ -1068,6 +1069,10 @@
         }
 
         // ─── Chatbot ─────────────────────────────────────────────────
+        // State machine for multi-step concern submission
+        let chatState = 'idle'; // idle | concern_name | concern_room | concern_desc | concern_confirm
+        let concernData = {};
+
         function toggleChatbot() {
             const chatWin = document.getElementById('swms-chatbot-window');
             chatWin.classList.toggle('d-none');
@@ -1076,18 +1081,40 @@
         function sendOptionQuery(optionText) {
             addMessage(optionText, 'user-message');
             setTimeout(() => {
-                let reply = '';
-                if (optionText.includes('Warden Login')) {
-                    reply = `To log in as a registered warden, go to <a href='/warden/login.html' class='text-decoration-underline fw-bold'>Warden Login</a> directly.`;
+                if (optionText.includes('Submit a Concern')) {
+                    chatState = 'concern_name';
+                    concernData = {};
+                    addBotMessage(`Sure! I'll help you submit your concern to the hostel administration. 📋<br><br>First, please tell me your <strong>full name</strong>:`);
+                } else if (optionText.includes('Warden Login')) {
+                    addBotMessage(`To access the warden portal, click below to go to the secure login page. You'll need your registered credentials.<br><br><a href='/warden/login.html' class='btn btn-sm btn-primary mt-2'>🔐 Open Warden Login</a>`);
                 } else if (optionText.includes('Roster')) {
-                    reply = `The active student registry is under Student Services. Open it at <a href='/students.html' class='text-decoration-underline fw-bold'>View Roster</a>.`;
+                    addBotMessage(`The student occupancy roster shows all registered students and their room allocations.<br><br><a href='/students.html' class='btn btn-sm btn-primary mt-2'>🎓 View Student Roster</a>`);
                 } else if (optionText.includes('MFA')) {
-                    reply = `Set up your MFA by going to the Warden Login screen and clicking 'Configure MFA' to scan your authenticator QR code.`;
+                    addBotMessage(`To set up MFA (Multi-Factor Authentication):<br><ol style='margin:0.5rem 0 0 1rem;padding:0'><li>Go to Warden Login page</li><li>Click <strong>'Configure MFA'</strong></li><li>Scan the QR code with Google Authenticator or Authy</li><li>Enter the 6-digit code to verify</li></ol><br>Need more help? Call <strong>8978771345</strong> (Nithin).`);
+                } else if (optionText.includes('FAQ')) {
+                    addBotMessage(`Here are some quick answers:<br><br>🔸 <strong>Login issues?</strong> — Reset credentials via Warden Login page.<br>🔸 <strong>Student not found?</strong> — Check spelling or contact your hostel warden.<br>🔸 <strong>Room allocation?</strong> — View via Student Roster.<br>🔸 <strong>Technical issues?</strong> — Call <strong>8978771345</strong> (Nithin).<br><br>Want to scroll to our FAQ section? <a href='#faq' class='fw-bold'>Go to FAQ ↓</a>`);
                 } else {
-                    reply = `Please review our FAQ section or call 8978771345 (Nithin) to speak with a portal navigator.`;
+                    addBotMessage(`I'm not sure about that. Can I help you with something else? Type your query or <a href='#' onclick="event.preventDefault(); document.getElementById('chat-messages-container').innerHTML=''; initChatbot();" class='fw-bold'>start over</a>.`);
                 }
-                addMessage(reply, 'bot-message');
             }, 700);
+        }
+
+        function initChatbot() {
+            chatState = 'idle';
+            concernData = {};
+            const container = document.getElementById('chat-messages-container');
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble bot-message';
+            bubble.innerHTML = `👋 Hello! I'm the <strong>SWMS Support Assistant</strong>. What can I do for you today?
+                <div class="chatbot-options">
+                    <button class="btn" onclick="sendOptionQuery('Submit a Concern')">📝 Submit a Concern</button>
+                    <button class="btn" onclick="sendOptionQuery('Warden Login Portal')">🔐 Warden Login Portal</button>
+                    <button class="btn" onclick="sendOptionQuery('Student Occupancy Roster')">🎓 Student Roster</button>
+                    <button class="btn" onclick="sendOptionQuery('Setup MFA Authenticator')">🔑 Setup MFA</button>
+                    <button class="btn" onclick="sendOptionQuery('FAQ & Support Directory')">❓ FAQ & Support</button>
+                </div>`;
+            container.appendChild(bubble);
+            container.scrollTop = container.scrollHeight;
         }
 
         function addMessage(text, cls) {
@@ -1099,27 +1126,106 @@
             container.scrollTop = container.scrollHeight;
         }
 
+        function addBotMessage(html) {
+            addMessage(html, 'bot-message');
+        }
+
         function sendMessage() {
             const input = document.getElementById('chat-user-input');
             const text = input.value.trim();
             if (!text) return;
             addMessage(text, 'user-message');
             input.value = '';
+
             setTimeout(() => {
-                const q = text.toLowerCase();
-                let reply = '';
-                if (q.includes('warden') || q.includes('login')) {
-                    reply = `Please visit the <a href='/warden/login.html' class='fw-bold text-decoration-underline'>Warden Login</a> page.`;
-                } else if (q.includes('student') || q.includes('roster')) {
-                    reply = `You can view the student roster at <a href='/students.html' class='fw-bold text-decoration-underline'>Student Directory</a>.`;
-                } else if (q.includes('mfa') || q.includes('authenticator') || q.includes('otp')) {
-                    reply = `MFA is configured during the login flow. Visit Warden Login → Create Account → Scan QR.`;
-                } else if (q.includes('hello') || q.includes('hi') || q.includes('help')) {
-                    reply = `Hello! I'm the SWMS support bot. How can I help you today?`;
-                } else {
-                    reply = `For assistance, please call Nithin at <strong>8978771345</strong> or email <strong>support@swms.gov</strong>.`;
+                // ── Concern submission flow ──
+                if (chatState === 'concern_name') {
+                    concernData.name = text;
+                    chatState = 'concern_room';
+                    addBotMessage(`Thanks, <strong>${escapeHtml(text)}</strong>! 👍<br><br>What is your <strong>room number or hostel block</strong>?`);
+                    return;
                 }
-                addMessage(reply, 'bot-message');
+                if (chatState === 'concern_room') {
+                    concernData.room = text;
+                    chatState = 'concern_desc';
+                    addBotMessage(`Got it — Room/Block: <strong>${escapeHtml(text)}</strong>.<br><br>Now please describe your <strong>concern or complaint</strong> in detail. I'm listening:`);
+                    return;
+                }
+                if (chatState === 'concern_desc') {
+                    concernData.description = text;
+                    chatState = 'concern_confirm';
+                    addBotMessage(`
+                        Here's a summary of your concern:<br><br>
+                        👤 <strong>Name:</strong> ${escapeHtml(concernData.name)}<br>
+                        🏠 <strong>Room/Block:</strong> ${escapeHtml(concernData.room)}<br>
+                        📝 <strong>Concern:</strong> ${escapeHtml(concernData.description)}<br><br>
+                        Shall I submit this to the hostel administration? Type <strong>yes</strong> to confirm or <strong>no</strong> to cancel.
+                    `);
+                    return;
+                }
+                if (chatState === 'concern_confirm') {
+                    const q = text.toLowerCase();
+                    if (q === 'yes' || q === 'y' || q.includes('confirm') || q.includes('submit')) {
+                        chatState = 'idle';
+                        // Store in localStorage as a submitted concern
+                        const concern = {
+                            id: 'C' + Date.now(),
+                            name: concernData.name,
+                            room: concernData.room,
+                            description: concernData.description,
+                            timestamp: new Date().toLocaleString(),
+                            status: 'Submitted'
+                        };
+                        const existing = JSON.parse(localStorage.getItem('swms_concerns') || '[]');
+                        existing.push(concern);
+                        localStorage.setItem('swms_concerns', JSON.stringify(existing));
+                        addBotMessage(`✅ <strong>Concern submitted successfully!</strong><br><br>Your reference ID is <strong>${concern.id}</strong>. Our hostel administration team will review it and get back to you.<br><br>For urgent issues, call <strong>8978771345</strong> (Nithin) directly.<br><br>Is there anything else I can help you with?<br><br><div class="chatbot-options"><button class="btn" onclick="sendOptionQuery('Submit a Concern')">📝 New Concern</button><button class="btn" onclick="sendOptionQuery('FAQ & Support Directory')">❓ FAQ</button></div>`);
+                        concernData = {};
+                    } else {
+                        chatState = 'idle';
+                        concernData = {};
+                        addBotMessage(`Okay, concern submission cancelled. Is there anything else I can help you with?<br><br><div class="chatbot-options"><button class="btn" onclick="sendOptionQuery('Submit a Concern')">📝 Try Again</button><button class="btn" onclick="sendOptionQuery('FAQ & Support Directory')">❓ FAQ</button></div>`);
+                    }
+                    return;
+                }
+
+                // ── General free-form queries (idle state) ──
+                const q = text.toLowerCase();
+                if (q.includes('hello') || q.includes('hi') || q.includes('hey')) {
+                    addBotMessage(`Hello! 👋 I'm here to help. You can submit a concern, ask about hostel facilities, or get portal guidance. What do you need?`);
+                } else if (q.includes('concern') || q.includes('complaint') || q.includes('problem') || q.includes('issue') || q.includes('report')) {
+                    chatState = 'concern_name';
+                    concernData = {};
+                    addBotMessage(`I'll help you submit your concern. 📋<br><br>Please tell me your <strong>full name</strong>:`);
+                } else if (q.includes('food') || q.includes('mess') || q.includes('canteen') || q.includes('meal')) {
+                    chatState = 'concern_name';
+                    concernData = {};
+                    addBotMessage(`I can record a mess/food concern for you. 🍽️<br><br>Please tell me your <strong>full name</strong> first:`);
+                } else if (q.includes('wifi') || q.includes('internet') || q.includes('network')) {
+                    chatState = 'concern_name';
+                    concernData = {};
+                    addBotMessage(`I can log a connectivity issue. 📶<br><br>Please share your <strong>full name</strong>:`);
+                } else if (q.includes('water') || q.includes('electricity') || q.includes('power') || q.includes('light')) {
+                    chatState = 'concern_name';
+                    concernData = {};
+                    addBotMessage(`I'll report a facilities issue for you. 🔧<br><br>Please tell me your <strong>full name</strong>:`);
+                } else if (q.includes('room') || q.includes('allocation') || q.includes('hostel')) {
+                    addBotMessage(`For room allocation queries:<br>🔸 Check the <a href='/students.html' class='fw-bold'>Student Roster</a> for room details.<br>🔸 Contact your hostel warden directly.<br>🔸 Or <strong>submit a room concern</strong> and our team will respond.<br><br><div class="chatbot-options"><button class="btn" onclick="sendOptionQuery('Submit a Concern')">📝 Submit Concern</button></div>`);
+                } else if (q.includes('warden') || q.includes('login') || q.includes('password')) {
+                    addBotMessage(`For warden portal access:<br>🔸 Visit the <a href='/warden/login.html' class='fw-bold'>Warden Login</a> page.<br>🔸 Forgot password? Use the reset option on the login screen.<br>🔸 New warden? Contact admin at <strong>8978771345</strong>.`);
+                } else if (q.includes('mfa') || q.includes('otp') || q.includes('authenticator') || q.includes('2fa')) {
+                    addBotMessage(`To set up MFA:<br><ol style='margin:0.5rem 0 0 1rem;padding:0'><li>Open <a href='/warden/login.html' class='fw-bold'>Warden Login</a></li><li>Click <strong>Configure MFA</strong></li><li>Scan the QR with Google Authenticator</li><li>Enter the 6-digit code</li></ol>`);
+                } else if (q.includes('student') || q.includes('roster')) {
+                    addBotMessage(`View all registered students and room allocations at the <a href='/students.html' class='fw-bold'>Student Directory</a>.`);
+                } else if (q.includes('emergency') || q.includes('urgent') || q.includes('ambulance') || q.includes('fire') || q.includes('police')) {
+                    addBotMessage(`🚨 <strong>Emergency?</strong> Please call:<br>📞 <strong>8978771345</strong> (Hostel Coordinator – Nithin)<br>🚑 Ambulance: <strong>108</strong><br>🚒 Fire: <strong>101</strong><br>🚓 Police: <strong>100</strong>`);
+                } else if (q.includes('fee') || q.includes('payment') || q.includes('due') || q.includes('receipt')) {
+                    addBotMessage(`For fee / payment queries, contact the hostel administration office directly.<br>📞 <strong>8978771345</strong> (Nithin)<br>📧 <strong>support@swms.gov.in</strong><br><br>Or submit a concern and we'll follow up:<br><div class="chatbot-options"><button class="btn" onclick="sendOptionQuery('Submit a Concern')">📝 Submit Concern</button></div>`);
+                } else if (q.includes('thank') || q.includes('thanks') || q.includes('ok') || q.includes('bye') || q.includes('goodbye')) {
+                    addBotMessage(`You're welcome! 😊 Have a great day. Feel free to come back anytime if you need help!`);
+                } else {
+                    addBotMessage(`I understand you're asking about: "<em>${escapeHtml(text)}</em>".<br><br>I can help with hostel concerns, complaints, warden portal access, student roster, and MFA setup. Would you like to:<br><br><div class="chatbot-options"><button class="btn" onclick="sendOptionQuery('Submit a Concern')">📝 Submit a Concern</button><button class="btn" onclick="sendOptionQuery('FAQ & Support Directory')">❓ See FAQ</button></div>`);
+                }
             }, 700);
         }
 
