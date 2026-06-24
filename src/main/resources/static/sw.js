@@ -4,7 +4,7 @@
 //  Change BUILD_VERSION below when you push new code.
 // ============================================================
 
-const BUILD_VERSION = '2026-06-24-v5';       // ← update this on every deploy
+const BUILD_VERSION = '2026-06-24-v6';       // ← update this on every deploy
 const CACHE_NAME    = `swms-cache-${BUILD_VERSION}`;
 
 // Only pre-cache the absolute minimum (shell assets).
